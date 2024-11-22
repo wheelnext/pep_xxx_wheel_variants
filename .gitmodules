@@ -1,0 +1,3 @@
+[submodule "mockhouse"]
+	path = mockhouse
+	url = git@github.com:wheel-next/mockhouse.git

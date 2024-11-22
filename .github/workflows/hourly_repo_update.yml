@@ -1,14 +1,14 @@
 # This is a basic workflow to help you get started with Actions
 
-name: CI
+name: Periodic Repo Update
 
 # Controls when the workflow will run
 on:
-  # Triggers the workflow on push or pull request events but only for the "master" branch
+  # Triggers the workflow on push or pull request events but only for the "main" branch
   push:
-    branches: [ "master" ]
+    branches: [ "main" ]
   pull_request:
-    branches: [ "master" ]
+    branches: [ "main" ]
   schedule:
     - cron: '0 * * * *'
 
@@ -38,14 +38,14 @@ jobs:
         with:
           token: ${{ secrets.CI_TOKEN }}
           submodules: true
-          ref: refs/heads/master
+          ref: refs/heads/main
 
       # Update references
       - name: Git Submodule Update
         run: |
           git pull --recurse-submodules
           git submodule update --remote --recursive
-          git submodule foreach git pull origin master
+          git submodule foreach git pull origin main
 
       # Upload the update to github
       - name: Commit update
