@@ -1,0 +1,68 @@
+// For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
+// https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/docker-existing-dockerfile
+
+{
+    "name": "METADATA PEP - Dev Container",
+    "image": "python:latest",
+    "workspaceFolder": "/workspace/",
+    "workspaceMount": "source=${localWorkspaceFolder},target=/workspace/,type=bind",
+    "customizations": {
+      "vscode": {
+        "extensions": [
+            // Python
+            "ms-python.python",
+            // Build Tools
+            "ms-azuretools.vscode-docker",
+            // Git & Github
+            "GitHub.vscode-pull-request-github",
+            // GitLens
+            "eamodio.gitlens",
+            // Makefile
+            "ms-vscode.makefile-tools",
+            // TOML
+            "tamasfe.even-better-toml",
+            // PyLance
+            "ms-python.vscode-pylance",
+            // Makefile Tools
+            "ms-vscode.makefile-tools",
+            // Ruff
+            "charliermarsh.ruff"
+        ],
+        "settings": {
+          "python.pythonPath": "/usr/local/bin/python",
+          "python.linting.enabled": true,
+          "python.linting.pylintEnabled": true,
+          "python.linting.flake8Enabled": true,
+          "python.formatting.provider": "ruff",
+          "python.linting.mypyEnabled": true,
+          "remote.autoForwardPorts": false
+        }
+      }
+    },
+  
+    "postCreateCommand": "pip install -r /workspace/mockhouse/requirements.txt",
+    "postStartCommand": "cd /workspace/mockhouse && python -m flask --app main run --host=127.0.0.1 --port=5000 --debug",
+
+    "forwardPorts": [5000],
+  
+    "portsAttributes": {
+      "5000": {
+        "label": "Flask App",
+        "onAutoForward": "openBrowser"
+      }
+    },
+
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "username": "mockhouse",
+            "installZsh": true,
+            "installOhMyZsh": true,
+            "configureZshAsDefaultShell": false,
+            "upgradePackages": false
+        },
+        "ghcr.io/devcontainers/features/git:1": {
+            "version": "latest"
+        }
+    }
+  }
+  
