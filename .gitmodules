@@ -1,3 +1,6 @@
 [submodule "mockhouse"]
 	path = mockhouse
 	url = git@github.com:wheel-next/mockhouse.git
+[submodule "mockpip"]
+	path = mockpip
+	url = git@github.com:wheel-next/mockpip.git
