@@ -1,0 +1,4 @@
+[tool.monas]
+packages = ["mockhouse", "mockpip"]
+version = "0.0.1"
+python-version = "3.13"

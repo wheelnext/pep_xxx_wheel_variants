@@ -7,54 +7,54 @@
     "workspaceFolder": "/workspace/",
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace/,type=bind",
     "customizations": {
-      "vscode": {
-        "extensions": [
-            // Python
-            "ms-python.python",
-            // Build Tools
-            "ms-azuretools.vscode-docker",
-            // Git & Github
-            "GitHub.vscode-pull-request-github",
-            // GitLens
-            "eamodio.gitlens",
-            // Makefile
-            "ms-vscode.makefile-tools",
-            // TOML
-            "tamasfe.even-better-toml",
-            // PyLance
-            "ms-python.vscode-pylance",
-            // Makefile Tools
-            "ms-vscode.makefile-tools",
-            // Ruff
-            "charliermarsh.ruff"
-        ],
-        "settings": {
-          "python.pythonPath": "/usr/local/bin/python",
-          "python.linting.enabled": true,
-          "python.linting.pylintEnabled": true,
-          "python.linting.flake8Enabled": true,
-          "python.formatting.provider": "ruff",
-          "python.linting.mypyEnabled": true,
-          "remote.autoForwardPorts": false
+        "vscode": {
+            "extensions": [
+                // Python
+                "ms-python.python",
+                // Build Tools
+                "ms-azuretools.vscode-docker",
+                // Git & Github
+                "GitHub.vscode-pull-request-github",
+                // GitLens
+                "eamodio.gitlens",
+                // Makefile
+                "ms-vscode.makefile-tools",
+                // TOML
+                "tamasfe.even-better-toml",
+                // PyLance
+                "ms-python.vscode-pylance",
+                // Makefile Tools
+                "ms-vscode.makefile-tools",
+                // Ruff
+                "charliermarsh.ruff"
+            ],
+            "settings": {
+                "python.pythonPath": "/usr/local/bin/python",
+                "python.linting.enabled": true,
+                "python.linting.pylintEnabled": true,
+                "python.linting.flake8Enabled": true,
+                "python.formatting.provider": "ruff",
+                "python.linting.mypyEnabled": true,
+                "remote.autoForwardPorts": false
+            }
         }
-      }
     },
   
-    "postCreateCommand": "pip install -r /workspace/mockhouse/requirements.txt",
-    "postStartCommand": "cd /workspace/mockhouse && python -m flask --app main run --host=127.0.0.1 --port=5000 --debug",
+    "postCreateCommand": "pip install monas && monas install",
+    "postStartCommand": "bash -c 'source /workspace/mockhouse/.venv/bin/activate && mockhouse_flask --host=0.0.0.0 --port=5000 --debug'",
 
     "forwardPorts": [5000],
   
     "portsAttributes": {
-      "5000": {
-        "label": "Flask App",
-        "onAutoForward": "openBrowser"
-      }
+        "5000": {
+            "label": "Flask App",
+            "onAutoForward": "openBrowser"
+        }
     },
 
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {
-            "username": "mockhouse",
+            "username": "METADATA_PEP",
             "installZsh": true,
             "installOhMyZsh": true,
             "configureZshAsDefaultShell": false,
@@ -64,5 +64,4 @@
             "version": "latest"
         }
     }
-  }
-  
+}
