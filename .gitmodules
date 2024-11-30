@@ -4,3 +4,6 @@
 [submodule "mockpip"]
 	path = mockpip
 	url = git@github.com:wheel-next/mockpip.git
+[submodule "variant-combinations"]
+	path = variant-combinations
+	url = git@github.com:wheel-next/variant-combinations.git
