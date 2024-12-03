@@ -7,3 +7,9 @@
 [submodule "variant-combinations"]
 	path = variant-combinations
 	url = git@github.com:wheel-next/variant-combinations.git
+[submodule "provider_fictional_hw"]
+	path = provider_fictional_hw
+	url = git@github.com:wheel-next/provider_fictional_hw.git
+[submodule "provider_fictional_tech"]
+	path = provider_fictional_tech
+	url = git@github.com:wheel-next/provider_fictional_tech.git
