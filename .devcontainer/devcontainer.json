@@ -1,13 +1,32 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/docker-existing-dockerfile
-
 {
     "name": "METADATA PEP - Dev Container",
     "image": "python:latest",
     "workspaceFolder": "/workspace/",
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace/,type=bind",
+    // Set *default* container specific settings.json values on container create.
     "customizations": {
         "vscode": {
+            "settings": {
+                "editor.formatOnSave": true,
+                "remote.autoForwardPorts": false,
+                "[python]": {
+                    "analysis.autoImportCompletions": true,
+                    "analysis.typeCheckingMode": "basic",
+                    "defaultInterpreterPath": "/usr/local/bin/python",
+                    "editor.codeActionsOnSave": {
+                        "source.organizeImports": "always"
+                    },
+                    "editor.defaultFormatter": "charliermarsh.ruff",
+                    "languageServer": "Pylance",
+                    "linting.enabled": true,
+                    "linting.flake8Enabled": true,
+                    "linting.mypyEnabled": true,
+                    "linting.mypyPath": "/usr/local/bin/mypy",
+                    "linting.pylintEnabled": true
+                }
+            },
             "extensions": [
                 // Python
                 "ms-python.python",
@@ -27,31 +46,20 @@
                 "ms-vscode.makefile-tools",
                 // Ruff
                 "charliermarsh.ruff"
-            ],
-            "settings": {
-                "python.pythonPath": "/usr/local/bin/python",
-                "python.linting.enabled": true,
-                "python.linting.pylintEnabled": true,
-                "python.linting.flake8Enabled": true,
-                "python.formatting.provider": "ruff",
-                "python.linting.mypyEnabled": true,
-                "remote.autoForwardPorts": false
-            }
+            ]
         }
     },
-  
     "postCreateCommand": "pip install monas && monas install",
     "postStartCommand": "bash -c 'source /workspace/mockhouse/.venv/bin/activate && mockhouse_flask --host=0.0.0.0 --port=5000 --debug'",
-
-    "forwardPorts": [5000],
-  
+    "forwardPorts": [
+        5000
+    ],
     "portsAttributes": {
         "5000": {
             "label": "Flask App",
             "onAutoForward": "openBrowser"
         }
     },
-
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {
             "username": "METADATA_PEP",
