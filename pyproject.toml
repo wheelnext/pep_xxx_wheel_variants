@@ -1,4 +1,156 @@
 [tool.monas]
-packages = ["mockhouse", "mockpip", "variant-combinations"]
+packages = [
+    "mockhouse",
+    "pkg_mockpip",
+    "pkg_variantlib[dev,test]",
+    "variant-combinations",
+]
 version = "0.0.1"
 python-version = "3.13"
+
+# # This is configuration specific to the `setuptools` build backend.
+# # If you are using a different build backend, you will need to change this.
+# [tool.setuptools]
+# # If there are data files included in your packages that need to be
+# # installed, specify them here.
+# package-data = {"sample" = ["*.dat"]}
+
+[tool.isort]
+profile = "black"
+
+[tool.ruff]
+# Exclude a variety of commonly ignored directories.
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytype",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "node_modules",
+    "venv",
+    "*/migrations/*.py",
+    "staticfiles/*",
+]
+# Same as Django: https://github.com/cookiecutter/cookiecutter-django/issues/4792.
+line-length = 88
+indent-width = 4
+target-version = "py312"
+
+[tool.ruff.lint]
+select = [
+    "F",
+    "E",
+    "W",
+    "C90",
+    "I",
+    "N",
+    "UP",
+    "YTT",
+    # "ANN", # flake8-annotations: we should support this in the future but 100+ errors atm
+    "ASYNC",
+    "S",
+    "BLE",
+    "FBT",
+    "B",
+    "A",
+    "COM",
+    "C4",
+    "DTZ",
+    "T10",
+    "DJ",
+    "EM",
+    "EXE",
+    "FA",
+    'ISC',
+    "ICN",
+    "G",
+    'INP',
+    'PIE',
+    "T20",
+    'PYI',
+    'PT',
+    "Q",
+    "RSE",
+    "RET",
+    "SLF",
+    "SLOT",
+    "SIM",
+    "TID",
+    "TCH",
+    "INT",
+    # "ARG", # Unused function argument
+    "PTH",
+    "ERA",
+    "PD",
+    "PGH",
+    "PL",
+    "TRY",
+    "FLY",
+    # "NPY",
+    # "AIR",
+    "PERF",
+    # "FURB",
+    # "LOG",
+    "RUF",
+]
+ignore = [
+    "COM812", # Checks for the absence of trailing commas.
+    "DTZ007", # Checks for uses of datetime.datetime.strptime() that lead to naive 
+    # datetime objects.
+    "EM101",  # Checks for the use of string literals in exception constructors.
+    "EM102",  # Checks for the use of f-strings in exception constructors.
+    "ERA001", # Checks for commented-out Python code.
+    "EXE001", # Checks for a shebang directive in a file that is not executable.
+    "FBT001", # Checks for the use of boolean positional arguments in function 
+    # definitions, as determined by the presence of a bool type hint.
+    "FBT002", # Checks for the use of boolean positional arguments in function 
+    # definitions, as determined by the presence of a boolean default value.
+    "N806",    # Checks for the use of non-lowercase variable names in functions.
+    "N815",    # Checks for class variable names that follow the mixedCase convention.
+    "PLR0913", # Checks for function definitions that include too many arguments.
+    "PLR2004", # Checks for the use of unnamed numerical constants ("magic") values in 
+    # comparisons.
+    "PYI024", # Checks for uses of collections.namedtuple in stub files.
+    "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
+    "S101",   # Use of assert detected https://docs.astral.sh/ruff/rules/assert/
+    "S311",   # Checks for uses of cryptographically weak pseudo-random number generators.
+    "SIM102", # sometimes it's better to nest
+    "TRY003", # Checks for long exception messages that are not defined in the exception 
+    # class itself.
+    "UP009", # Checks for unnecessary UTF-8 encoding declarations.
+    "UP038", # Checks for uses of isinstance/issubclass that take a tuple of types for 
+    # comparison. 
+    # Deactivated because it can make the code slow: 
+    # https://github.com/astral-sh/ruff/issues/7871
+]
+# Allow fix for all enabled rules (when `--fix`) is provided.
+fixable = ["ALL"]
+unfixable = []
+# The fixes in extend-unsafe-fixes will require
+# provide the `--unsafe-fixes` flag when fixing.
+extend-unsafe-fixes = ["UP038"]
+# Allow unused variables when underscore-prefixed.
+dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+
+[tool.ruff.format]
+quote-style = "double"
+indent-style = "space"
+skip-magic-trailing-comma = false
+line-ending = "auto"
+
+[tool.ruff.lint.isort]
+force-single-line = true

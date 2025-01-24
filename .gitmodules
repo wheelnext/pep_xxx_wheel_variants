@@ -1,15 +1,19 @@
+
 [submodule "mockhouse"]
 	path = mockhouse
 	url = git@github.com:wheel-next/mockhouse.git
-[submodule "mockpip"]
-	path = mockpip
+[submodule "pkg_mockpip"]
+	path = pkg_mockpip
 	url = git@github.com:wheel-next/mockpip.git
-[submodule "variant-combinations"]
-	path = variant-combinations
-	url = git@github.com:wheel-next/variant-combinations.git
+[submodule "pkg_variantlib"]
+	path = pkg_variantlib
+	url = git@github.com:wheel-next/variantlib.git
 [submodule "provider_fictional_hw"]
 	path = provider_fictional_hw
 	url = git@github.com:wheel-next/provider_fictional_hw.git
 [submodule "provider_fictional_tech"]
 	path = provider_fictional_tech
 	url = git@github.com:wheel-next/provider_fictional_tech.git
+[submodule "variant-combinations"]
+	path = variant-combinations
+	url = git@github.com:wheel-next/variant-combinations.git

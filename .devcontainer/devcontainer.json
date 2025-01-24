@@ -34,6 +34,8 @@
                 "ms-azuretools.vscode-docker",
                 // Git & Github
                 "GitHub.vscode-pull-request-github",
+                // Github Actions
+                "GitHub.vscode-github-actions",
                 // GitLens
                 "eamodio.gitlens",
                 // Makefile
@@ -49,8 +51,8 @@
             ]
         }
     },
-    "postCreateCommand": "pip install monas && monas install",
-    "postStartCommand": "bash -c 'source /workspace/mockhouse/.venv/bin/activate && mockhouse_flask --host=0.0.0.0 --port=5000 --debug'",
+    "postCreateCommand": "pip install --upgrade pip git+https://github.com/DEKHTIARJonathan/monas.git && monas install --root",
+    "postStartCommand": "bash -c 'source /workspace/.venv/bin/activate && mockhouse_flask --host=0.0.0.0 --port=5000 --debug'",
     "forwardPorts": [
         5000
     ],
