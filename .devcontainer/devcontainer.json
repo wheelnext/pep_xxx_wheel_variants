@@ -10,11 +10,15 @@
         "vscode": {
             "settings": {
                 "editor.formatOnSave": true,
+                "makefile.configureOnOpen": false,
                 "remote.autoForwardPorts": false,
                 "[python]": {
                     "analysis.autoImportCompletions": true,
+                    "analysis.extraPaths": [
+                        "${workspaceFolder}/pkg_variantlib",
+                    ],
                     "analysis.typeCheckingMode": "basic",
-                    "defaultInterpreterPath": "/usr/local/bin/python",
+                    "defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
                     "editor.codeActionsOnSave": {
                         "source.organizeImports": "always"
                     },

@@ -1,7 +1,0 @@
-{
-    "makefile.configureOnOpen": false,
-    "python.analysis.extraPaths": [
-        "${workspaceFolder}/pkg_variantlib",
-    ],
-    "python.defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
-}
