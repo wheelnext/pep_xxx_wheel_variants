@@ -20,3 +20,6 @@
 [submodule "pip"]
 	path = pip
 	url = git@github.com:wheelnext/pip.git
+[submodule "pkg_variantbuild"]
+	path = pkg_variantbuild
+	url = git@github.com:wheelnext/variantbuild.git

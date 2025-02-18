@@ -3,6 +3,7 @@ packages = [
     "mockhouse",
     "pkg_mockpip",
     "pkg_variantlib[dev,test]",
+    "pkg_variantbuild[dev,test]",
     "variant-combinations",
 ]
 version = "0.0.1"
