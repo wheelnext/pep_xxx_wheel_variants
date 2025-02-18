@@ -17,3 +17,6 @@
 [submodule "variant-combinations"]
 	path = variant-combinations
 	url = git@github.com:wheel-next/variant-combinations.git
+[submodule "pip"]
+	path = pip
+	url = git@github.com:wheelnext/pip.git
