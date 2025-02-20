@@ -130,11 +130,11 @@ We are almost there - let's clear a few points before full demo.
 
 *Oh my dear friend - I'm glad you ask (again again I know, you have very good questions) !* 
 
-For multiple reasons (explained below), we propose to slightly modify the regex above by adding a new capture group: `(-@(?P<variant_hash>[0-9a-f]{8}))?` (essentially `@abcd1234` for those who don't speak fluently - not you I know that you know, other people :D).
+For multiple reasons (explained below), we propose to slightly modify the regex above by adding a new capture group: `(~(?P<variant_hash>[0-9a-f]{8}))?` (essentially `~abcd1234` for those who don't speak fluently - not you I know that you know, other people :D).
 
 This `hash` is constructed in a standardized by `variantlib` (which algorithm to use could be debated - for now `hashlib.shake_128()`)  and only use 8 characters which is plenty to guarantee unicity.
 
-This `hash` is prefixed by `@` to make the filename extremely obvious to be a variant (aka. not generic but rather platform specific): `mypackage-0.0.1-@9091cdc4-py3-none-any.whl`. The choice of `@` (instead of `#` for instance) was made because it's one of the very rare character with doesn't need escaping or convey a special meaning in a URL (like `#` or `?`). Ultimately it could be anything easy to recognize and that doesn't require complex escape or unintended consequence. `@` is unique and "fill all the boxes".
+This `hash` is prefixed by `~` to make the filename extremely obvious to be a variant (aka. not generic but rather platform specific): `mypackage-0.0.1~9091cdc4-py3-none-any.whl`. The choice of `~` (instead of `#` for instance) was made because it's one of the very rare character with doesn't need escaping or convey a special meaning in a URL (like `#`, `@` or `?`). Ultimately it could be anything easy to recognize and that doesn't require complex escape or unintended consequence. `~` is unique and "fill all the boxes".
 
 Modifying the "wheel validation" regex has one "hidden" major advantage: it makes any `Variant Wheel` an invalid filename for any version of PIP which does not support variants. Consequently guaranteeing, this PEP does break any old release of `PIP` by publishing `Python Wheels` in a previously unsupported.
 
@@ -142,15 +142,15 @@ Consequently on disk - we have the following:
 
 ```bash
 mypackage-0.0.1-py3-none-any.whl
-mypackage-0.0.1-@e684be6f-py3-none-any.whl
-mypackage-0.0.1-@9091cdc4-py3-none-any.whl
-mypackage-0.0.1-@6b4c8391-py3-none-any.whl
-mypackage-0.0.1-@57768a46-py3-none-any.whl
-mypackage-0.0.1-@4f8ae729-py3-none-any.whl
-mypackage-0.0.1-@36266d4d-py3-none-any.whl
+mypackage-0.0.1~e684be6f-py3-none-any.whl
+mypackage-0.0.1~9091cdc4-py3-none-any.whl
+mypackage-0.0.1~6b4c8391-py3-none-any.whl
+mypackage-0.0.1~57768a46-py3-none-any.whl
+mypackage-0.0.1~4f8ae729-py3-none-any.whl
+mypackage-0.0.1~36266d4d-py3-none-any.whl
 ```
 
-If the user need to know what `mypackage-0.0.1-@e684be6f-py3-none-any.whl` corresponds to, they can open the `METADATA` file which contains the relevant variant information (which has been hashed).
+If the user need to know what `mypackage-0.0.1~e684be6f-py3-none-any.whl` corresponds to, they can open the `METADATA` file which contains the relevant variant information (which has been hashed).
 
 ### From the plugin to the Variant Hash to the Install
 
@@ -213,12 +213,12 @@ pip install -i http://localhost:5000/simple/ myypackage
 [I 2025-01-28 02:08:34.096 pip.repository:38 v0.1.0] Successfully fetched package data from `http://localhost:5000/simple/myypackage/`
 [I 2025-01-28 02:08:34.097 pip.commands.install:70 v0.1.0] 
 [I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1-py3-none-any.whl`
-[I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1-@e684be6f-py3-none-any.whl`
-[I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1-@9091cdc4-py3-none-any.whl`
-[I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1-@6b4c8391-py3-none-any.whl`
-[I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1-@57768a46-py3-none-any.whl`
-[I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1-@4f8ae729-py3-none-any.whl`
-[I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1-@36266d4d-py3-none-any.whl`
+[I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1~e684be6f-py3-none-any.whl`
+[I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1~9091cdc4-py3-none-any.whl`
+[I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1~6b4c8391-py3-none-any.whl`
+[I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1~57768a46-py3-none-any.whl`
+[I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1~4f8ae729-py3-none-any.whl`
+[I 2025-01-28 02:08:34.097 pip.commands.install:75 v0.1.0] Found: `myypackage-0.0.1~36266d4d-py3-none-any.whl`
 [I 2025-01-28 02:08:34.097 pip.commands.install:79 v0.1.0] 
 [I 2025-01-28 02:08:34.097 pip.variant_hash:69 v0.1.0] Discovering plugins...
 [I 2025-01-28 02:08:34.108 pip.variant_hash:86 v0.1.0] Loading plugin: fictional_tech - v1.0.0
@@ -229,7 +229,7 @@ pip install -i http://localhost:5000/simple/ myypackage
 [I 2025-01-28 02:08:34.129 pip.commands.install:102 v0.1.0] Variant-Data: fictional_tech :: technology :: auto_chef
 [I 2025-01-28 02:08:34.129 pip.commands.install:103 v0.1.0] ################################################################################
 [I 2025-01-28 02:08:34.129 pip.commands.install:127 v0.1.0] 
-[I 2025-01-28 02:08:34.129 pip.commands.install:128 v0.1.0] Installing: myypackage-0.0.1-@9091cdc4-py3-none-any.whl ...
+[I 2025-01-28 02:08:34.129 pip.commands.install:128 v0.1.0] Installing: myypackage-0.0.1~9091cdc4-py3-none-any.whl ...
 [========================================] 100%
 [I 2025-01-28 02:08:36.259 pip.commands.install:130 v0.1.0] 
 [I 2025-01-28 02:08:36.259 pip.commands.install:132 v0.1.0] The package: `myypackage` (Version: `0.0.1`) was installed with success ...
