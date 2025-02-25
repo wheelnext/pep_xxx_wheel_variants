@@ -1,6 +1,5 @@
 [tool.monas]
 packages = [
-    "mockhouse",
     "pkg_mockpip",
     "pkg_variantlib[dev,test]",
     "pkg_variantbuild[dev,test]",

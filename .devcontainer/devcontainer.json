@@ -1,7 +1,7 @@
 // For format details, see https://aka.ms/devcontainer.json. For config options, see the README at:
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/docker-existing-dockerfile
 {
-    "name": "METADATA PEP - Dev Container",
+    "name": "WheelNext - Dev Container",
     "image": "python:latest",
     "workspaceFolder": "/workspace/",
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace/,type=bind",
@@ -15,7 +15,7 @@
                 "[python]": {
                     "analysis.autoImportCompletions": true,
                     "analysis.extraPaths": [
-                        "${workspaceFolder}/pkg_variantlib",
+                        "${workspaceFolder}/pkg_variantlib"
                     ],
                     "analysis.typeCheckingMode": "basic",
                     "defaultInterpreterPath": "${workspaceFolder}/.venv/bin/python",
@@ -56,19 +56,19 @@
         }
     },
     "postCreateCommand": "pip install --upgrade pip git+https://github.com/DEKHTIARJonathan/monas.git && monas install --root",
-    "postStartCommand": "bash -c 'source /workspace/.venv/bin/activate && mockhouse_flask --host=0.0.0.0 --port=5000 --debug'",
+    "postStartCommand": "bash -c 'cd mockhouse/ && python3 -m http.server 5000'",
     "forwardPorts": [
         5000
     ],
     "portsAttributes": {
         "5000": {
-            "label": "Flask App",
+            "label": "MockHouse PIP Server",
             "onAutoForward": "openBrowser"
         }
     },
     "features": {
         "ghcr.io/devcontainers/features/common-utils:2": {
-            "username": "METADATA_PEP",
+            "username": "wheelnext",
             "installZsh": true,
             "installOhMyZsh": true,
             "configureZshAsDefaultShell": false,
