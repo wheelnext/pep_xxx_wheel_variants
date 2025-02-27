@@ -23,3 +23,6 @@
 [submodule "pkg_variantbuild"]
 	path = pkg_variantbuild
 	url = git@github.com:wheelnext/variantbuild.git
+[submodule "provider_simd_x86_64"]
+	path = provider_simd_x86_64
+	url = git@github.com:wheelnext/provider_simd_x86_64.git
