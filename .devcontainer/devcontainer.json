@@ -2,7 +2,10 @@
 // https://github.com/microsoft/vscode-dev-containers/tree/v0.245.2/containers/docker-existing-dockerfile
 {
     "name": "WheelNext - Dev Container",
-    "image": "python:latest",
+    "build": {
+        "dockerfile": "Dockerfile",
+        "context": ".."
+    },
     "workspaceFolder": "/workspace/",
     "workspaceMount": "source=${localWorkspaceFolder},target=/workspace/,type=bind",
     // Set *default* container specific settings.json values on container create.
@@ -55,7 +58,7 @@
             ]
         }
     },
-    "postCreateCommand": "pip install --upgrade pip git+https://github.com/DEKHTIARJonathan/monas.git && monas install --root",
+    "postCreateCommand": "uv sync",
     "postStartCommand": "bash -c 'cd mockhouse/ && python3 -m http.server 5000'",
     "forwardPorts": [
         5000
@@ -73,9 +76,6 @@
             "installOhMyZsh": true,
             "configureZshAsDefaultShell": false,
             "upgradePackages": false
-        },
-        "ghcr.io/devcontainers/features/git:1": {
-            "version": "latest"
         }
     }
 }

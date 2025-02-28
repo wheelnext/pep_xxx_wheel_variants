@@ -1,12 +1,21 @@
-[tool.monas]
-packages = [
-    "pip",
-    "pkg_variantlib[dev,test]",
-    # "pkg_variantbuild[dev,test]",
-    # "variant-combinations",
-]
-version = "0.0.1"
-python-version = "3.13"
+[project]
+name = "WheelNext_Monorepo"
+version = "1.0.0"
+authors = [{ name = "Jonathan Dekhtiar", email = "jonathan@dekhtiar.com" }]
+readme = "README.md"
+dependencies = []
+requires-python = ">=3.13"
+
+[tool.uv.sources]
+pip = { workspace = true }
+variantlib = { workspace = true }
+
+[tool.uv.workspace]
+members = ["pip", "pkg_variantlib"]
+
+[tool.uv]
+dev-dependencies = ["pip", "variantlib[dev,test]"]
+package = false
 
 [tool.isort]
 profile = "black"
