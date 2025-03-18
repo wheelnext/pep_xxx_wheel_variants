@@ -212,6 +212,6 @@ This should yield four wheels named like (plus four more with `cp312` instead of
 ```
 numpy-2.2.4-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64.whl
 numpy-2.2.4-cp313-cp313-manylinux_2_17_x86_64.musllinux2014_x86_64.whl
-numpy-2.2.4-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64_h03981ea44_psabi3.whl
-numpy-2.2.4-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64_h0f4317532_psabi3_mkl.whl
+numpy-2.2.4-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64-h03981ea44+psabi-x86-64-v3.whl
+numpy-2.2.4-cp313-cp313-manylinux_2_17_x86_64.manylinux2014_x86_64-h0f4317532+psabi-x86-64v3+blas-mkl.whl
 ```
