@@ -1,5 +1,9 @@
 # Building wheel variants - UX design
 
+*Primary target audience: developers who want to build wheels for distribution
+on PyPI or another index server.*
+
+
 ## Querying plugin variables and values
 
 Before we start building, we need to know what variants can potentially be built.
@@ -149,7 +153,7 @@ Handling a whole set of build variants at once can be automated on top of that -
 for now there doesn't seem to be a need for custom tooling to handle that.
 The next section shows a pragmatic way this can be done with tools we already have.
 
-# Building a matrix of variant wheels
+## Building a matrix of variant wheels
 
 If an individual variant is easy to build through a build frontend, then scripting
 a matrix should be straightforward.
