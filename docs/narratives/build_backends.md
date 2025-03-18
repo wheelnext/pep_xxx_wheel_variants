@@ -93,6 +93,13 @@ than `-Cvariant`:
 $ python -m build --wheel -Cvariant-name="psabi=x86-64-v3" -Csetup-args=-Dcpu-baseline=AVX2,FMA3 -Csetup-args=-Dcpu-dispatch=AVX512F,AVX512_SKX
 ```
 
+Note that we've introduced two ways of specifying a variant build so far (which
+is probably all we'll need):
+
+- `-Cvariant=variable=value`: specify the wheel variant to build *and* let
+  the plugin add defaults (compile and link flags)
+- `-Cvariant-name=variable=value`: only specify the wheel variant to build
+
 So far so good for how to build x86-64 SIMD variants. Let's look at a second
 realistic case, namely BLAS variants. The difference is that we need not only
 compile and link flags, but also a different dependency - during the build,
