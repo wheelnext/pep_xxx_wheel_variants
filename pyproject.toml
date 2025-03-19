@@ -8,13 +8,21 @@ requires-python = ">=3.13"
 
 [tool.uv.sources]
 pip = { workspace = true }
+variantbuild = { workspace = true }
 variantlib = { workspace = true }
 
 [tool.uv.workspace]
-members = ["pip", "pkg_variantlib"]
+members = ["pip", "variantbuild", "variantlib"]
 
 [tool.uv]
-dev-dependencies = ["pip", "variantlib[dev,test]"]
+dev-dependencies = [
+    "pre-commit>=4,<5",
+    "ruff>=0.10,<1.0",
+    "wheel>=0.45",
+    "pip",
+    "variantbuild[dev,test]",
+    "variantlib[dev,test]",
+]
 package = false
 
 [tool.isort]
@@ -111,32 +119,32 @@ select = [
 ]
 ignore = [
     "COM812", # Checks for the absence of trailing commas.
-    "DTZ007", # Checks for uses of datetime.datetime.strptime() that lead to naive 
+    "DTZ007", # Checks for uses of datetime.datetime.strptime() that lead to naive
     # datetime objects.
     "EM101",  # Checks for the use of string literals in exception constructors.
     "EM102",  # Checks for the use of f-strings in exception constructors.
     "ERA001", # Checks for commented-out Python code.
     "EXE001", # Checks for a shebang directive in a file that is not executable.
-    "FBT001", # Checks for the use of boolean positional arguments in function 
+    "FBT001", # Checks for the use of boolean positional arguments in function
     # definitions, as determined by the presence of a bool type hint.
-    "FBT002", # Checks for the use of boolean positional arguments in function 
+    "FBT002", # Checks for the use of boolean positional arguments in function
     # definitions, as determined by the presence of a boolean default value.
     "N806",    # Checks for the use of non-lowercase variable names in functions.
     "N815",    # Checks for class variable names that follow the mixedCase convention.
     "PLR0913", # Checks for function definitions that include too many arguments.
-    "PLR2004", # Checks for the use of unnamed numerical constants ("magic") values in 
+    "PLR2004", # Checks for the use of unnamed numerical constants ("magic") values in
     # comparisons.
     "PYI024", # Checks for uses of collections.namedtuple in stub files.
     "RUF012", # Mutable class attributes should be annotated with `typing.ClassVar`
     "S101",   # Use of assert detected https://docs.astral.sh/ruff/rules/assert/
     "S311",   # Checks for uses of cryptographically weak pseudo-random number generators.
     "SIM102", # sometimes it's better to nest
-    "TRY003", # Checks for long exception messages that are not defined in the exception 
+    "TRY003", # Checks for long exception messages that are not defined in the exception
     # class itself.
     "UP009", # Checks for unnecessary UTF-8 encoding declarations.
-    "UP038", # Checks for uses of isinstance/issubclass that take a tuple of types for 
-    # comparison. 
-    # Deactivated because it can make the code slow: 
+    "UP038", # Checks for uses of isinstance/issubclass that take a tuple of types for
+    # comparison.
+    # Deactivated because it can make the code slow:
     # https://github.com/astral-sh/ruff/issues/7871
 ]
 # Allow fix for all enabled rules (when `--fix`) is provided.

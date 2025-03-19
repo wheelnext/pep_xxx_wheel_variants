@@ -2,27 +2,21 @@
 [submodule "mockhouse"]
 	path = mockhouse
 	url = git@github.com:wheel-next/mockhouse.git
-[submodule "pkg_mockpip"]
-	path = pkg_mockpip
-	url = git@github.com:wheel-next/mockpip.git
-[submodule "pkg_variantlib"]
-	path = pkg_variantlib
+[submodule "pip"]
+	path = pip
+	url = git@github.com:wheelnext/pip.git
+[submodule "variantbuild"]
+	path = variantbuild
+	url = git@github.com:wheelnext/variantbuild.git
+[submodule "variantlib"]
+	path = variantlib
 	url = git@github.com:wheel-next/variantlib.git
+[submodule "provider_simd_x86_64"]
+	path = provider_simd_x86_64
+	url = git@github.com:wheelnext/provider_simd_x86_64.git
 [submodule "provider_fictional_hw"]
 	path = provider_fictional_hw
 	url = git@github.com:wheel-next/provider_fictional_hw.git
 [submodule "provider_fictional_tech"]
 	path = provider_fictional_tech
 	url = git@github.com:wheel-next/provider_fictional_tech.git
-[submodule "variant-combinations"]
-	path = variant-combinations
-	url = git@github.com:wheel-next/variant-combinations.git
-[submodule "pip"]
-	path = pip
-	url = git@github.com:wheelnext/pip.git
-[submodule "pkg_variantbuild"]
-	path = pkg_variantbuild
-	url = git@github.com:wheelnext/variantbuild.git
-[submodule "provider_simd_x86_64"]
-	path = provider_simd_x86_64
-	url = git@github.com:wheelnext/provider_simd_x86_64.git
