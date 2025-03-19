@@ -112,6 +112,19 @@ wheels = [
 ]
 
 [[package]]
+name = "hypothesis"
+version = "6.129.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "attrs" },
+    { name = "sortedcontainers" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/bb/98/0051e770d36f7e0a55bcfa3590790448d57ed2f355da9adbb957b1f545d9/hypothesis-6.129.4.tar.gz", hash = "sha256:e9fd66c25b8f0aa6395ce6728360892c3af22529cc16cae7512a4672776d4781", size = 425235 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/8d/7c/7266143385cbd19c839f9b61cc660d74c5ce2626fea41d8b215ccc5cfba3/hypothesis-6.129.4-py3-none-any.whl", hash = "sha256:45a31fe2b936688b2954f375c7f87e9dfefa4f2cddfa31cdeba15d77600e1286", size = 489542 },
+]
+
+[[package]]
 name = "identify"
 version = "2.6.8"
 source = { registry = "https://pypi.org/simple" }
@@ -350,6 +363,15 @@ wheels = [
 ]
 
 [[package]]
+name = "sortedcontainers"
+version = "2.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e8/c4/ba2f8066cceb6f23394729afe52f3bf7adec04bf9ed2c820b39e19299111/sortedcontainers-2.4.0.tar.gz", hash = "sha256:25caa5a06cc30b6b83d11423433f65d1f9d76c4c6a0c90e3379eaa43b9bfdb88", size = 30594 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/32/46/9cb0e58b2deb7f82b84065f37f3bffeb12413f947f9388e4cac22c4621ce/sortedcontainers-2.4.0-py2.py3-none-any.whl", hash = "sha256:a163dcaede0f1c021485e957a39245190e74249897e2ae4b2aa38595db237ee0", size = 29575 },
+]
+
+[[package]]
 name = "variantbuild"
 version = "0.0.1.dev1"
 source = { editable = "variantbuild" }
@@ -406,6 +428,7 @@ dev = [
     { name = "ruff" },
 ]
 test = [
+    { name = "hypothesis" },
     { name = "jsondiff" },
     { name = "parameterized" },
     { name = "pytest" },
@@ -420,6 +443,7 @@ test = [
 requires-dist = [
     { name = "attrs", specifier = ">=24.3,<24.4" },
     { name = "check-manifest", marker = "extra == 'dev'" },
+    { name = "hypothesis", marker = "extra == 'test'", specifier = ">=6.0.0,<7" },
     { name = "jsondiff", marker = "extra == 'test'", specifier = ">=2.2,<2.3" },
     { name = "parameterized", marker = "extra == 'test'", specifier = ">=0.9.0,<0.10" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4,<5" },
