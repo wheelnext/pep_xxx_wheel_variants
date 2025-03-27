@@ -4,7 +4,7 @@ version = "1.0.0"
 authors = [{ name = "Jonathan Dekhtiar", email = "jonathan@dekhtiar.com" }]
 readme = "README.md"
 dependencies = []
-requires-python = ">=3.13"
+requires-python = ">=3.9"
 
 [tool.uv.sources]
 pip = { workspace = true }
@@ -50,7 +50,6 @@ exclude = [
 # Same as Django: https://github.com/cookiecutter/cookiecutter-django/issues/4792.
 line-length = 88
 indent-width = 4
-target-version = "py312"
 
 [tool.ruff.lint]
 select = [
