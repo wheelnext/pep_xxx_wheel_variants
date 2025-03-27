@@ -2,21 +2,28 @@
 [submodule "mockhouse"]
 	path = mockhouse
 	url = git@github.com:wheel-next/mockhouse.git
+	branch = main
 [submodule "pip"]
 	path = pip
 	url = git@github.com:wheelnext/pip.git
+	branch = pep-xxx-wheel-variants
 [submodule "variantbuild"]
 	path = variantbuild
 	url = git@github.com:wheelnext/variantbuild.git
+	branch = master
 [submodule "variantlib"]
 	path = variantlib
 	url = git@github.com:wheel-next/variantlib.git
+	branch = main
 [submodule "provider_simd_x86_64"]
 	path = provider_simd_x86_64
 	url = git@github.com:wheelnext/provider_simd_x86_64.git
+	branch = master
 [submodule "provider_fictional_hw"]
 	path = provider_fictional_hw
 	url = git@github.com:wheel-next/provider_fictional_hw.git
+	branch = main
 [submodule "provider_fictional_tech"]
 	path = provider_fictional_tech
 	url = git@github.com:wheel-next/provider_fictional_tech.git
+	branch = main
