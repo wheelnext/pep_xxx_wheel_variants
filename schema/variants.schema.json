@@ -1,0 +1,46 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://wheelnext.dev/variants.json",
+    "title": "variants.json",
+    "description": "Auxiliary metadata for wheel variants",
+    "type": "object",
+    "properties": {
+        "provider-requires": {
+            "description": "List of packages providing plugins needed to process variants",
+            "type": "array",
+            "items": {
+                "type": "string",
+                "minLength": 1
+            },
+            "uniqueItems": true
+        },
+        "variants": {
+            "description": "Mapping of variant hashes to properties",
+            "type": "object",
+            "patternProperties": {
+                "^[0-9a-f]{8}$": {
+                    "type": "object",
+                    "description": "Mapping of namespaces in a variant",
+                    "patternProperties": {
+                        "^[A-Za-z0-9_]+$": {
+                            "patternProperties": {
+                                "^[A-Za-z0-9_]+$": {
+                                    "type": "string",
+                                    "description": "Mapping of feature names to values",
+                                    "pattern": "^[A-Za-z0-9_]+$"
+                                }
+                            },
+                            "uniqueItems": true,
+                            "additionalProperties": false
+                        }
+                    },
+                    "uniqueItems": true,
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false,
+            "uniqueItems": true
+        }
+    },
+    "required": ["variants"]
+}
