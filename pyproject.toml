@@ -22,6 +22,7 @@ dev-dependencies = [
     "pip",
     "variantbuild[dev,test]",
     "variantlib[dev,test]",
+    "twine"
 ]
 package = false
 
@@ -145,6 +146,7 @@ ignore = [
     # comparison.
     # Deactivated because it can make the code slow:
     # https://github.com/astral-sh/ruff/issues/7871
+    "C901", # Checks for function definitions that include too many statements.
 ]
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
