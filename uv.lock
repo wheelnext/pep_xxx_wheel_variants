@@ -1061,6 +1061,9 @@ dependencies = [
 ]
 
 [package.optional-dependencies]
+cli = [
+    { name = "wheel" },
+]
 dev = [
     { name = "check-manifest" },
     { name = "pre-commit" },
@@ -1077,9 +1080,6 @@ test = [
     { name = "pytest-mock" },
     { name = "pytest-ordering" },
     { name = "pytest-runner" },
-]
-user = [
-    { name = "wheel" },
 ]
 
 [package.metadata]
@@ -1101,9 +1101,9 @@ requires-dist = [
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.10,<1.0" },
     { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
-    { name = "wheel", marker = "extra == 'user'" },
+    { name = "wheel", marker = "extra == 'cli'" },
 ]
-provides-extras = ["user", "dev", "test"]
+provides-extras = ["cli", "dev", "test"]
 
 [[package]]
 name = "virtualenv"
@@ -1140,7 +1140,7 @@ dev = [
     { name = "ruff" },
     { name = "twine" },
     { name = "variantbuild", extra = ["dev", "test"] },
-    { name = "variantlib", extra = ["dev", "test", "user"] },
+    { name = "variantlib", extra = ["cli", "dev", "test"] },
     { name = "wheel" },
 ]
 
@@ -1153,7 +1153,7 @@ dev = [
     { name = "ruff", specifier = ">=0.10,<1.0" },
     { name = "twine" },
     { name = "variantbuild", extras = ["dev", "test"], editable = "variantbuild" },
-    { name = "variantlib", extras = ["user", "dev", "test"], editable = "variantlib" },
+    { name = "variantlib", extras = ["cli", "dev", "test"], editable = "variantlib" },
     { name = "wheel", specifier = ">=0.45" },
 ]
 
