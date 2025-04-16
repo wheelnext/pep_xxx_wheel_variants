@@ -1,0 +1,2 @@
+project('dummy-project')
+

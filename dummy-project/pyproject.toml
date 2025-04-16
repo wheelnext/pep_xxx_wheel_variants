@@ -1,0 +1,12 @@
+[build-system]
+build-backend = "mesonpy"
+requires = [
+    "meson-python @ https://github.com/mgorny/meson-python/archive/wheel-variants.tar.gz",
+    "provider_fictional_hw @ https://github.com/wheelnext/provider_fictional_hw/archive/main.tar.gz",
+    "provider_fictional_tech @ https://github.com/wheelnext/provider_fictional_tech/archive/main.tar.gz",
+]
+
+[project]
+name = "dummy-project"
+version = "0.0.1"
+requires-python = ">=3.8"
