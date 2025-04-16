@@ -21,7 +21,7 @@ dev-dependencies = [
     "wheel>=0.45",
     "pip",
     "variantbuild[dev,test]",
-    "variantlib[user,dev,test]",
+    "variantlib[cli,dev,test]",
     "twine"
 ]
 package = false
