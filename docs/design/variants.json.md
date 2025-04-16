@@ -26,7 +26,10 @@ keys, to account for future extensions.
 
 ```
 {
-  "provider-requires": ["provider_fictional_hw", "provider_fictional_tech"],
+  "providers" : {
+     "fictional_hw" : "provider_fictional_hw",
+     "fictional_tech" : "provider_fictional_tech"
+  },
   "variants": {
     "6b4c8391": {
       "fictional_hw": {
@@ -86,10 +89,11 @@ would be expressed as:
 ```
 
 
-## `provider-requires` key
+## `providers` key
 
-The optional `provider-requires` key is an array of [dependency
+The optional `providers` key is an object mapping variant namespaces
+into [dependency
 specifiers](https://packaging.python.org/en/latest/specifications/dependency-specifiers/)
-that lists packages providing the plugins used by listed variants.
-The tools may use this list to install the necessary plugins or to
-inform the user which packages are missing for variant support.
+that indicate which packages provide the plugins implementing said
+namespace. The tools may use this list to install the necessary plugins
+or to inform the user which packages are missing for variant support.

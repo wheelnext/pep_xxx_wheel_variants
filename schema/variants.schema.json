@@ -5,13 +5,17 @@
     "description": "Auxiliary metadata for wheel variants",
     "type": "object",
     "properties": {
-        "provider-requires": {
-            "description": "List of packages providing plugins needed to process variants",
-            "type": "array",
-            "items": {
-                "type": "string",
-                "minLength": 1
+        "providers": {
+            "description": "Mapping of namespaces to packages providing plugins for them",
+            "type": "object",
+            "patternProperties": {
+                "^[A-Za-z0-9_]+$": {
+                    "type": "string",
+                    "description": "Package dependency specification for the plugin",
+                    "minLength": 1
+                }
             },
+            "additionalProperties": false,
             "uniqueItems": true
         },
         "variants": {
