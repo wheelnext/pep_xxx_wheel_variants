@@ -321,6 +321,18 @@ wheels = [
 ]
 
 [[package]]
+name = "deepdiff"
+version = "8.4.2"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "orderly-set" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/7f/2f/232a9f6d88a59526347cb483ec601d878ad41ab30ee4f2fba4aca1d5a10e/deepdiff-8.4.2.tar.gz", hash = "sha256:5c741c0867ebc7fcb83950ad5ed958369c17f424e14dee32a11c56073f4ee92a", size = 515380 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/0b/03/810d2e70a6944eddc826deb7b68879d8de109369040b25eeb58cdd64d94c/deepdiff-8.4.2-py3-none-any.whl", hash = "sha256:7e39e5b26f3747c54f9d0e8b9b29daab670c3100166b77cc0185d5793121b099", size = 87610 },
+]
+
+[[package]]
 name = "distlib"
 version = "0.3.9"
 source = { registry = "https://pypi.org/simple" }
@@ -358,16 +370,16 @@ wheels = [
 
 [[package]]
 name = "hypothesis"
-version = "6.131.1"
+version = "6.131.2"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "attrs" },
     { name = "exceptiongroup", marker = "python_full_version < '3.11'" },
     { name = "sortedcontainers" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/97/e5/6b9b62c0842438c88542ab0b4d9c952b1de48fd359451d4bbdd586f3ebec/hypothesis-6.131.1.tar.gz", hash = "sha256:36e0a14dc4ee0f99ea18f9542e987920e7bf67ff39b37e14d53055249c85b41d", size = 431147 }
+sdist = { url = "https://files.pythonhosted.org/packages/64/1c/3aea0d05462b7fa10a9ca45713083a13b61ff53a49b8ac306f6c3c27bab3/hypothesis-6.131.2.tar.gz", hash = "sha256:9856a7d33b5f35a7f3962393042d54378d7ffcfc387154201664a01cda757f98", size = 431472 }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/d5/7d/6ec8640c8bd4e1817ffd01db74f80d42ea29098865b0610b18b7f5475e85/hypothesis-6.131.1-py3-none-any.whl", hash = "sha256:a8be5428c8c09d51e759f4ac72b7a7ef5352d46b1643527995e93efdccb8ba2e", size = 496270 },
+    { url = "https://files.pythonhosted.org/packages/53/50/bf865fb9057851635f910734d2dda612ac849743f1eee386be3f53d9bf28/hypothesis-6.131.2-py3-none-any.whl", hash = "sha256:bf80af0249862c32559db7158b316e32acf6679296708e6a12cecc4e12627bde", size = 496618 },
 ]
 
 [[package]]
@@ -564,6 +576,15 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/43/16/fc88b08840de0e0a72a2f9d8c6bae36be573e475a6326ae854bcc549fc45/nodeenv-1.9.1.tar.gz", hash = "sha256:6ec12890a2dab7946721edbfbcd91f3319c6ccc9aec47be7c7e6b7011ee6645f", size = 47437 }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/d2/1d/1b658dbd2b9fa9c4c9f32accbfc0205d532c8c6194dc0f2a4c0428e7128a/nodeenv-1.9.1-py2.py3-none-any.whl", hash = "sha256:ba11c9782d29c27c70ffbdda2d7415098754709be8a7056d79a737cd901155c9", size = 22314 },
+]
+
+[[package]]
+name = "orderly-set"
+version = "5.4.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/e4/20/6afbd546526c8b97ca1f53cfef395c59c403bb7f1e9fd54cbfae141c9d77/orderly_set-5.4.0.tar.gz", hash = "sha256:c8ff5ba824abe4eebcbbdd3f646ff3648ad0dd52239319d90056d8d30b6cccdd", size = 20934 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/65/16/f731425dfd047513aac23e70ae527050868afc823585f52d3e39eb70f2e2/orderly_set-5.4.0-py3-none-any.whl", hash = "sha256:f0192a7f9ae3385b587b71688353fae491d1ca45878496eb71ea118be1623639", size = 12340 },
 ]
 
 [[package]]
@@ -969,6 +990,15 @@ wheels = [
 ]
 
 [[package]]
+name = "tomli-w"
+version = "1.2.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/19/75/241269d1da26b624c0d5e110e8149093c759b7a286138f4efd61a60e75fe/tomli_w-1.2.0.tar.gz", hash = "sha256:2dd14fac5a47c27be9cd4c976af5a12d87fb1f0b4512f81d69cce3b35ae25021", size = 7184 }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c7/18/c86eb8e0202e32dd3df50d43d7ff9854f8e0603945ff398974c1d91ac1ef/tomli_w-1.2.0-py3-none-any.whl", hash = "sha256:188306098d013b691fcadc011abd66727d3c414c571bb01b1a174ba8c983cf90", size = 6675 },
+]
+
+[[package]]
 name = "twine"
 version = "6.1.0"
 source = { registry = "https://pypi.org/simple" }
@@ -1055,19 +1085,19 @@ version = "0.0.1.dev1"
 source = { editable = "variantlib" }
 dependencies = [
     { name = "importlib-metadata", marker = "python_full_version < '3.10'" },
+    { name = "platformdirs" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
 ]
 
 [package.optional-dependencies]
-cli = [
-    { name = "wheel" },
-]
 dev = [
     { name = "check-manifest" },
     { name = "pre-commit" },
     { name = "ruff" },
 ]
 test = [
+    { name = "deepdiff" },
     { name = "hypothesis" },
     { name = "jsondiff" },
     { name = "parameterized" },
@@ -1078,15 +1108,18 @@ test = [
     { name = "pytest-mock" },
     { name = "pytest-ordering" },
     { name = "pytest-runner" },
+    { name = "tomli-w" },
 ]
 
 [package.metadata]
 requires-dist = [
     { name = "check-manifest", marker = "extra == 'dev'" },
+    { name = "deepdiff", marker = "extra == 'test'", specifier = ">=8.0,<9.0" },
     { name = "hypothesis", marker = "extra == 'test'", specifier = ">=6.0.0,<7" },
     { name = "importlib-metadata", marker = "python_full_version < '3.10'" },
     { name = "jsondiff", marker = "extra == 'test'", specifier = ">=2.2,<2.3" },
     { name = "parameterized", marker = "extra == 'test'", specifier = ">=0.9.0,<0.10" },
+    { name = "platformdirs", specifier = ">=4.3,<5.0" },
     { name = "pre-commit", marker = "extra == 'dev'", specifier = ">=4,<5" },
     { name = "pytest", marker = "extra == 'test'", specifier = ">=8.0.0,<9.0.0" },
     { name = "pytest-cov", marker = "extra == 'test'", specifier = ">=5.0.0,<6.0.0" },
@@ -1096,8 +1129,9 @@ requires-dist = [
     { name = "pytest-ordering", marker = "extra == 'test'", specifier = ">=0.6,<1.0.0" },
     { name = "pytest-runner", marker = "extra == 'test'", specifier = ">=6.0.0,<7.0.0" },
     { name = "ruff", marker = "extra == 'dev'", specifier = ">=0.10,<1.0" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
+    { name = "tomli-w", marker = "extra == 'test'", specifier = ">=1.2,<1.3" },
     { name = "typing-extensions", marker = "python_full_version < '3.11'" },
-    { name = "wheel", marker = "extra == 'cli'" },
 ]
 provides-extras = ["cli", "dev", "test"]
 
@@ -1136,7 +1170,7 @@ dev = [
     { name = "ruff" },
     { name = "twine" },
     { name = "variantbuild", extra = ["dev", "test"] },
-    { name = "variantlib", extra = ["cli", "dev", "test"] },
+    { name = "variantlib", extra = ["dev", "test"] },
     { name = "wheel" },
 ]
 
