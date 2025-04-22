@@ -22,7 +22,8 @@ dev-dependencies = [
     "pip",
     "variantbuild[dev,test]",
     "variantlib[cli,dev,test]",
-    "twine"
+    "twine",
+    "tox",
 ]
 package = false
 
