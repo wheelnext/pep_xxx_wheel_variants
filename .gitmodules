@@ -22,10 +22,6 @@
 	path = provider_fictional_tech
 	url = git@github.com:wheel-next/provider_fictional_tech.git
 	branch = main
-[submodule "variantbuild"]
-	path = variantbuild
-	url = git@github.com:wheelnext/variantbuild.git
-	branch = master
 [submodule "variantlib"]
 	path = variantlib
 	url = git@github.com:wheel-next/variantlib.git

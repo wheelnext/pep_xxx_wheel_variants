@@ -8,11 +8,10 @@ requires-python = ">=3.9"
 
 [tool.uv.sources]
 pip = { workspace = true }
-variantbuild = { workspace = true }
 variantlib = { workspace = true }
 
 [tool.uv.workspace]
-members = ["pip", "variantbuild", "variantlib"]
+members = ["pip", "variantlib"]
 
 [tool.uv]
 dev-dependencies = [
@@ -20,7 +19,6 @@ dev-dependencies = [
     "ruff>=0.10,<1.0",
     "wheel>=0.45",
     "pip",
-    "variantbuild[dev,test]",
     "variantlib[cli,dev,test]",
     "twine",
     "tox",
@@ -150,6 +148,7 @@ ignore = [
     "C901", # Checks for function definitions that include too many statements.
     "PLR0912",  # Checks for functions or methods with too many branches, including (nested) if, 
     # elif, and else branches, for loops, try-except clauses, and match and case statements.
+    "PLR0915",  # Checks for functions or methods with too many statements.
 ]
 # Allow fix for all enabled rules (when `--fix`) is provided.
 fixable = ["ALL"]
