@@ -9,9 +9,10 @@ requires-python = ">=3.9"
 [tool.uv.sources]
 pip = { workspace = true }
 variantlib = { workspace = true }
+mockhouse = { workspace = true }
 
 [tool.uv.workspace]
-members = ["pip", "variantlib"]
+members = ["pip", "variantlib", "mockhouse/mockhouse_lib"]
 
 [tool.uv]
 dev-dependencies = [
@@ -20,6 +21,7 @@ dev-dependencies = [
     "wheel>=0.45",
     "pip",
     "variantlib[cli,dev,test]",
+    "mockhouse",
     "twine",
     "tox",
 ]

@@ -55,7 +55,9 @@
                 // Makefile Tools
                 "ms-vscode.makefile-tools",
                 // Ruff
-                "charliermarsh.ruff"
+                "charliermarsh.ruff",
+                // Jinja
+                "samuelcolvin.jinjahtml"
             ]
         }
     },
