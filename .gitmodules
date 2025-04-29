@@ -22,3 +22,6 @@
 	path = variantlib
 	url = git@github.com:wheel-next/variantlib.git
 	branch = main
+[submodule "provider_variant_x86_64"]
+	path = provider_variant_x86_64
+	url = git@github.com:wheelnext/variant_x86_64.git
