@@ -123,8 +123,8 @@ PIP is not aware of any NVIDIA CUDA support and reports it:
 
 Consequently the "default variant build": `null-variant` (a variant containing no property) is being picked up:
 ```bash
-torch-2.7.0-00000000 
-torchaudio-2.7.0-00000000 
+torch-2.7.0-00000000
+torchaudio-2.7.0-00000000
 torchvision-0.22.0-00000000
 ```
 
@@ -221,7 +221,7 @@ $ pip install --dry-run torch torchaudio torchvision
 >>>   Using cached https://variants-index.wheelnext.dev/torchaudio/torchaudio-2.7.0-cp312-cp312-manylinux_2_28_x86_64-ba4b552f.whl (3.9 MB)
 >>> Collecting torchvision
 >>>   Using cached https://variants-index.wheelnext.dev/torchvision/torchvision-0.22.0-cp312-cp312-manylinux_2_28_x86_64-ba4b552f.whl (8.7 MB)
->>> 
+>>>
 >>> ...
 >>>
 >>> Would install
