@@ -70,7 +70,13 @@ $ pip config set --site global.index-url https://variants-index.wheelnext.dev/
 # Install the PEP XXX - Wheel Variants Meta Package, that will give you the modified libraries:
 # - pip
 # - variantlib (a new package)
+
+# Linux / MacOs
 $ pip install pep-xxx-wheel-variants
+>>> Successfully installed pep-xxx-wheel-variants-1.0.0 pip-25.1.dev0+pep.xxx.wheel.variants variantlib-0.0.1.dev1  # and some extra stuff
+
+# Windows
+$ $python.exe -m pip install pep-xxx-wheel-variants
 >>> Successfully installed pep-xxx-wheel-variants-1.0.0 pip-25.1.dev0+pep.xxx.wheel.variants variantlib-0.0.1.dev1  # and some extra stuff
 
 # Let's verify everything is good:
