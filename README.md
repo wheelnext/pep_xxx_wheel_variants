@@ -14,8 +14,9 @@ We did not built any variant-artifact for MacOS or ARM CPUs.
 # 1. Create a virtualenv
 # WARNING: Installing Wheel-Variant PEP overwrites PIP.
 # Do not install this in your main python environment.
-$ virtualenv .venv
+$ python3 -m venv .venv
 $ source .venv/bin/activate
+$ cd .venv
 
 # 2. Set the index to the WheelNext Static Wheel Server: MockHouse & Backup to PyPI
 $ pip config set --site global.index-url https://variants-index.wheelnext.dev/
@@ -35,14 +36,14 @@ $ pip install --dry-run torch torchaudio torchvision
 >>> ...
 >>> Would install
         ...
-        torch-2.7.0 
-        torchaudio-2.7.0 
+        torch-2.7.0
+        torchaudio-2.7.0
         torchvision-0.22.0
 ```
 
 ### What happened ?
 
-As you can expect - PIP picked up the default Torch build (same as published on PyPI: CPU + NVIDIA CUDA 12.6). 
+As you can expect - PIP picked up the default Torch build (same as published on PyPI: CPU + NVIDIA CUDA 12.6).
 Built as a normal Python Wheel (aka. non variant)
 
 ## B. Let's install a variant-enabled Python package manager
@@ -99,13 +100,13 @@ $ pip install --dry-run torch torchaudio torchvision
 >>>   Downloading https://variants-index.wheelnext.dev/torchaudio/torchaudio-2.7.0-cp312-cp312-manylinux_2_28_x86_64-00000000.whl (1.8 MB)
 >>> Collecting torchvision
 >>>   Downloading https://variants-index.wheelnext.dev/torchvision/torchvision-0.22.0-cp312-cp312-manylinux_2_28_x86_64-00000000.whl (2.0 MB)
->>> 
+>>>
 >>> ...
 >>>
 >>> Would install
         ...
-        torch-2.7.0-00000000 
-        torchaudio-2.7.0-00000000 
+        torch-2.7.0-00000000
+        torchaudio-2.7.0-00000000
         torchvision-0.22.0-00000000
 ```
 
@@ -120,8 +121,8 @@ PIP is not aware of any NVIDIA CUDA support and reports it:
 
 Consequently the "default variant build": `null-variant` (a variant containing no property) is being picked up:
 ```
-torch-2.7.0-00000000 
-torchaudio-2.7.0-00000000 
+torch-2.7.0-00000000
+torchaudio-2.7.0-00000000
 torchvision-0.22.0-00000000
 ```
 
@@ -134,7 +135,7 @@ In the case of PyTorch, the `Null-Variant` is a *CPU-only* PyTorch build.
 - The behavior can be mocked using the environment variable: `NV_PROVIDER_FORCE_DRIVER_VERSION==major.minor`
 
 ```bash
-# This can be used to "pretend" the system has a specific driver. 
+# This can be used to "pretend" the system has a specific driver.
 # However it won't make the wheel functional without the proper environment - can be used to test installation though
 export NV_PROVIDER_FORCE_DRIVER_VERSION="11.8"
 export NV_PROVIDER_FORCE_DRIVER_VERSION="12.6"
@@ -178,7 +179,7 @@ $ nvidia-smi | head -n 4
 >>> |-----------------------------------------+------------------------+----------------------+
 
 # VariantLib can be used to query the compatibility of the platform for each installed plugin
-# In this case - this computer has CUDA 12.8 and therefore this platform has the following 
+# In this case - this computer has CUDA 12.8 and therefore this platform has the following
 # compatibility of variant properties.
 # NOTE: properties are given following a default ordering provided by the provider plugin
 #       within one single namespace. This ordering should not be assumed final or absolute.
@@ -206,13 +207,13 @@ $ pip install --dry-run torch torchaudio torchvision
 >>>   Downloading https://variants-index.wheelnext.dev/torchaudio/torchaudio-2.7.0-cp312-cp312-manylinux_2_28_x86_64-00000000.whl (1.8 MB)
 >>> Collecting torchvision
 >>>   Downloading https://variants-index.wheelnext.dev/torchvision/torchvision-0.22.0-cp312-cp312-manylinux_2_28_x86_64-00000000.whl (2.0 MB)
->>> 
+>>>
 >>> ...
 >>>
 >>> Would install
         ...
-        torch-2.7.0-00000000 
-        torchaudio-2.7.0-00000000 
+        torch-2.7.0-00000000
+        torchaudio-2.7.0-00000000
         torchvision-0.22.0-00000000
 ```
 
@@ -227,8 +228,8 @@ PIP is not aware of any NVIDIA CUDA support and reports it:
 
 Consequently the "default variant build": `null-variant` (a variant containing no property) is being picked up:
 ```
-torch-2.7.0-00000000 
-torchaudio-2.7.0-00000000 
+torch-2.7.0-00000000
+torchaudio-2.7.0-00000000
 torchvision-0.22.0-00000000
 ```
 
