@@ -17,6 +17,18 @@
                 "remote.autoForwardPorts": false,
                 "[python]": {
                     "analysis.autoImportCompletions": true,
+                    "analysis.exclude": [
+                        "**/__pycache__",
+                        ".venv",
+                        ".uv",
+                        ".pytest_cache",
+                        ".ruff_cache",
+                        ".git",
+                        "docs",
+                        "assets",
+                        "tutorials",
+                        "variants-index"
+                    ],
                     "analysis.extraPaths": [
                         "${workspaceFolder}/variantlib"
                     ],

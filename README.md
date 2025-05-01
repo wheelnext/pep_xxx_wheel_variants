@@ -1,4 +1,4 @@
-<h1 style="text-align:center; font-size: 5em">VariantLib</h1>
+<h1 style="text-align:center; font-size: 5em">Wheel Variants</h1>
 
 <p align="center">
     <img width="256px" src="assets/wheely_variants.png"/>

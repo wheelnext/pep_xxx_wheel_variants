@@ -35,7 +35,7 @@ $ pip install --dry-run numpy
 
 Looking in indexes: https://variants-index.wheelnext.dev/
 Collecting numpy
-  Using cached https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-cp312-cp312-linux_x86_64.whl (15.6 MB)
+  Using cached https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (15.6 MB)
 
 Would install numpy-2.2.5
 ```
@@ -88,7 +88,7 @@ Looking in indexes: https://variants-index.wheelnext.dev/
   Variant `fa7c1393` has been rejected because one or many of the variant properties `[x86_64 :: level :: v3]` are not supported or have been explicitly rejected.
   Total Number of Compatible Variants: 1
 Collecting numpy
-  Using cached https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-cp312-cp312-linux_x86_64.whl (15.6 MB)
+  Using cached https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (15.6 MB)
 
 Would install numpy-2.2.5
 ```
@@ -118,7 +118,7 @@ numpy-2.2.5
 Let's install the NVIDIA Variant Provider Plugin:
 
 ```bash
-$ pip install pip install variant_x86_64
+$ pip install variant_x86_64
 Successfully installed archspec-0.2.5 variant_x86_64-0.0.1
 ```
 

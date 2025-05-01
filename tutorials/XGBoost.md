@@ -94,7 +94,7 @@ Collecting xgboost
   Variant `fa7c1393` has been rejected because one or many of the variant properties `[x86_64 :: level :: v3]` are not supported or have been explicitly rejected.
   Total Number of Compatible Variants: 1
 Collecting numpy (from xgboost)
-  Using cached https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-cp312-cp312-linux_x86_64.whl (15.6 MB)
+  Using cached https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (15.6 MB)
 
 Collecting scipy (from xgboost)
   Using cached scipy-1.15.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl.metadata (61 kB)
@@ -213,7 +213,7 @@ Collecting xgboost
   Variant `fa7c1393` has been rejected because one or many of the variant properties `[x86_64 :: level :: v3]` are not supported or have been explicitly rejected.
   Total Number of Compatible Variants: 1
 Collecting numpy (from xgboost)
-  Using cached https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-cp312-cp312-linux_x86_64.whl (15.6 MB)
+  Using cached https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (15.6 MB)
 
   Variant `73be618d` has been rejected because one or many of the variant properties `[nvidia :: driver :: 11]` are not supported or have been explicitly rejected.
   Total Number of Compatible Variants: 2
