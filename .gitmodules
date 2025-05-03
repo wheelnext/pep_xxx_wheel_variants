@@ -25,3 +25,6 @@
 [submodule "provider_variant_x86_64"]
 	path = provider_variant_x86_64
 	url = git@github.com:wheelnext/variant_x86_64.git
+[submodule "flit"]
+	path = flit
+	url = git@github.com:wheelnext/flit.git

@@ -7,23 +7,27 @@ dependencies = []
 requires-python = ">=3.9"
 
 [tool.uv.sources]
+flit = { workspace = true }
+flit_core = { workspace = true }
+mockhouse = { workspace = true }
 pip = { workspace = true }
 variantlib = { workspace = true }
-mockhouse = { workspace = true }
 
 [tool.uv.workspace]
-members = ["pip", "variantlib", "mockhouse/mockhouse_lib"]
+members = ["flit", "flit/flit_core", "mockhouse/mockhouse_lib", "pip", "variantlib"]
 
 [tool.uv]
 dev-dependencies = [
+    "flit",
+    "flit_core",
+    "mockhouse",
+    "pip",
     "pre-commit>=4,<5",
     "ruff>=0.10,<1.0",
-    "wheel>=0.45",
-    "pip",
-    "variantlib[cli,dev,test]",
-    "mockhouse",
     "twine",
     "tox",
+    "variantlib[cli,dev,test]",
+    "wheel>=0.45",
 ]
 package = false
 
@@ -160,12 +164,14 @@ unfixable = []
 extend-unsafe-fixes = ["UP038"]
 # Allow unused variables when underscore-prefixed.
 dummy-variable-rgx = "^(_+|(_+[a-zA-Z0-9_]*[a-zA-Z0-9]+?))$"
+exclude = ["flit/**/*.py"]
 
 [tool.ruff.format]
 quote-style = "double"
 indent-style = "space"
 skip-magic-trailing-comma = false
 line-ending = "auto"
+exclude = ["flit/**/*.py"]
 
 [tool.ruff.lint.isort]
 force-single-line = true
