@@ -19,17 +19,16 @@
                     "analysis.autoImportCompletions": true,
                     "analysis.exclude": [
                         "**/__pycache__",
-                        ".venv",
-                        ".uv",
-                        ".pytest_cache",
-                        ".ruff_cache",
-                        ".git",
+                        "**/.*",
+                        "**/*.egg-info",
+                        "**/build",
+                        "**/dist",
                         "docs",
                         "assets",
                         "tutorials",
                         "variants-index"
                     ],
-                    "analysis.extraPaths": [
+                    "analysis.include": [
                         "${workspaceFolder}/variantlib"
                     ],
                     "analysis.typeCheckingMode": "basic",
