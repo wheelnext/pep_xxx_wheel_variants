@@ -31,6 +31,8 @@ clean-test: ## remove test and coverage artifacts
 
 build: clean ## builds source and wheel package
 	flit build --format wheel
+
+	flit build --format wheel --null-variant
 	
 	flit build --format wheel \
 		-p "fictional_hw :: architecture :: mother" \
