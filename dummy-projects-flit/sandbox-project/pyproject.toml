@@ -9,16 +9,16 @@ authors = [
 ]
 dynamic = ["version", "description"]
 
-[variant-providers.default-priorities]
+[variant.default-priorities]
  # the plugins corresponding to these namespaces will be auto-installed at installation
 namespace = ["fictional_tech", "fictional_hw"]  # optional - if empty nothing is auto-installed
 feature = []                                    # optional - Can be skipped if empty - 95%+ packages won't ever need
 property = []                                   # optional - Can be skipped if empty - 95%+ packages won't ever need
 
-[variant-providers.providers.fictional_tech]
+[variant.providers.fictional_tech]
 requires = ["provider-fictional-tech == 1.0.0"]
 entry-point = "provider_fictional_tech.plugin:FictionalTechPlugin"
 
-[variant-providers.providers.fictional_hw]
+[variant.providers.fictional_hw]
 requires = ["provider-fictional-hw == 1.0.0"]
 entry-point = "provider_fictional_hw.plugin:FictionalHWPlugin"
