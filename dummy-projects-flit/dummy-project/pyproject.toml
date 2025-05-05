@@ -17,8 +17,8 @@ property = []                                   # optional - Can be skipped if e
 
 [variant.providers.fictional_tech]
 requires = ["provider-fictional-tech == 1.0.0"]
-entry-point = "provider_fictional_tech.plugin:FictionalTechPlugin"
+plugin-api = "provider_fictional_tech.plugin:FictionalTechPlugin"
 
 [variant.providers.fictional_hw]
 requires = ["provider-fictional-hw == 1.0.0"]
-entry-point = "provider_fictional_hw.plugin:FictionalHWPlugin"
+plugin-api = "provider_fictional_hw.plugin:FictionalHWPlugin"
