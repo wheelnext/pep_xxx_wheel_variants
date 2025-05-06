@@ -1,30 +1,30 @@
 [submodule "mockhouse"]
 	path = mockhouse
-	url = git@github.com:wheel-next/mockhouse.git
+	url = ../mockhouse.git
 	branch = main
 [submodule "nvidia_variant_provider"]
 	path = nvidia_variant_provider
-	url = git@github.com:wheelnext/nvidia-variant-provider.git
+	url = ../nvidia-variant-provider.git
 	branch = master
 [submodule "pip"]
 	path = pip
-	url = git@github.com:wheelnext/pip.git
+	url = ../pip.git
 	branch = pep-xxx-wheel-variants
 [submodule "provider_fictional_hw"]
 	path = provider_fictional_hw
-	url = git@github.com:wheel-next/provider_fictional_hw.git
+	url = ../provider_fictional_hw.git
 	branch = main
 [submodule "provider_fictional_tech"]
 	path = provider_fictional_tech
-	url = git@github.com:wheel-next/provider_fictional_tech.git
+	url = ../provider_fictional_tech.git
 	branch = main
 [submodule "variantlib"]
 	path = variantlib
-	url = git@github.com:wheel-next/variantlib.git
+	url = ../variantlib.git
 	branch = main
 [submodule "provider_variant_x86_64"]
 	path = provider_variant_x86_64
-	url = git@github.com:wheelnext/variant_x86_64.git
+	url = ../variant_x86_64.git
 [submodule "flit"]
 	path = flit
-	url = git@github.com:wheelnext/flit.git
+	url = ../flit.git
