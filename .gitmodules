@@ -28,3 +28,7 @@
 [submodule "flit"]
 	path = flit
 	url = ../flit.git
+[submodule "meson-python"]
+	path = meson-python
+	url = ../meson-python
+	branch = wheel-variants
