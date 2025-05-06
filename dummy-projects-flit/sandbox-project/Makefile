@@ -39,13 +39,13 @@ build: clean ## builds source and wheel package
 		-p "fictional_hw :: compute_capability :: 4"
 
 	flit build --format wheel \
-		-p "fictional_hw :: architecture :: HAL9000" \
-		-p "fictional_tech :: quantum :: FOAM" \
+		-p "fictional_hw :: architecture :: hal9000" \
+		-p "fictional_tech :: quantum :: foam" \
 		-p "fictional_tech :: risk_exposure :: 1000000000" \
 		-p "fictional_tech :: technology :: improb_drive"
 
 	flit build --format wheel \
-		-p "fictional_hw :: architecture :: HAL9000" \
+		-p "fictional_hw :: architecture :: hal9000" \
 		-p "fictional_hw :: compute_accuracy :: 0" \
 		-p "fictional_hw :: compute_capability :: 6" \
 		-p "fictional_hw :: humor :: 2"
