@@ -22,9 +22,12 @@
 	path = variantlib
 	url = ../variantlib.git
 	branch = main
+[submodule "provider_variant_aarch64"]
+	path = provider_variant_aarch64
+	url = ../provider-variant-aarch64
 [submodule "provider_variant_x86_64"]
 	path = provider_variant_x86_64
-	url = ../variant_x86_64.git
+	url = ../provider-variant-x86-64.git
 [submodule "flit"]
 	path = flit
 	url = ../flit.git
