@@ -59,8 +59,7 @@
                 // Makefile
                 "ms-vscode.makefile-tools",
                 // TOML
-                // "tamasfe.even-better-toml",  // This extension applies format validation to `pyproject.toml` that we modify.
-                "Shellomo.enhanced-toml",
+                "juggernautjp.less-toml", // Simple TOML Syntax - No schema validation
                 // PyLance
                 "ms-python.vscode-pylance",
                 // Makefile Tools
