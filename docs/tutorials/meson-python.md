@@ -47,8 +47,7 @@ To enable variant support within a project using `meson-python`,
 the following changes need to be made to its `pyproject.toml` file:
 
 1. The `build-system.requires` list must use the wheelnext fork
-   of `meson-python`. It must also list all provider plugins that
-   the package in question is going to use. For example:
+   of `meson-python`. For example:
 
    ```toml
    [build-system]
@@ -58,21 +57,17 @@ the following changes need to be made to its `pyproject.toml` file:
    ]
    ```
 
-   Note that since the relevant packages are still in development
-   and are not published on PyPI, the lists includes URLs to download
-   their git archives.
-
 2. `variant.providers.*` section need to be added, indicating how to
    install the provider plugins, and how to import their provider
    classes. For example:
 
    ```toml
    [variant.providers.aarch64]
-   requires = ["provider-variant-aarch64 @ https://github.com/wheelnext/provider-variant-aarch64/archive/main.tar.gz"]
+   requires = ["provider-variant-aarch64 >=0.0.1,<1"]
    plugin-api = "provider_variant_aarch64.plugin:AArch64Plugin"
 
    [variant.providers.x86_64]
-   requires = ["provider-variant-x86-64 @ https://github.com/wheelnext/provider-variant-x86-64/archive/dev.tar.gz"]
+   requires = ["provider-variant-x86-64 >=0.0.1,<1"]
    plugin-api = "provider_variant_x86_64.plugin:X8664Plugin"
    ```
 
@@ -110,7 +105,7 @@ $ pyproject-build -w -Cvariant-name=x86_64::level::v3
   - meson-python @ https://github.com/wheelnext/meson-python/archive/wheel-variants.tar.gz
 * Getting build dependencies for wheel...
 * Installing packages in isolated environment:
-  - provider-variant-x86-64 @ https://github.com/wheelnext/provider-variant-x86-64/archive/dev.tar.gz
+  - provider-variant-x86-64 >=0.0.1,<1
 * Building wheel...
 + /tmp/build-env-l7iyan__/bin/python /home/mgorny/git/wheelnext/pep_xxx_wheel_variants/numpy/vendored-meson/meson/meson.py setup /home/mgorny/git/wheelnext/pep_xxx_wheel_variants/numpy /home/mgorny/git/wheelnext/pep_xxx_wheel_variants/numpy/.mesonpy-kwf3nvob -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md --native-file=/home/mgorny/git/wheelnext/pep_xxx_wheel_variants/numpy/.mesonpy-kwf3nvob/meson-python-native-file.ini
 The Meson build system
@@ -204,7 +199,7 @@ $ pyproject-build -w -Cvariant=x86_64::level::v3
   - meson-python @ https://github.com/wheelnext/meson-python/archive/wheel-variants.tar.gz
 * Getting build dependencies for wheel...
 * Installing packages in isolated environment:
-  - provider-variant-x86-64 @ https://github.com/wheelnext/provider-variant-x86-64/archive/dev.tar.gz
+  - provider-variant-x86-64 >=0.0.1,<1
 * Building wheel...
 + /tmp/build-env-i6vx2yun/bin/python /home/mgorny/git/wheelnext/pep_xxx_wheel_variants/numpy/vendored-meson/meson/meson.py setup /home/mgorny/git/wheelnext/pep_xxx_wheel_variants/numpy /home/mgorny/git/wheelnext/pep_xxx_wheel_variants/numpy/.mesonpy-fs73v6oq -Dbuildtype=release -Db_ndebug=if-release -Db_vscrt=md -Dvariant=['x86_64 :: level :: v3'] --native-file=/home/mgorny/git/wheelnext/pep_xxx_wheel_variants/numpy/.mesonpy-fs73v6oq/meson-python-native-file.ini
 [...]
