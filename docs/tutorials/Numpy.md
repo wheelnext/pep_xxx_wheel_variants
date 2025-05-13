@@ -3,8 +3,8 @@
 This tutorial contains a simple demo of the `Wheel-Variant` implementation for `Numpy`.
 
 > [!CAUTION]  
-> This Wheel Variant Demo currently only supports Linux on `X86_64` CPU.<br>
-> We did not built any variant-artifact for Windows, MacOS or ARM CPUs.
+> This Wheel Variant Demo currently supports Linux, macOS on `X86_64` and `AArch64` CPU, and Windows x64.<br>
+> There are no wheels for other platforms provided.
 
 ## Where to report issues / ask questions ?
 
@@ -140,7 +140,7 @@ The file contains the instructions on how to install the variant plugins and par
 }
 ```
 
-In this case both the `x86_64` and `arm` plugins shall be installed by default (see `default-priorities` key).
+In this case both the `x86_64` and `aarch64` plugins shall be installed by default (see `default-priorities` key).
 With their relative "priority" not changing anything given that they are mutually exclusive.
 
 This platform contains an `x86_64` CPU - `pip` installs the right plugin and is able to detect which `x86_64` version this system supports.
