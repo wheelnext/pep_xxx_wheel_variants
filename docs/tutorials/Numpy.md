@@ -3,8 +3,12 @@
 This tutorial contains a simple demo of the `Wheel-Variant` implementation for `Numpy`.
 
 > [!CAUTION]  
-> This Wheel Variant Demo currently supports Linux, macOS on `X86_64` and `AArch64` CPU, and Windows x64.<br>
-> There are no wheels for other platforms provided.
+> This Wheel Variant Demo currently contains **very experimental code**.<br>
+> This should be considered as a feature-preview and in no-way used in production.
+
+| Linux x86_64 | Linux AARCH64 | Windows AMD64 | MacOS x86_64 | MacOS ARM64 |
+| :----------: | :-----------: | :-----------: | :----------: | :---------: |
+|  ✅          |  ✅            | ✅            |  ✅          |  ✅          |
 
 ## Where to report issues / ask questions ?
 
@@ -153,8 +157,8 @@ The following variants were available: https://variants-index.wheelnext.dev/nump
 Consequently, the installed variant corresponds to:
 
 ```bash
-############################## Variant: `cfdbe307` #############################
-Variant: x86_64 :: level :: v4
+##################### numpy==2.2.5; variant_hash=cfdbe307 ######################
+Variant-property: x86_64 :: level :: v4
 ################################################################################
 ```
 
