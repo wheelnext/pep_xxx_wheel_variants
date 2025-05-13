@@ -75,139 +75,86 @@ variantlib version: 0.0.1
 
 ### 2. Test Wheel Variant functionality
 
-#### 2.1 Without any Variant Provider - PIP should install the same build as before
+Now with the new variant-enabled `pip` let's see what is the result.
 
 ```bash
 $ pip install --dry-run numpy
 
 Looking in indexes: https://variants-index.wheelnext.dev/
-  Discovering Wheel Variant plugins...
-  Variant `3b930df5` has been rejected because one or many of the variant properties `[x86_64 :: level :: v1]` are not supported or have been explicitly rejected.
-  Variant `40aba78e` has been rejected because one or many of the variant properties `[x86_64 :: level :: v2]` are not supported or have been explicitly rejected.
-  Variant `cfdbe307` has been rejected because one or many of the variant properties `[x86_64 :: level :: v4]` are not supported or have been explicitly rejected.
-  Variant `fa7c1393` has been rejected because one or many of the variant properties `[x86_64 :: level :: v3]` are not supported or have been explicitly rejected.
-  Total Number of Compatible Variants: 1
-Collecting numpy
-  Using cached https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl (15.6 MB)
-
-Would install numpy-2.2.5
-```
-
-#### What happened ?
-
-`numpy` is available as specialized builds for `x86_64` CPU architecture, PIP detects it, however it is not aware of 
-which actual version this machine is and reports it:
-
-```bash
-Variant `3b930df5` has been rejected because one or many of the variant properties `[x86_64 :: level :: v1]` are not supported or have been explicitly rejected.
-Variant `40aba78e` has been rejected because one or many of the variant properties `[x86_64 :: level :: v2]` are not supported or have been explicitly rejected.
-Variant `cfdbe307` has been rejected because one or many of the variant properties `[x86_64 :: level :: v4]` are not supported or have been explicitly rejected.
-Variant `fa7c1393` has been rejected because one or many of the variant properties `[x86_64 :: level :: v3]` are not supported or have been explicitly rejected.
-```
-
-Consequently the "default wheel" - a `non-variant` is being picked up:
-```bash
-numpy-2.2.5 
-```
-
-#### 2.2 Installing the `X86_64` Variant Provider - PIP should install a specialized `x86_64` build
-
-> [!WARNING]
-> - This part requires an `x86_64` CPU
-
-Let's install the NVIDIA Variant Provider Plugin:
-
-```bash
-$ pip install variant_x86_64
-Successfully installed archspec-0.2.5 variant_x86_64-0.0.1
-```
-
-Let's test the install:
-
-```bash
-# Provides a list of variant provider plugins installed on the machine.
-$ variantlib plugins list
-
-variantlib.loader - INFO - Discovering Wheel Variant plugins...
-variantlib.loader - INFO - Loading plugin from entry point: x86_64; provided by package variant_x86_64 0.0.1
-x86_64
-
-# All the "known properties" by the variant provider plugins. They don't need to be compatible on this machine.
-$ variantlib plugins get-all-configs
-
-variantlib.loader - INFO - Discovering Wheel Variant plugins...
-variantlib.loader - INFO - Loading plugin from entry point: x86_64; provided by package variant_x86_64 0.0.1
-x86_64 :: abm :: on
-x86_64 :: adx :: on
-x86_64 :: aes :: on
-x86_64 :: avx :: on
-x86_64 :: avx2 :: on
-...
-x86_64 :: level :: v1
-x86_64 :: level :: v2
-x86_64 :: level :: v3
-x86_64 :: level :: v4
-...
-x86_64 :: xsave :: on
-x86_64 :: xsavec :: on
-x86_64 :: xsaveopt :: on
-
-# VariantLib can be used to query the compatibility of the platform for each installed plugin
-# In this case - this computer has an `x86_64_v4` CPU and therefore this platform has the 
-# following compatibility of variant properties.
-# NOTE 1: Your results might defer depending on your CPU
-# NOTE 2: properties are given following a default ordering provided by the provider plugin
-#         within one single namespace. This ordering should not be assumed final or absolute.
-
-$ variantlib plugins get-supported-configs
-
-variantlib.loader - INFO - Discovering Wheel Variant plugins...
-variantlib.loader - INFO - Loading plugin from entry point: x86_64; provided by package variant_x86_64 0.0.1
-x86_64 :: level :: v4
-x86_64 :: level :: v3
-x86_64 :: level :: v2
-x86_64 :: level :: v1
-x86_64 :: clwb :: on
-x86_64 :: avx512bw :: on
-x86_64 :: avx512cd :: on
-x86_64 :: avx512dq :: on
-...
-
-x86_64 :: sse :: on
-x86_64 :: mmx :: on
-```
-
-Alright now let's try to re-run the command to install `numpy`. We should get:
-- `numpy` built for your specific `x86_64` version *(in my specific case v4)*
-
-```bash
-$ pip install --dry-run numpy
-
-Looking in indexes: https://variants-index.wheelnext.dev/
-  Discovering Wheel Variant plugins...
-  Loading plugin from entry point: x86_64; provided by package variant_x86_64 0.0.1
+  Fetching https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-variants.json
+  Using environment: uv ...
+  Installing packages in current environment:
+  - provider-variant-x86-64 == 0.0.1; 'aarch' not in platform_machine and 'arm' not in platform_machine
+  Loading plugin via provider_variant_x86_64.plugin:X8664Plugin
+  Variant `09300f2f` has been rejected because one or many of the variant properties `[aarch64 :: version :: 8.4a]` are not supported or have been explicitly rejected.
+  Variant `522ebbc7` has been rejected because one or many of the variant properties `[aarch64 :: version :: 8.3a]` are not supported or have been explicitly rejected.
+  Variant `802e12ea` has been rejected because one or many of the variant properties `[aarch64 :: version :: 8.1a]` are not supported or have been explicitly rejected.
+  Variant `ab33065c` has been rejected because one or many of the variant properties `[aarch64 :: version :: 8a]` are not supported or have been explicitly rejected.
+  Variant `c87a4099` has been rejected because one or many of the variant properties `[aarch64 :: version :: 8.5a]` are not supported or have been explicitly rejected.
+  Variant `e9a738cd` has been rejected because one or many of the variant properties `[aarch64 :: version :: 8.2a]` are not supported or have been explicitly rejected.
   Total Number of Compatible Variants: 5
 
+Fetching https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-variants.json
+
+##################### numpy==2.2.5; variant_hash=cfdbe307 ######################
+Variant-property: x86_64 :: level :: v4
+################################################################################
+
 Collecting numpy
-  Using cached https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-cp312-cp312-linux_x86_64-cfdbe307.whl (14.9 MB)
+  Using cached https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-cp312-cp312-linux_x86_64-cfdbe307.whl (17.6 MB)
 
 Would install numpy-2.2.5-cfdbe307
 ```
 
 #### What happened ?
 
-PIP is aware of `x86_64` versions and is able to detect which version is on the system.
-This machine has an `x86_64_v4` CPU, which explains why none of the variants were rejected (backward compatible).
+PIP is aware `numpy` is variant-enabled thanks to the presence of [`numpy-2.2.5-variants.json`](https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-variants.json)
 
-> [!IMPORTANT]  
+The file contains the instructions on how to install the variant plugins and parse the variants properties
+
+```json
+{
+    "default-priorities": {
+        "feature": [],
+        "namespace": [
+            "x86_64",
+            "aarch64"
+        ],
+        "property": []
+    },
+    "providers": {
+        "aarch64": {
+            "plugin-api": "provider_variant_aarch64.plugin:AArch64Plugin",
+            "requires": [
+                "provider-variant-aarch64 == 0.0.1; 'aarch' in platform_machine or 'arm' in platform_machine"
+            ]
+        },
+        "x86_64": {
+            "plugin-api": "provider_variant_x86_64.plugin:X8664Plugin",
+            "requires": [
+                "provider-variant-x86-64 == 0.0.1; 'aarch' not in platform_machine and 'arm' not in platform_machine"
+            ]
+        }
+    },
+    ...
+}
+```
+
+In this case both the `x86_64` and `arm` plugins shall be installed by default (see `default-priorities` key).
+With their relative "priority" not changing anything given that they are mutually exclusive.
+
+This platform contains an `x86_64` CPU - `pip` installs the right plugin and is able to detect which `x86_64` version this system supports.
+The following variants were available: https://variants-index.wheelnext.dev/numpy/
+
+> [!IMPORTANT] 
+> In our case - this machine has the most advanced/recent `x86_64` version available so all `x86_64` variants are compatibles.
 > If you have a CPU with a `x86_64` version < 4 you will see some of the variant(s) rejected.
 
-The installed variant corresponds to:
+Consequently, the installed variant corresponds to:
 
 ```bash
 ############################## Variant: `cfdbe307` #############################
 Variant: x86_64 :: level :: v4
-Variant-provider: x86_64: variant_x86_64
 ################################################################################
 ```
 
