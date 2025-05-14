@@ -26,7 +26,7 @@ $ python3 -m venv .venv
 $ source .venv/bin/activate
 
 # 2. Set the index to the WheelNext Static Wheel Server: MockHouse & Backup to PyPI
-$ pip config set --site global.index-url https://variants-index.wheelnext.dev/
+$ python3 -m pip config set --site global.index-url https://variants-index.wheelnext.dev/
 Writing to /path/to/venv/pip.conf
 ```
 
@@ -35,7 +35,7 @@ Writing to /path/to/venv/pip.conf
 By doing this - It **should** install the normal package (aka. non variant), proving the backward compatibility of the design.
 
 ```bash
-$ pip install --dry-run numpy
+$ python3 -m pip install --dry-run numpy
 
 Looking in indexes: https://variants-index.wheelnext.dev/
 Collecting numpy
@@ -60,14 +60,8 @@ Built as a normal Python Wheel (aka. `non variant`)
 # Install the PEP XXX - Wheel Variants Meta Package, that will give you the modified libraries:
 # - pip
 # - variantlib (a new package)
-
-# Linux / MacOs
-$ pip install pep-xxx-wheel-variants
+$ python3 -m pip install pep-xxx-wheel-variants
 Successfully installed pep-xxx-wheel-variants-1.0.0 pip-25.1.dev0+pep.xxx.wheel.variants variantlib-0.0.1  # and some extra stuff
-
-# Windows
-$ $python.exe -m pip install pep-xxx-wheel-variants
->>> Successfully installed pep-xxx-wheel-variants-1.0.0 pip-25.1.dev0+pep.xxx.wheel.variants variantlib-0.0.1  # and some extra stuff
 
 # Let's verify everything is good:
 $ pip --version
@@ -82,7 +76,7 @@ variantlib version: 0.0.1
 Now with the new variant-enabled `pip` let's see what is the result.
 
 ```bash
-$ pip install --dry-run numpy
+$ python3 -m pip install --dry-run numpy
 
 Looking in indexes: https://variants-index.wheelnext.dev/
   Fetching https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-variants.json

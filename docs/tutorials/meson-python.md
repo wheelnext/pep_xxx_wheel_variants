@@ -25,7 +25,7 @@ To determine the exact list of properties available, install the plugin,
 `variantlib` and use the `variantlib plugins` commands, e.g.:
 
 ```console
-$ pip install -q git+https://github.com/wheelnext/provider-variant-aarch64 git+https://github.com/wheelnext/variantlib
+$ python3 -m pip install -q git+https://github.com/wheelnext/provider-variant-aarch64 git+https://github.com/wheelnext/variantlib
 $ variantlib plugins -p provider_variant_aarch64.plugin:AArch64Plugin get-all-configs
 variantlib.plugins.py_envs - INFO - Using externally managed python environment
 variantlib.plugins.loader - INFO - Loading plugin via provider_variant_aarch64.plugin:AArch64Plugin
@@ -97,8 +97,8 @@ For example, to build a wheel for `x86_64 :: level :: v3` baseline,
 the following command can be used:
 
 ```console
-$ pip install -q build
-$ pyproject-build -w -Cvariant-name=x86_64::level::v3
+$ python3 -m pip install -q build
+$ python3 -m build -w -Cvariant-name=x86_64::level::v3
 * Creating isolated environment: venv+pip...
 * Installing packages in isolated environment:
   - Cython >= 3.0.6
@@ -192,7 +192,7 @@ To use this option, `-Cvariant=` option needs to be used instead of
 additionally passed to `meson setup`:
 
 ```console
-$ pyproject-build -w -Cvariant=x86_64::level::v3
+$ python3 -m build -w -Cvariant=x86_64::level::v3
 * Creating isolated environment: venv+pip...
 * Installing packages in isolated environment:
   - Cython >= 3.0.6

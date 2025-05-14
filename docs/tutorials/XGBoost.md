@@ -26,7 +26,7 @@ $ python3 -m venv .venv
 $ source .venv/bin/activate
 
 # 2. Set the index to the WheelNext Static Wheel Server: MockHouse & Backup to PyPI
-$ pip config set --site global.index-url https://variants-index.wheelnext.dev/
+$ python3 -m pip config set --site global.index-url https://variants-index.wheelnext.dev/
 Writing to /path/to/venv/pip.conf
 ```
 
@@ -35,7 +35,7 @@ Writing to /path/to/venv/pip.conf
 By doing this - It **should** install the normal package (aka. non variant), proving the backward compatibility of the design.
 
 ```bash
-$ pip install --dry-run xgboost
+$ python3 -m pip install --dry-run xgboost
 
 Looking in indexes: https://variants-index.wheelnext.dev/
 Collecting xgboost
@@ -60,17 +60,11 @@ Built as a normal Python Wheel (aka. `non variant`)
 # Install the PEP XXX - Wheel Variants Meta Package, that will give you the modified libraries:
 # - pip
 # - variantlib (a new package)
-
-# Linux / MacOs
-$ pip install pep-xxx-wheel-variants
+$ python3 -m pip install pep-xxx-wheel-variants
 Successfully installed pep-xxx-wheel-variants-1.0.0 pip-25.1.dev0+pep.xxx.wheel.variants variantlib-0.0.1  # and some extra stuff
 
-# Windows
-$ $python.exe -m pip install pep-xxx-wheel-variants
->>> Successfully installed pep-xxx-wheel-variants-1.0.0 pip-25.1.dev0+pep.xxx.wheel.variants variantlib-0.0.1  # and some extra stuff
-
 # Let's verify everything is good:
-$ pip --version
+$ python3 -m pip --version
 pip 25.1.dev0+pep-xxx-wheel-variants from ...  # <=============== Check you can see `+pep-xxx-wheel-variants`
 
 $ variantlib --version
@@ -89,7 +83,7 @@ $ nvidia-smi | head -n 4
 
 # That means that this machine with any variant with NVIDIA CUDA >=12.0,<=12.8.
 
-$ pip install --dry-run xgboost
+$ python3 -m pip install --dry-run xgboost
 
 Looking in indexes: https://variants-index.wheelnext.dev/
   Fetching https://variants-index.wheelnext.dev/xgboost/xgboost-3.1.0-variants.json
@@ -162,7 +156,7 @@ We invite you to try playing with `NV_PROVIDER_FORCE_DRIVER_VERSION` environment
 
 ```bash
 export NV_PROVIDER_FORCE_DRIVER_VERSION="11.8"
-pip install --dry-run xgboost 
+python3 -m pip install --dry-run xgboost
 ...
 ```
 
@@ -202,7 +196,7 @@ $ python3 -m venv .venv
 $ source .venv/bin/activate
 
 # 2. Set the index to the WheelNext Static Wheel Server: MockHouse & Backup to PyPI
-$ pip config set --site global.index-url https://variants-index.wheelnext.dev/
+$ python3 -m pip config set --site global.index-url https://variants-index.wheelnext.dev/
 Writing to /path/to/venv/pip.conf
 ```
 
@@ -211,7 +205,7 @@ Writing to /path/to/venv/pip.conf
 By doing this - It **should** install the normal package (aka. non variant), proving the backward compatibility of the design.
 
 ```bash
-$ pip install --dry-run xgboost
+$ python3 -m pip install --dry-run xgboost
 
 Looking in indexes: https://variants-index.wheelnext.dev/
 Collecting xgboost
@@ -236,17 +230,11 @@ Built as a normal Python Wheel (aka. `non variant`)
 # Install the PEP XXX - Wheel Variants Meta Package, that will give you the modified libraries:
 # - pip
 # - variantlib (a new package)
-
-# Linux / MacOs
-$ pip install pep-xxx-wheel-variants
+$ python3 -m pip install pep-xxx-wheel-variants
 Successfully installed pep-xxx-wheel-variants-1.0.0 pip-25.1.dev0+pep.xxx.wheel.variants variantlib-0.0.1  # and some extra stuff
 
-# Windows
-$ $python.exe -m pip install pep-xxx-wheel-variants
->>> Successfully installed pep-xxx-wheel-variants-1.0.0 pip-25.1.dev0+pep.xxx.wheel.variants variantlib-0.0.1  # and some extra stuff
-
 # Let's verify everything is good:
-$ pip --version
+$ python3 -m pip --version
 pip 25.1.dev0+pep-xxx-wheel-variants from ...  # <=============== Check you can see `+pep-xxx-wheel-variants`
 
 $ variantlib --version
@@ -258,7 +246,7 @@ variantlib version: 0.0.1
 #### 2.1 Without any Variant Provider - PIP should install the same build as before
 
 ```bash
-$ pip install --dry-run xgboost
+$ python3 -m pip install --dry-run xgboost
 
 Looking in indexes: https://variants-index.wheelnext.dev/
   Discovering Wheel Variant plugins...
@@ -324,7 +312,7 @@ export NV_PROVIDER_FORCE_DRIVER_VERSION="12.8"
 Let's install the NVIDIA Variant Provider Plugin:
 
 ```bash
-$ pip install nvidia-variant-provider
+$ python3 -m pip install nvidia-variant-provider
 Successfully installed nvidia-variant-provider-0.0.1
 ```
 
@@ -378,7 +366,7 @@ Alright now let's try to re-run the command to install `xgboost`. We should get:
 - `NVIDIA-NCCL` built for `CUDA 12`
 
 ```bash
-$ pip install --dry-run xgboost
+$ python3 -m pip install --dry-run xgboost
 
 Looking in indexes: https://variants-index.wheelnext.dev/
     Discovering Wheel Variant plugins...
