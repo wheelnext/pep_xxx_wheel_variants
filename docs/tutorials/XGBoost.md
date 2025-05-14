@@ -60,8 +60,14 @@ Built as a normal Python Wheel (aka. `non variant`)
 # Install the PEP XXX - Wheel Variants Meta Package, that will give you the modified libraries:
 # - pip
 # - variantlib (a new package)
+
+# Linux / MacOs
 $ python3 -m pip install pep-xxx-wheel-variants
 Successfully installed pep-xxx-wheel-variants-1.0.0 pip-25.1.dev0+pep.xxx.wheel.variants variantlib-0.0.1  # and some extra stuff
+
+# Windows
+$ $python.exe -m pip install pep-xxx-wheel-variants
+>>> Successfully installed pep-xxx-wheel-variants-1.0.0 pip-25.1.dev0+pep.xxx.wheel.variants variantlib-0.0.1  # and some extra stuff
 
 # Let's verify everything is good:
 $ python3 -m pip --version
@@ -230,8 +236,14 @@ Built as a normal Python Wheel (aka. `non variant`)
 # Install the PEP XXX - Wheel Variants Meta Package, that will give you the modified libraries:
 # - pip
 # - variantlib (a new package)
+
+# Linux / MacOs
 $ python3 -m pip install pep-xxx-wheel-variants
 Successfully installed pep-xxx-wheel-variants-1.0.0 pip-25.1.dev0+pep.xxx.wheel.variants variantlib-0.0.1  # and some extra stuff
+
+# Windows
+$ $python.exe -m pip install pep-xxx-wheel-variants
+>>> Successfully installed pep-xxx-wheel-variants-1.0.0 pip-25.1.dev0+pep.xxx.wheel.variants variantlib-0.0.1  # and some extra stuff
 
 # Let's verify everything is good:
 $ python3 -m pip --version
