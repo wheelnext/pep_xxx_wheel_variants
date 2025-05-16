@@ -24,10 +24,29 @@ the wheelnext project provides the following plugins:
 To determine the exact list of properties available, install the plugin,
 `variantlib` and use the `variantlib plugins` commands, e.g.:
 
-```console
-$ python3 -m pip install -q git+https://github.com/wheelnext/provider-variant-aarch64 git+https://github.com/wheelnext/variantlib
-$ variantlib plugins -p provider_variant_aarch64.plugin:AArch64Plugin get-all-configs
+
+### 1. Create a virtualenv to isolate your environment
+
+```bash
+# 1. Create a virtualenv
+$ python3 -m venv .venv
+$ source .venv/bin/activate
+
+# 2. Set the index to the WheelNext Static Wheel Server: MockHouse & Backup to PyPI
+$ python3 -m pip config set --site global.index-url https://variants-index.wheelnext.dev/
+Writing to /path/to/venv/pip.conf
+```
+
+Then let's install some plugins and query variantlib to probe the system
+
+```bash
+$ python3 -m pip install "variantlib[cli]" provider-variant-aarch64 provider-variant-x86_64
+$ variantlib plugins get-all-configs
+variantlib plugins get-all-configs                                                       
 variantlib.plugins.py_envs - INFO - Using externally managed python environment
+variantlib.plugins.loader - INFO - Plugin discovered via entry point: provider_variant_x86_64 = provider_variant_x86_64.plugin:X8664Plugin; provided by package provider-variant-x86-64 0.0.1.post1
+variantlib.plugins.loader - INFO - Loading plugin via provider_variant_x86_64.plugin:X8664Plugin
+variantlib.plugins.loader - INFO - Plugin discovered via entry point: provider_variant_aarch64 = provider_variant_aarch64.plugin:AArch64Plugin; provided by package provider-variant-aarch64 0.0.1.post1
 variantlib.plugins.loader - INFO - Loading plugin via provider_variant_aarch64.plugin:AArch64Plugin
 aarch64 :: version :: 8.1a
 aarch64 :: version :: 8.2a
@@ -36,10 +55,19 @@ aarch64 :: version :: 8.4a
 aarch64 :: version :: 8.5a
 aarch64 :: version :: 8a
 aarch64 :: version :: 9.0a
+x86_64 :: abm :: on
+x86_64 :: adx :: on
+x86_64 :: aes :: on
+x86_64 :: avx :: on
+x86_64 :: avx2 :: on
+x86_64 :: avx512_bf16 :: on
+x86_64 :: avx512_bitalg :: on
+x86_64 :: avx512_vbmi2 :: on
+x86_64 :: avx512_vnni :: on
+...
 ```
 
-The package names and links to repositories are provided in the first
-column, while the `plugin-api` argument to `-p` is provided in the last.
+Installed plugins on the user machine are auto-detected using entry-points.
 
 ## Updating `pyproject.toml`
 
@@ -57,7 +85,7 @@ the following changes need to be made to its `pyproject.toml` file:
    ]
    ```
 
-2. `variant.providers.*` section need to be added, indicating how to
+2. `[variant.providers.<variant_namespace>]` section need to be added, indicating how to
    install the provider plugins, and how to import their provider
    classes. For example:
 
@@ -72,7 +100,7 @@ the following changes need to be made to its `pyproject.toml` file:
    ```
 
    The last component of the table name must correspond to the plugin's
-   property namespace. The `requires` key indicates how to install
+   variant namespace. The `requires` key indicates how to install
    the plugin, whereas the `plugin-api` key needs to be the value
    taken from the plugin table.
 
