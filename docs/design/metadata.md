@@ -100,7 +100,7 @@ priorities. The values include the following information:
 The `pyproject.toml` file is the standard project configuration file
 as defined in [pyproject.toml specification](
 https://packaging.python.org/en/latest/specifications/pyproject-toml/#pyproject-toml-spec).
-Variant wheels utilize a dedicated `variant` table.
+Variant-enabled packages utilize a dedicated top-level `variant` table.
 
 ### Example contents
 
