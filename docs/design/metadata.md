@@ -180,18 +180,18 @@ Metadata-Version: 2.1
 Name: numpy
 Version: 2.2.5
 [...]
-Variant-property: x86_64 :: level :: v3
-Variant-hash: fa7c1393
-Variant-requires: aarch64: provider-variant-aarch64 >=0.0.1,<1; python_version >= '3.9'
-Variant-requires: aarch64: legacy-provider-variant-aarch64 >=0.0.1,<1; python_version < '3.9'
-Variant-enable-if: aarch64: platform_machine == 'aarch64' or 'arm' in platform_machine
-Variant-plugin-api: aarch64: provider_variant_aarch64.plugin:AArch64Plugin
-Variant-requires: x86_64: provider-variant-x86-64 >=0.0.1,<1
-Variant-enable-if: x86_64: platform_machine == 'x86_64' or platform_machine == 'AMD64'
-Variant-plugin-api: x86_64: provider_variant_x86_64.plugin:X8664Plugin
-Variant-default-namespace-priorities: x86_64, aarch64
-Variant-default-feature-priorities: x86_64 :: level
-Variant-default-property-priorities: x86_64 :: avx2 :: on
+Variant-Property: x86_64 :: level :: v3
+Variant-Hash: fa7c1393
+Variant-Requires: aarch64: provider-variant-aarch64 >=0.0.1,<1; python_version >= '3.9'
+Variant-Requires: aarch64: legacy-provider-variant-aarch64 >=0.0.1,<1; python_version < '3.9'
+Variant-Enable-If: aarch64: platform_machine == 'aarch64' or 'arm' in platform_machine
+Variant-Plugin-API: aarch64: provider_variant_aarch64.plugin:AArch64Plugin
+Variant-Requires: x86_64: provider-variant-x86-64 >=0.0.1,<1
+Variant-Enable-If: x86_64: platform_machine == 'x86_64' or platform_machine == 'AMD64'
+Variant-Plugin-API: x86_64: provider_variant_x86_64.plugin:X8664Plugin
+Variant-Default-Namespace-Priorities: x86_64, aarch64
+Variant-Default-Feature-Priorities: x86_64 :: level
+Variant-Default-Property-Priorities: x86_64 :: avx2 :: on
 ```
 
 ### Default priority headers
@@ -199,13 +199,13 @@ Variant-default-property-priorities: x86_64 :: avx2 :: on
 The [default prority information](#default-priorities) is mapped into
 three headers:
 
-- `Variant-default-namespace-priorities` containing the default
+- `Variant-Default-Namespace-Priorities` containing the default
   namespace priorities. This header must occur exactly once.
 
-- `Variant-default-feature-priorities` containing the default feature
+- `Variant-Default-Feature-Priorities` containing the default feature
   priorities. This header must occur at most once.
 
-- `Variant-default-property-priorities` containing the default property
+- `Variant-Default-Property-Priorities` containing the default property
   priorities. This header must occur at most once.
 
 The value corresponding to each of these headers is a comma-separated
@@ -216,14 +216,14 @@ list of the canonical string forms.
 The [provider information](#provider-information) is mapped into three
 headers:
 
-- `Variant-plugin-api` containing the object reference string to load
+- `Variant-Plugin-API` containing the object reference string to load
   the plugin. It must occur exactly once for every namespace.
 
-- `Variant-requires` specifying a single dependency for a given
+- `Variant-Requires` specifying a single dependency for a given
   provider. It is optional, and can occur multiple times for the same
   namespace, in order to specify multiple dependencies.
 
-- `Variant-enable-if` specifying the condition for when the plugin
+- `Variant-Enable-If` specifying the condition for when the plugin
   is enabled. It is optional, and can occur at most once for every
   namespace. When missing, the plugin is always enabled.
 
@@ -240,11 +240,11 @@ Therefore, the headers are repeated for every provider namespace.
 In addition to the common metadata, distribution metadata includes
 two headers containing wheel variant description:
 
-- `Variant-hash` is a 8-character hexadecimal number representing
+- `Variant-Hash` is a 8-character hexadecimal number representing
   the variant hash. It must occur exactly once, and match the value
   found in the filename.
 
-- `Variant-property` specifies a single property of the built variant,
+- `Variant-Property` specifies a single property of the built variant,
   in its canonical string form (`namespace :: feature :: value`).
   This header can be repeated to specify multiple properties. It can
   also be omitted if the wheel is so-called null variant.
