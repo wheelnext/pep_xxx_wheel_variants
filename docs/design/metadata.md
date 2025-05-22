@@ -330,7 +330,7 @@ the following keys:
 - `feature` containing the default feature priorities. This key
   is optional.
 
-` `property` containing the default property priorities. This key
+- `property` containing the default property priorities. This key
   is optional.
 
 The values corresponding to the keys must be arrays of canonical string
