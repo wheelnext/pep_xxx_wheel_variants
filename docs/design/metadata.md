@@ -205,7 +205,7 @@ three headers:
 - `Variant-default-feature-priorities` containing the default feature
   priorities. This header must occur at most once.
 
-` `Variant-default-property-priorities` containing the default property
+- `Variant-default-property-priorities` containing the default property
   priorities. This header must occur at most once.
 
 The value corresponding to each of these headers is a comma-separated
