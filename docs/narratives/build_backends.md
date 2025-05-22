@@ -9,8 +9,8 @@ on PyPI or another index server.*
 Before we start building, we need to know what variants can potentially be built.
 For now we assume that a plugin provides:
 
-1. Variables (e.g., `blas`, `mpi`, `threading`, `cuda`, `rocm`, `psabi`, `simd`,)
-2. Values (the known set of values for each variable)
+1. Features (e.g., `blas`, `mpi`, `threading`, `cuda`, `rocm`, `psabi`, `simd`,)
+2. Values (the known set of values for each feature)
 
 This may look something like this:
 
@@ -65,7 +65,7 @@ The simplest case is only (1). Invoking such a build for a package that respects
 
 ```bash
 # E.g., a default psabi-v3 usage with meson-python
-$ python -m build -Cvariant="psabi=x86-64-v3"
+$ python -m build -Cvariant="x86_64::level::v3"
 ```
 
 What actually happens under the hood for that build command? The build frontend,
@@ -73,7 +73,7 @@ What actually happens under the hood for that build command? The build frontend,
 to the build backend. The build backend, `meson-python` in this case, may do the
 following:
 
-1. Query the plugins, find that `x86-plugin` provides the `psabi` variable, then
+1. Query the plugins, find that `variant_x86_64` provides the `x86_64 :: psabi` feature, then
    retrieve what that means in terms of `CFLAGS`/`CXXFLAGS`/`LDFLAGS` (that's
    all one can probably support inside the plugin).
 2. Pass on those flags, either by amending those environment variables *or* by
@@ -84,7 +84,7 @@ following:
    wheel filename and modify the `METADATA` file to insert the variant content
 
 Now let's look at a more complicated example: building a NumPy wheel for
-`psabi=x86-64-v3`. The difference is that NumPy contains SIMD code and custom
+`x86_64 :: level :: v3`. The difference is that NumPy contains SIMD code and custom
 build flags to control whether and how that code gets included and used.
 The build backend cannot know this, hence the user invoking the build must
 instruct `meson-python` to only handle step (3) above, and not attempt to do
@@ -92,17 +92,17 @@ instruct `meson-python` to only handle step (3) above, and not attempt to do
 than `-Cvariant`:
 
 ```bash
-# Build a NumPy psabi=x86-64-v3 wheel; this requires nonstandard flags (we want
+# Build a NumPy x86_64::level::v3 wheel; this requires nonstandard flags (we want
 # to keep >v3 runtime-dispatched features)
-$ python -m build --wheel -Cvariant-name="psabi=x86-64-v3" -Csetup-args=-Dcpu-baseline=AVX2,FMA3 -Csetup-args=-Dcpu-dispatch=AVX512F,AVX512_SKX
+$ python -m build --wheel -Cvariant-name="x86_64::level::v3" -Csetup-args=-Dcpu-baseline=AVX2,FMA3 -Csetup-args=-Dcpu-dispatch=AVX512F,AVX512_SKX
 ```
 
 Note that we've introduced two ways of specifying a variant build so far (which
 is probably all we'll need):
 
-- `-Cvariant=variable=value`: specify the wheel variant to build *and* let
+- `-Cvariant=namespace::feature::value`: specify the wheel variant to build *and* let
   the plugin add defaults (compile and link flags)
-- `-Cvariant-name=variable=value`: only specify the wheel variant to build
+- `-Cvariant-name=namespace::feature::value`: only specify the wheel variant to build
 
 So far so good for how to build x86-64 SIMD variants. Let's look at a second
 realistic case, namely BLAS variants. The difference is that we need not only
