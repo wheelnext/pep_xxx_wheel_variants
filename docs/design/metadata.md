@@ -3,18 +3,19 @@
 ## Purpose
 
 This document describes the three metadata formats used for variant
-wheels: `pyproject.toml` tables, distribution metadata fields
+wheels: `pyproject.toml` tables, Core Metadata fields (used
+in `*.dist-info/METADATA` and `PKG-INFO` files)
 and `variants.json` file. All three formats are related, as they share
 a common part and form a single pipeline:
 
-    pyproject.toml → distribution (wheel) metadata → variants.json
+    pyproject.toml → METADATA in wheels → variants.json
 
 The `pyproject.toml` file is used to build the wheels. As a common
 project configuration format, it also specifies the metadata used later
 to install them.
 
 When the wheels are built, the build backend transfers the relevant
-metadata into the distribution metadata, along with the built variant
+metadata into the `METADATA` file, along with the built variant
 description. This information is used when installing the wheels.
 
 Additionally, for the purpose of indexing, the metadata from multiple
