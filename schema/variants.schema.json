@@ -1,0 +1,114 @@
+{
+    "$schema": "https://json-schema.org/draft/2020-12/schema",
+    "$id": "https://wheelnext.dev/variants.json",
+    "title": "{name}-{version}-variants.json",
+    "description": "Combined index metadata for wheel variants",
+    "type": "object",
+    "properties": {
+        "default-priorities": {
+            "description": "Default provider priorities",
+            "type": "object",
+            "properties": {
+                "namespace": {
+                    "description": "Default namespace priorities",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9_]+$"
+                    },
+                    "minItems": 1,
+                    "uniqueItems": true
+                },
+                "feature": {
+                    "description": "Default feature priorities",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9_]+ *:: *[a-z0-9_]+$"
+                    },
+                    "minItems": 0,
+                    "uniqueItems": true
+                },
+                "property": {
+                    "description": "Default property priorities",
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "pattern": "^[a-z0-9_]+ *:: *[a-z0-9_]+ *:: *[a-z0-9_.]+$"
+                    },
+                    "minItems": 0,
+                    "uniqueItems": true
+                }
+            },
+            "additionalProperties": false,
+            "uniqueItems": true,
+            "required": ["namespace"]
+        },
+        "providers": {
+            "description": "Mapping of namespaces to provider information",
+            "type": "object",
+            "patternProperties": {
+                "^[A-Za-z0-9_]+$": {
+                    "type": "object",
+                    "description": "Provider information",
+                    "properties": {
+                        "plugin-api": {
+                            "description": "Object reference to plugin class",
+                            "type": "string",
+                            "pattern": "^[a-zA-Z0-9._]+ *: *[a-zA-Z0-9._]+$"
+                        },
+                        "enable-if": {
+                            "description": "Environment marker specifying when to enable the plugin",
+                            "type": "string",
+                            "minLength": 1
+                        },
+                        "requires": {
+                            "description": "Dependency specifiers for how to install the plugin",
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "minLength": 1
+                            },
+                            "minItems": 0,
+                            "uniqueItems": true
+                        }
+                    },
+                    "additionalProperties": false,
+                    "uniqueItems": true,
+                    "required": ["plugin-api"]
+                }
+            },
+            "additionalProperties": false,
+            "uniqueItems": true
+        },
+        "variants": {
+            "description": "Mapping of variant hashes to properties",
+            "type": "object",
+            "patternProperties": {
+                "^[0-9a-f]{8}$": {
+                    "type": "object",
+                    "description": "Mapping of namespaces in a variant",
+                    "patternProperties": {
+                        "^[A-Za-z0-9_]+$": {
+                            "patternProperties": {
+                                "^[A-Za-z0-9_]+$": {
+                                    "type": "string",
+                                    "description": "Mapping of feature names to values",
+                                    "pattern": "^[A-Za-z0-9_]+$"
+                                }
+                            },
+                            "uniqueItems": true,
+                            "additionalProperties": false
+                        }
+                    },
+                    "uniqueItems": true,
+                    "additionalProperties": false
+                }
+            },
+            "additionalProperties": false,
+            "uniqueItems": true
+        }
+    },
+    "required": ["default-priorities", "providers", "variants"],
+    "uniqueItems": true
+}
