@@ -39,7 +39,7 @@ accessed using two methods:
 
 1. An explicit object reference, as the "plugin API" metadata.
 
-2. An installed entry pointin the `variant_plugins` group. The name
+2. An installed entry point in the `variant_plugins` group. The name
    of the entry point is insignificant, and the value provides
    the object reference.
 
