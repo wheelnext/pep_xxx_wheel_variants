@@ -19,12 +19,12 @@ is used as key for all plugin-related operations. All the properties
 defined by the plugin are in the plugin's namespace, and the plugin
 defines all the valid feature names and values within that namespace.
 
-Within a single package, there can be only used plugin used for a given
-namespace. Attempting to load a second plugin sharing the namespace
-must cause a fatal error. However, in the wider scope there can be
-multiple mutually exclusive plugins using the same namespace.
-For example, this could happen if a plugin becomes unmaintained
-and needs to be forked into a new package.
+Within a single package, only one plugin can be used for a given
+namespace. Attempting to load a second plugin sharing the same namespace
+must cause a fatal error. However, it is possible for multiple plugins
+using the namespace to exist, which implies that they become mutually
+exclusive. For example, this could happen if a plugin becomes
+unmaintained and needs to be forked into a new package.
 
 Plugins are expected to be automatically installed into an isolated
 environment when installing packages, in order to facilitate variant
