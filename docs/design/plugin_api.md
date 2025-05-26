@@ -7,9 +7,9 @@ The plugins are a central point of the variant specification, defining
 the valid metadata, and providing routines necessary to install
 and build variants.
 
-The plugin API is defined using Python [Protocols](
-https://typing.python.org/en/latest/spec/protocol.html), as well
-as textual description.
+This document provides the API described both in text and using
+Python [Protocols]( https://typing.python.org/en/latest/spec/protocol.html)
+for convenience.
 
 
 ## Basic design
@@ -26,8 +26,8 @@ using the namespace to exist, which implies that they become mutually
 exclusive. For example, this could happen if a plugin becomes
 unmaintained and needs to be forked into a new package.
 
-Plugins are expected to be automatically installed into an isolated
-environment when installing packages, in order to facilitate variant
+Plugins are expected to be automatically installed when installing
+variant-enabled packages, in order to facilitate variant
 selection. Therefore, it is necessary that the packages providing
 plugins are installable with the same indices enabled that are used
 to install the package in question. In particular, packages published
@@ -331,6 +331,9 @@ are concatenated, in an undefined order.
 The exact list of build variables and the meaning of their values
 is out of the scope for this document. Build backends should ignore
 the values they do not recognize or support.
+
+The build setup implementation is likely to change, see [discussion
+on build setup](https://github.com/wheelnext/pep_xxx_wheel_variants/issues/23).
 
 Example implementation:
 
