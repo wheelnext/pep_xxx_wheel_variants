@@ -1,259 +1,284 @@
-# Metadata formats
+# Metadata format
 
 ## Purpose
 
-This document describes the three metadata formats used for variant
-wheels: `pyproject.toml` tables, Core Metadata fields (used
-in `*.dist-info/METADATA` and `PKG-INFO` files)
-and `variants.json` file. All three formats are related, as they share
-a common part and form a single pipeline:
+This document describes the metadata format used for variant wheels.
+The format is used in three locations, with slight variations:
 
-    pyproject.toml → METADATA in wheels → variants.json
+1. in the source repository, as a `pyproject.toml` file,
 
-The `pyproject.toml` file is used to build the wheels. As a common
-project configuration format, it also specifies the metadata used later
-to install them.
+2. in the built wheel, as a `*.dist-info/variant.json` file,
 
-When the wheels are built, the build backend transfers the relevant
-metadata into the `METADATA` file, along with the built variant
-description. This information is used when installing the wheels.
+3. on the wheel index, as a `*-variants.json` file.
 
-Additionally, for the purpose of indexing, the metadata from multiple
-wheels is collected into a single `variants.json` format file. This file
-can be afterwards fetched by the installers to determine which variants
-are available and how to install the provider plugins required to
-determine which variants are supported. This makes it possible to select
-a specific variant wheel without having to download them all.
+All three variants share a common structure, with some of its element
+shared across all of them, and some being specific to a single variant,
+as described further in the document. This structure is then serialized
+into TOML or JSON appropriately.
+
+These variations fit into the common wheel building pipeline where
+a source tree is used to build one or more wheels, and the wheels
+are afterwards published on an index. The `pyproject.toml` file
+provides the metadata needed to build the wheels, as well as the shared
+metadata needed to install them. This metadata is then amended with
+information on the specific variant build, and copied into the wheel.
+When wheels are uploaded into the index, the metadata from all of them
+is read and merged into a single JSON file that can be used
+by the client to efficiently evaluate the available variants without
+having to fetch metadata from every wheel separately.
 
 
-## The common metadata
+## The metadata structure
 
-### Default priorities
+### The metadata tree
 
-The wheel metadata can specify three lists of default priorities:
+The metadata is a dictionary rooted at a specific point, specified
+for each file separately. The top-level keys of this dictionary
+are strings corresponding to specific metadata blocks, and their values
+are further dictionaries representing this blocks. The complete
+structure can be visualized using the following tree:
 
-1. *Namespace priorities* that define both the list of namespaces
-   that are used by default when installing the package in question,
-   and their initial order. Said order may be altered afterwards by user
-   configuration. This list must be defined and non-empty.
-
-2. *Feature priorities* that override the order of features. The initial
-   order is determined by ordering the namespaces according to their
-   priorities (as indicated in point 1.), then replacing them by all
-   their features as ordered by the provider plugin. Afterwards, all
-   features defined in the feature priority list are moved to
-   the beginning of the resulting list, while the relative order
-   of the remaining items remains the same. Said order may be altered
-   by user configuration. This list is optional.
-
-3. *Property priorities* that override the order of properties.
-   The initial order is determined by ordering the features according
-   to their priorities (as indicated in point 2.), then replacing them
-   by all their properties as ordered by the provider plugin.
-   Afterwards, all properties defined in the feature priority list
-   are moved to the beginning of the resulting list, while the relative
-   order of the remaining items remains the same. Said order may be
-   altered by user configuration. This list is optional.
+```
+(root)
+|
++-- providers
+|   +- <namespace>
+|      +- requires      : list[str]
+|      +- enable-if     : str | None
+|      +- plugin-api    : str
+|
++-- default-priorities
+|   +- namespace        : list[str]
+|   +- feature
+|      +- <namespace>   : list[str]
+|   +- property
+|      +- <namespace>
+|         +- <feature>  : list[str]
+|
++-- variants
+    +- <variant-hash>
+       +- <namespace>
+          +- <feature>  : list[str]
+```
 
 ### Provider information
 
-The wheel metadata also includes the provider metadata dictionary,
-keyed on namespaces. This dictionary is obligatory, and must include
-the metadata for all namespaces that are listed in default namespace
-priorities. The values include the following information:
+```
++-- providers
+|   +- <namespace>
+|      +- requires      : list[str]
+|      +- enable-if     : str | None
+|      +- plugin-api    : str
+```
 
-- The *plugin API* value that specifies how to load plugins. It is
-  obligatory. It follows the same format as object references
-  in the [entry points specification](
-  https://packaging.python.org/en/latest/specifications/entry-points/),
-  that is:
+The wheel metadata includes the provider metadata dictionary that
+specifies which variant providers (plugins) are available, under what
+conditions they are used, how to install them and how to use them.
 
-  ```
-  importable.module:ClassName
-  ```
+It resides under the `providers` key. It is a dictionary using namespace
+names as keys, with values being dictionaries describing the provider
+for a given namespace. This sub-dictionary has up to three keys:
 
-  The plugin will be instantiated by the equivalent of:
+1. `requires: list[str]` -- that specifies one or more [dependency specifiers](
+   https://packaging.python.org/en/latest/specifications/dependency-specifiers/)
+   specifying how the provider should be installed. This key is required.
 
-  ```python
-  import importable.module
+2. `enable-if: str | None` -- that optionally specifies an [environment marker](
+   https://packaging.python.org/en/latest/specifications/dependency-specifiers/#environment-markers)
+   specifying when the plugin should be used. If it specified, the plugin
+   will not be installed and loaded if the environment does not match
+   the specified markers. If it not specified, the plugin is enabled
+   unconditionally.
 
-  plugin_instance = importable.module.ClassName()
-  ```
+3. `plugin-api: str` -- that specifies how to load plugins. It is
+   obligatory. It follows the same format as object references
+   in the [entry points specification](
+   https://packaging.python.org/en/latest/specifications/entry-points/),
+   that is:
 
-- The list of *plugin requirements* that consists of zero or more
-  [dependency specifiers](
-  https://packaging.python.org/en/latest/specifications/dependency-specifiers/)
-  specifying how the provider should be installed. This is optional, but it is
-  necessary to support installing plugins in an isolated environment.
+   ```
+   importable.module:ClassName
+   ```
 
-- An optional *enable-if* clause that specifies an [environment marker](
-  https://packaging.python.org/en/latest/specifications/dependency-specifiers/#environment-markers)
-  specifying when the plugin should be used. If it specified, the plugin
-  will not be installed and loaded if the environment does not match
-  the specified markers. If it not specified, the plugin is enabled
-  unconditionally.
+   The plugin will be instantiated by the equivalent of:
+
+   ```python
+   import importable.module
+
+   plugin_instance = importable.module.ClassName()
+   ```
 
 
-## `pyproject.toml` file
+### Default priorities
 
-### Base information
+```
++-- default-priorities
+|   +- namespace        : list[str]
+|   +- feature
+|      +- <namespace>   : list[str]
+|   +- property
+|      +- <namespace>
+|         +- <feature>  : list[str]
+```
+
+The default priority block is used to establish the default preferences
+between variants. It must specify the order for all namespaces used
+by the package. It may also override the priorities of individual
+features and property values provided by the plugins. The priorities
+specified here can in turn be overridden by the user.
+
+The block resides under the `default-priorities` key. It is a dictionary
+with up to three keys:
+
+1. `namespace: list[str]` -- that lists all namespaces used
+   by the package from the most preferred to the least preferred.
+
+2. `feature` -- that can be used to override preferred feature order
+   of individual providers. It is a dictionary whose keys are namespaces,
+   and values are lists of feature names. The features are listed from
+   the most preferred to the least preferred. Not all features provided
+   by the plugin need be listed. The remaining features will be given
+   lower priority than these listed, while preserving their relative
+   order provided by the plugin.
+
+3. `property` -- that can be used to override preferred property value
+   order of individual providers. It consists of two nested dictionaries,
+   with the key of the top dictionary specifying the namespace name,
+   and the key of the subsequent dictionary specifying the feature name.
+   The values are property values, ordered from the most preferred
+   to the least preferred. Conversely, not all property values provided
+   by the plugin need be listed. The remaining properties will be given
+   lower priority than these listed, while preserving their relative
+   order provided by the plugin.
+
+
+### Variants
+
+```
++-- variants
+    +- <variant-hash>
+       +- <namespace>
+          +- <feature>  : str
+```
+
+The variants block is present only in wheel metadata, and in wheel
+index `*-variants.json` file. In both cases it is obligatory.
+In the former file, it specifies the variant that the wheel was built
+for. In the latter, it lists all variants available for the package
+version.
+
+It resides under the `variants` key. It is a dictionary using variant
+hashes as keys, with values listing the properties for a given variant
+in a form of a nested dictionary. The keys of the top dictionary
+specify namespaces names, the keys of the subsequent dictionary feature
+names and their values are the corresponding property values.
+
+
+## Specific file formats
+
+### `pyproject.toml`
 
 The `pyproject.toml` file is the standard project configuration file
 as defined in [pyproject.toml specification](
 https://packaging.python.org/en/latest/specifications/pyproject-toml/#pyproject-toml-spec).
-Variant-enabled packages utilize a dedicated top-level `variant` table.
+The variant metadata is rooted at the top-level `variant` table.
+This format does not include the `variants` dictionary.
 
-### Example contents
+Example `pyproject.toml` tables, with explanatory comments:
 
 ```toml
 [variant.default-priorities]
+# prefer x86_64 plugin over aarch64
 namespace = ["x86_64", "aarch64"]
-feature = ["x86_64::level"]
-property = ["x86_64::avx2::on"]
+# prefer aarch64 version and x86_64 level features over other features
+# (specific CPU extensions like "sse4.1")
+feature.aarch64 = ["version"]
+feature.x86_64 = ["level"]
+# prefer x86-64-v3 and then older (even if CPU is newer)
+property.x86_64.level = ["v3", "v2", "v1"]
 
 [variant.providers.aarch64]
+# example using different package based on Python version
 requires = [
     "provider-variant-aarch64 >=0.0.1,<1; python_version >= '3.9'",
     "legacy-provider-variant-aarch64 >=0.0.1,<1; python_version < '3.9'",
 ]
+# use only on aarch64/arm machines
 enable-if = "platform_machine == 'aarch64' or 'arm' in platform_machine"
 plugin-api = "provider_variant_aarch64.plugin:AArch64Plugin"
 
 [variant.providers.x86_64]
 requires = ["provider-variant-x86-64 >=0.0.1,<1"]
+# use only on x86_64 machines
 enable-if = "platform_machine == 'x86_64' or platform_machine == 'AMD64'"
 plugin-api = "provider_variant_x86_64.plugin:X8664Plugin"
 ```
 
-### `default-priorities` subtable
+### `*.dist-info/variant.json`
 
-The `variant.default-priorities` table contains the [default prority
-information](#default-priorities). It may contain the following keys:
+The `variant.json` file is placed inside variant wheels,
+in the `*.dist-info` directory containing the wheel metadata. It is
+serialized into JSON, with variant metadata dictionary being the top
+object. In addition to the shared metadata copied from `pyproject.toml`,
+it contains a `variants` object that must list exactly one variant --
+the variant provided by the wheel.
 
-- `namespace` specifying the default namespace priority list. This is
-  a list of strings, where every string must be a namespace name.
-  As indicated in the common metadata section, this key is obligatory.
+The `variant.json` file corresponding to the wheel built from
+the example `pyproject.toml` file for x86-64-v3 would look like:
 
-- `feature` specifying the default feature priority list. This is a list
-  of the canonical feature strings (`namespace :: feature`). This key
-  is optional.
-
-- `property` specifying the default property priority list. This is
-  a list of the canonical property strings
-  (`namespace :: feature :: value`). This key is optional.
-
-### `providers` subtable
-
-The `variant.providers` table contains the [provider information](
-#provider-information). It contains subtables keyed after namespaces,
-and must contain a subtable for every namespace specified
-in `variant.default-priorities.namespace` list.
-
-Every subtable may contain the following keys:
-
-- `plugin-api` that is a string forming the object reference used
-  to load the plugin. It is required.
-
-- `requires` that is a list of strings, where every string is
-  a dependency specifier expressing how to install the provider plugin.
-  It is optional, but it is necessary to support installing plugins
-  in an isolated environment.
-
-- `enable-if` that is a string forming an environment marker,
-  specifying the condition under which the plugin is enabled. It is
-  optional, and the plugin is always enabled if it missing.
-
-
-## Distribution metadata
-
-### Base information
-
-The distribution metadata is defined in the [core metadata
-specifications](
-https://packaging.python.org/en/latest/specifications/core-metadata/).
-The wheel variant format adds headers corresponding to the common
-metadata and to the wheel variant description.
-
-### Example headers
-
-```email
-Metadata-Version: 2.1
-Name: numpy
-Version: 2.2.5
-[...]
-Variant-Property: x86_64 :: level :: v3
-Variant-Hash: fa7c1393
-Variant-Requires: aarch64: provider-variant-aarch64 >=0.0.1,<1; python_version >= '3.9'
-Variant-Requires: aarch64: legacy-provider-variant-aarch64 >=0.0.1,<1; python_version < '3.9'
-Variant-Enable-If: aarch64: platform_machine == 'aarch64' or 'arm' in platform_machine
-Variant-Plugin-API: aarch64: provider_variant_aarch64.plugin:AArch64Plugin
-Variant-Requires: x86_64: provider-variant-x86-64 >=0.0.1,<1
-Variant-Enable-If: x86_64: platform_machine == 'x86_64' or platform_machine == 'AMD64'
-Variant-Plugin-API: x86_64: provider_variant_x86_64.plugin:X8664Plugin
-Variant-Default-Namespace-Priorities: x86_64, aarch64
-Variant-Default-Feature-Priorities: x86_64 :: level
-Variant-Default-Property-Priorities: x86_64 :: avx2 :: on
+```json
+{
+    "default-priorities": {
+        "feature": {
+            "aarch64": [
+                "version"
+            ],
+            "x86_64": [
+                "level"
+            ]
+        },
+        "namespace": [
+            "x86_64",
+            "aarch64"
+        ],
+        "property": {
+            "x86_64": {
+                "level": [
+                    "v3",
+                    "v2",
+                    "v1"
+                ]
+            }
+        }
+    },
+    "providers": {
+        "aarch64": {
+            "enable-if": "platform_machine == 'aarch64' or 'arm' in platform_machine",
+            "plugin-api": "provider_variant_aarch64.plugin:AArch64Plugin",
+            "requires": [
+                "provider-variant-aarch64 >=0.0.1,<1; python_version >= '3.9'",
+                "legacy-provider-variant-aarch64 >=0.0.1,<1; python_version < '3.9'"
+            ]
+        },
+        "x86_64": {
+            "enable-if": "platform_machine == 'x86_64' or platform_machine == 'AMD64'",
+            "plugin-api": "provider_variant_x86_64.plugin:X8664Plugin",
+            "requires": [
+                "provider-variant-x86-64 >=0.0.1,<1"
+            ]
+        }
+    },
+    "variants": {
+        "fa7c1393": {
+            "x86_64": {
+                "level": "v3"
+            }
+        }
+    }
+}
 ```
 
-### Default priority headers
-
-The [default prority information](#default-priorities) is mapped into
-three headers:
-
-- `Variant-Default-Namespace-Priorities` containing the default
-  namespace priorities. This header must occur exactly once.
-
-- `Variant-Default-Feature-Priorities` containing the default feature
-  priorities. This header must occur at most once.
-
-- `Variant-Default-Property-Priorities` containing the default property
-  priorities. This header must occur at most once.
-
-The value corresponding to each of these headers is a comma-separated
-list of the canonical string forms.
-
-### Provider information headers
-
-The [provider information](#provider-information) is mapped into three
-headers:
-
-- `Variant-Plugin-API` containing the object reference string to load
-  the plugin. It must occur exactly once for every namespace.
-
-- `Variant-Requires` specifying a single dependency for a given
-  provider. It is optional, and can occur multiple times for the same
-  namespace, in order to specify multiple dependencies.
-
-- `Variant-Enable-If` specifying the condition for when the plugin
-  is enabled. It is optional, and can occur at most once for every
-  namespace. When missing, the plugin is always enabled.
-
-The values of these headers are expressed using the following form:
-
-```
-namespace: value
-```
-
-Therefore, the headers are repeated for every provider namespace.
-
-### Variant description headers
-
-In addition to the common metadata, distribution metadata includes
-two headers containing wheel variant description:
-
-- `Variant-Hash` is a 8-character hexadecimal number representing
-  the variant hash. It must occur exactly once, and match the value
-  found in the filename.
-
-- `Variant-Property` specifies a single property of the built variant,
-  in its canonical string form (`namespace :: feature :: value`).
-  This header can be repeated to specify multiple properties. It can
-  also be omitted if the wheel is so-called null variant.
-
-
-## `variants.json` files
-
-### Base information
+### `*-variants.json`
 
 For every package version that includes at least one variant wheel,
 there must exist a corresponding `{name}-{version}-variants.json`
@@ -264,28 +289,38 @@ https://packaging.python.org/en/latest/specifications/binary-distribution-format
 The link to this file must be present on all index pages where
 the variant wheels are linked, to facilitate discovery.
 
-This file must be a valid JSON document, whose top-level element
-is an object. Aside from common variant metadata, the JSON file contains
-the dictionary of all available variants. Said dictionary must contain
-information for all variants found in the index. It can also list
-additional variants, to facilitate sharing the same file between
-multiple packages.
+This file uses the same structure as `variant.json`, except that
+the `variants` object is permitted to list multiple variants, and should
+list all variants available for the package version in question.
 
-### Example file
+The `foo-1.2.3-variants.json` corresponding to the package with two
+wheel variants, one of them listed in the previous example, would look
+like:
 
 ```json
 {
     "default-priorities": {
-        "feature": [
-            "x86_64 :: level"
-        ],
+        "feature": {
+            "aarch64": [
+                "version"
+            ],
+            "x86_64": [
+                "level"
+            ]
+        },
         "namespace": [
             "x86_64",
             "aarch64"
         ],
-        "property": [
-            "x86_64 :: avx2 :: on"
-        ]
+        "property": {
+            "x86_64": {
+                "level": [
+                    "v3",
+                    "v2",
+                    "v1"
+                ]
+            }
+        }
     },
     "providers": {
         "aarch64": {
@@ -318,49 +353,3 @@ multiple packages.
     }
 }
 ```
-
-### Default priority object
-
-The [default prority information](#default-priorities) is mapped into
-the `default-priorities` first-order object. It may contain
-the following keys:
-
-- `namespace` containing the default namespace priorities. This key
-  is obligatory.
-
-- `feature` containing the default feature priorities. This key
-  is optional.
-
-- `property` containing the default property priorities. This key
-  is optional.
-
-The values corresponding to the keys must be arrays of canonical string
-forms.
-
-### Provider information object
-
-The [provider information](#provider-information) is mapped into
-the `providers` first-order object. Its keys correspond to namespaces,
-while values are objects that may contain the following keys:
-
-- `plugin-api` containing the object reference string to load
-  the plugin. It is obligatory.
-
-- `requires` specifying dependencies for a given provider. It is
-  optional. If specified, it must be an array of dependency strings.
-
-- `enable-if` specifying the environment marker string for when
-  the plugin is enabled. It is optional. When missing, the plugin
-  is always enabled.
-
-### Variants object
-
-In addition to the common metadata, the JSON file must contain
-a first-order `variants` object. Its keys correspond to the known
-variant hashes (as 8-character hexadecimal numbers), while values
-contain compacted variant properties.
-
-For the purpose of compacting, all features from a single namespace
-are collected in a single object, whose keys correspond to feature names
-and values to their values. Afterwards, these objects are used as values
-for objects whose keys are namespaces.

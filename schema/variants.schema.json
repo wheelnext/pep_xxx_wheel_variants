@@ -20,23 +20,46 @@
                     "uniqueItems": true
                 },
                 "feature": {
-                    "description": "Default feature priorities",
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "pattern": "^[a-z0-9_]+ *:: *[a-z0-9_]+$"
+                    "description": "Default feature priorities (by namespace)",
+                    "type": "object",
+                    "patternProperties": {
+                        "^[a-z0-9_]+$": {
+                            "description": "Preferred features",
+                            "type": "array",
+                            "items": {
+                                "type": "string",
+                                "pattern": "^[a-z0-9_]+$"
+                            },
+                            "minItems": 0,
+                            "uniqueItems": true
+                        }
                     },
-                    "minItems": 0,
+                    "additionalProperties": false,
                     "uniqueItems": true
                 },
                 "property": {
-                    "description": "Default property priorities",
-                    "type": "array",
-                    "items": {
-                        "type": "string",
-                        "pattern": "^[a-z0-9_]+ *:: *[a-z0-9_]+ *:: *[a-z0-9_.]+$"
+                    "description": "Default property priorities (by namespace)",
+                    "type": "object",
+                    "patternProperties": {
+                        "^[a-z0-9_]+$": {
+                            "description": "Default property priorities (by feature) name",
+                            "type": "object",
+                            "patternProperties": {
+                                "^[a-z0-9_]+$": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "pattern": "^[a-z0-9_.]+$"
+                                    },
+                                    "minItems": 0,
+                                    "uniqueItems": true
+                                }
+                            },
+                            "additionalProperties": false,
+                            "uniqueItems": true
+                        }
                     },
-                    "minItems": 0,
+                    "additionalProperties": false,
                     "uniqueItems": true
                 }
             },
