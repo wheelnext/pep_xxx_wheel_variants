@@ -1,6 +1,6 @@
 [build-system]
-requires = ['flit_core >=3,<4']
-build-backend = 'flit_core.buildapi'
+requires = ["flit_core >=3.11,<4"]
+build-backend = "flit_core.buildapi"
 
 [project]
 name = "dummy-project"
@@ -10,10 +10,9 @@ authors = [
 dynamic = ["version", "description"]
 
 [variant.default-priorities]
- # the plugins corresponding to these namespaces will be auto-installed at installation
-namespace = ["fictional_hw", "fictional_tech"]  # optional - if empty nothing is auto-installed
-feature = []                                    # optional - Can be skipped if empty - 95%+ packages won't ever need
-property = []                                   # optional - Can be skipped if empty - 95%+ packages won't ever need
+namespace = ["fictional_hw", "fictional_tech"] 
+feature = {'fictional_hw' = ['humor', 'compute_accuracy'], 'fictional_tech' = ['quantum']}
+property = {'fictional_tech' = {'technology' = ['auto_chef']}}
 
 [variant.providers.fictional_tech]
 requires = ["provider-fictional-tech == 1.0.0"]
@@ -21,4 +20,5 @@ plugin-api = "provider_fictional_tech.plugin:FictionalTechPlugin"
 
 [variant.providers.fictional_hw]
 requires = ["provider-fictional-hw == 1.0.0"]
+enable_if = "python_version >= '3.12'"
 plugin-api = "provider_fictional_hw.plugin:FictionalHWPlugin"

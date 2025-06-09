@@ -49,3 +49,5 @@ build: clean ## builds source and wheel package
 		-p "fictional_hw :: compute_accuracy :: 0" \
 		-p "fictional_hw :: compute_capability :: 6" \
 		-p "fictional_hw :: humor :: 2"
+
+	variantlib generate-index-json -d dist/

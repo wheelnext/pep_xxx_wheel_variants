@@ -60,6 +60,7 @@ exclude = [
     "venv",
     "*/migrations/*.py",
     "staticfiles/*",
+    "numpy"
 ]
 # Same as Django: https://github.com/cookiecutter/cookiecutter-django/issues/4792.
 line-length = 88
@@ -175,3 +176,38 @@ exclude = ["flit/**/*.py"]
 
 [tool.ruff.lint.isort]
 force-single-line = true
+
+[tool.pyright]
+exclude = [
+    ".bzr",
+    ".direnv",
+    ".eggs",
+    ".hypothesis",
+    ".git",
+    ".git-rewrite",
+    ".hg",
+    ".mypy_cache",
+    ".nox",
+    ".pants.d",
+    ".pytest_cache",
+    ".pytype",
+    ".ropeproject",
+    ".ruff_cache",
+    ".svn",
+    ".tox",
+    ".uv",
+    ".venv",
+    "__pypackages__",
+    "_build",
+    "buck-out",
+    "build",
+    "dist",
+    "venv",
+    "**/node_modules",
+    "**/__pycache__",
+    "**/.*",
+    "**/*.whl",
+    "**/*.pyc",
+    "numpy",
+    "variants-index"
+]

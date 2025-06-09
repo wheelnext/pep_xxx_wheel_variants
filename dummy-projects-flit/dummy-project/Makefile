@@ -66,3 +66,15 @@ build: clean ## builds source and wheel package
 		-p "fictional_tech :: quantum :: foam" \
 		-p "fictional_tech :: risk_exposure :: 1000000000" \
 		-p "fictional_tech :: technology :: improb_drive"
+		
+	flit build --format wheel \
+		-p "fictional_hw :: compute_capability :: >=4,<8"
+		
+	flit build --format wheel \
+		-p "fictional_hw :: compute_capability :: >=4,<6"
+		
+	flit build --format wheel \
+		-p "fictional_hw :: compute_capability :: >=7"
+
+	variantlib generate-index-json -d dist/
+
