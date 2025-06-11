@@ -45,7 +45,7 @@ structure can be visualized using the following tree:
 |   +- <namespace>
 |      +- requires      : list[str]
 |      +- enable-if     : str | None
-|      +- plugin-api    : str
+|      +- plugin-api    : str | None
 |
 +-- default-priorities
 |   +- namespace        : list[str]
@@ -68,7 +68,7 @@ structure can be visualized using the following tree:
 |   +- <namespace>
 |      +- requires      : list[str]
 |      +- enable-if     : str | None
-|      +- plugin-api    : str
+|      +- plugin-api    : str | None
 ```
 
 The wheel metadata includes the provider metadata dictionary that
@@ -90,22 +90,37 @@ for a given namespace. This sub-dictionary has up to three keys:
    the specified markers. If it not specified, the plugin is enabled
    unconditionally.
 
-3. `plugin-api: str` -- that specifies how to load plugins. It is
-   obligatory. It follows the same format as object references
+3. `plugin-api: str` -- that specifies how to load plugins. If specified,
+   it follows the same format as object references
    in the [entry points specification](
-   https://packaging.python.org/en/latest/specifications/entry-points/),
-   that is:
+   https://packaging.python.org/en/latest/specifications/entry-points/).
+   It can be one of:
 
-   ```
-   importable.module:ClassName
-   ```
+   - `importable.module:ClassName`
+   - `importable.module:attribute`
+   - `importable.module`
 
-   The plugin will be instantiated by the equivalent of:
+   If not specified, it will be inferred from the first package name
+   found in `requires`, with any dashes replaced with underscores.
+   For example, if the dependency is `foo-bar[extra] >= 1.2.3`,
+   its corresponding `plugin-api` will be inferred as `foo_bar`.
+
+   If a callable is specified, the provider will be instantiated
+   by the equivalent of:
 
    ```python
    import importable.module
 
    plugin_instance = importable.module.ClassName()
+   ```
+
+   If a non-callable object (e.g. a module or a global object)
+   is specified, it will be used directly, similarly to:
+
+   ```python
+   import importable.module
+
+   plugin_instance = importable.module.attribute
    ```
 
 
