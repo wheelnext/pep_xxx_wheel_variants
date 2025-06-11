@@ -308,6 +308,15 @@ This file uses the same structure as `variant.json`, except that
 the `variants` object is permitted to list multiple variants, and should
 list all variants available for the package version in question.
 
+The file can be created from existing variant wheels using the following
+command:
+
+```console
+$ variantlib generate-index-json -d dist/
+variantlib.commands.generate_index_json - INFO - Processing wheel: `numpy-2.2.5-cp313-cp313-linux_x86_64-40aba78e.whl` with variant hash: `40aba78e`
+variantlib.commands.generate_index_json - INFO - Processing wheel: `numpy-2.2.5-cp313-cp313-linux_x86_64-fa7c1393.whl` with variant hash: `fa7c1393`
+```
+
 The `foo-1.2.3-variants.json` corresponding to the package with two
 wheel variants, one of them listed in the previous example, would look
 like:
