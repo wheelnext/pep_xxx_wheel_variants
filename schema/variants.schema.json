@@ -65,7 +65,9 @@
             },
             "additionalProperties": false,
             "uniqueItems": true,
-            "required": ["namespace"]
+            "required": [
+                "namespace"
+            ]
         },
         "providers": {
             "description": "Mapping of namespaces to provider information",
@@ -78,7 +80,7 @@
                         "plugin-api": {
                             "description": "Object reference to plugin class",
                             "type": "string",
-                            "pattern": "^[a-zA-Z0-9._]+ *: *[a-zA-Z0-9._]+$"
+                            "pattern": "^([a-zA-Z0-9._]+ *: *[a-zA-Z0-9._]+)|([a-zA-Z0-9._]+)$"
                         },
                         "enable-if": {
                             "description": "Environment marker specifying when to enable the plugin",
@@ -98,7 +100,9 @@
                     },
                     "additionalProperties": false,
                     "uniqueItems": true,
-                    "required": ["plugin-api"]
+                    "required": [
+                        "plugin-api"
+                    ]
                 }
             },
             "additionalProperties": false,
@@ -115,9 +119,14 @@
                         "^[A-Za-z0-9_]+$": {
                             "patternProperties": {
                                 "^[A-Za-z0-9_]+$": {
-                                    "type": "string",
-                                    "description": "Mapping of feature names to values",
-                                    "pattern": "^[A-Za-z0-9_]+$"
+                                    "description": "list of possible values for this variant feature.",
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "pattern": "^([a-z0-9_.]+|[0-9_.,!>~<=]+)$"
+                                    },
+                                    "minItems": 1,
+                                    "uniqueItems": true
                                 }
                             },
                             "uniqueItems": true,
@@ -132,6 +141,10 @@
             "uniqueItems": true
         }
     },
-    "required": ["default-priorities", "providers", "variants"],
+    "required": [
+        "default-priorities",
+        "providers",
+        "variants"
+    ],
     "uniqueItems": true
 }
