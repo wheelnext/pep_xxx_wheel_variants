@@ -10,14 +10,6 @@
 	path = pip
 	url = ../pip.git
 	branch = pep-xxx-wheel-variants
-[submodule "provider_fictional_hw"]
-	path = provider_fictional_hw
-	url = ../provider_fictional_hw.git
-	branch = main
-[submodule "provider_fictional_tech"]
-	path = provider_fictional_tech
-	url = ../provider_fictional_tech.git
-	branch = main
 [submodule "variantlib"]
 	path = variantlib
 	url = ../variantlib.git
