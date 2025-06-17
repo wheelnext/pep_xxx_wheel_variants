@@ -46,6 +46,7 @@ structure can be visualized using the following tree:
 |      +- requires      : list[str]
 |      +- enable-if     : str | None
 |      +- plugin-api    : str | None
+|      +- optional      : bool = False
 |
 +-- default-priorities
 |   +- namespace        : list[str]
@@ -69,6 +70,7 @@ structure can be visualized using the following tree:
 |      +- requires      : list[str]
 |      +- enable-if     : str | None
 |      +- plugin-api    : str | None
+|      +- optional      : bool = False
 ```
 
 The wheel metadata includes the provider metadata dictionary that
@@ -122,6 +124,12 @@ for a given namespace. This sub-dictionary has up to three keys:
 
    plugin_instance = importable.module.attribute
    ```
+
+4. `optional: bool = False` -- that can be used to make a particular
+   provider optional. If it is False or not specified, the plugin
+   is required and is used unconditionally. If it is True, the plugin
+   is considered optional and the tools should not load it unless
+   explicitly requested by the user.
 
 
 ### Default priorities
