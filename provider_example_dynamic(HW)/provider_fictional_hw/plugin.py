@@ -1,39 +1,17 @@
 from __future__ import annotations
 
-import importlib.util
-import sys
+import re
+import warnings
 from collections import defaultdict
 from dataclasses import dataclass
-from pathlib import Path
 from typing import Protocol
 from typing import runtime_checkable
 
+from packaging.specifiers import InvalidSpecifier
+from packaging.specifiers import SpecifierSet
+from packaging.version import Version
 
-def _load_vendored_packaging() -> None:
-    """
-    Load a vendored `archspec` library.
-
-    Returns:
-        module (ModuleType): The loaded module.
-    """
-    name = "archspec"
-
-    spec = importlib.util.spec_from_file_location(
-        name=name,
-        location=Path(__file__).parent / "vendor/packaging/src/packaging/__init__.py",
-    )
-    if spec is None or spec.loader is None:
-        raise ImportError("The submodule `packaging` is missing.")
-
-    module = importlib.util.module_from_spec(spec)
-    sys.modules[name] = module
-    spec.loader.exec_module(module)
-
-
-_load_vendored_packaging()
-
-from packaging.specifiers import SpecifierSet  # noqa: E402
-from packaging.version import Version  # noqa: E402
+from provider_fictional_hw.version_sort import sort_specifier_sets
 
 FeatureIndex = int
 PropertyIndex = int
@@ -78,15 +56,32 @@ class FictionalHWPlugin:
         return 0.995
 
     def filter_and_sort_properties(
-        self, vprops: list[VariantProperty]
-    ) -> list[VariantProperty]:
+        self,
+        vprops: list[VariantProperty],
+        property_priorities: list[VariantFeatureValue] | None = None,
+    ) -> dict[VariantFeatureName, list[VariantFeatureValue]]:
         """Filter and sort the properties based on the plugin's logic."""
 
-        # 1.A Validation: Validate input types.
+        # 1.A - Validation: Validate input types.
         assert isinstance(vprops, list)
         assert all(isinstance(vprop, VariantProperty) for vprop in vprops)
 
-        # 1.B Validation: Ensure all properties belong to the proper namespace.
+        if not vprops:
+            # nothing in => nothing out.
+            return {}
+
+        # 1.B - Property Priority validation
+        property_priorities = (
+            property_priorities if property_priorities is not None else []
+        )
+
+        if property_priorities:
+            raise NotImplementedError
+
+        assert isinstance(property_priorities, list)
+        assert all(isinstance(val, VariantFeatureValue) for val in property_priorities)
+
+        # 1.C - Validation: Ensure all properties belong to the proper namespace.
         issues_found: list[str] = [
             f"Property `{vprop}` does not belong to namespace {self.namespace}"
             for vprop in vprops
@@ -99,91 +94,113 @@ class FictionalHWPlugin:
                 f"{'\n- '.join(issues_found)}"
             )
 
-        # 2. Aggregate Variant Property values per feature.
-        prop_values = defaultdict(list)
+        # 2. Group Variant Property values per feature.
+        prop_values: dict[VariantFeatureName, list[VariantFeatureValue]] = defaultdict(
+            list
+        )
         for vprop in vprops:
             prop_values[vprop.feature].append(vprop.value)
 
         # 3. Filter and sort supported variant property values.
-        keyconfigs = []
+        keyconfigs: dict[VariantFeatureName, list[VariantFeatureValue]] = defaultdict(
+            list
+        )
 
         # Top Priority
         if (supported_values := self._get_supported_architectures()) is not None:
             key = "architecture"
-            keyconfigs.append(
-                VariantFeatureConfig(
-                    name=key,
-                    values=[val for val in prop_values[key] if val in supported_values],
-                )
+            keyconfigs[key] = sorted(
+                [val for val in prop_values[key] if val in supported_values],
+                key=lambda x: supported_values.index(x),
             )
 
         # Second Priority
         if (version := self._get_compute_capability()) is not None:
             key = "compute_capability"
-            keyconfigs.append(
-                VariantFeatureConfig(
-                    name=key,
-                    values=[
-                        val for val in prop_values[key] if version in SpecifierSet(val)
-                    ],
-                )
-            )
+            vprops_specset: list[SpecifierSet] = []
+            for vprop in prop_values[key]:
+                try:
+                    vprops_specset.append(SpecifierSet(vprop))
+                except InvalidSpecifier:  # noqa: PERF203
+                    warnings.warn(
+                        f"The variant property `{self.namespace} :: {key} :: {vprop}` "
+                        f"is not a valid SpecifierSet. Will be ignored.",
+                        UserWarning,
+                        stacklevel=1,
+                    )
+
+            vprops_specset = sort_specifier_sets(vprops_specset)
+            vprops_specset.reverse()  # most generic to most specific, forward first
+
+            keyconfigs[key] = [
+                str(specset) for specset in vprops_specset if version in specset
+            ]
 
         # Third Priority
         if (accuracy := self._get_supported_compute_accuracy()) is not None:
             # Sorting order: from lowest required accuracy to the highest
             key = "compute_accuracy"
-            keyconfigs.append(
-                VariantFeatureConfig(
-                    name=key,
-                    values=sorted(
-                        [
-                            needed_accuracy
-                            for needed_accuracy in prop_values[key]
-                            if needed_accuracy <= accuracy
-                        ]
-                    ),
-                )
+            keyconfigs[key] = sorted(
+                [
+                    needed_accuracy
+                    for needed_accuracy in prop_values[key]
+                    if float(needed_accuracy) <= accuracy
+                ],
+                key=lambda x: float(x),
+                reverse=True,
             )
 
-        # =========================================== #
+        return dict(keyconfigs)
 
-        # fmt: off
-        ordering: dict[str, list[str]] = {
-            "architecture": self._get_supported_architectures(),            # Priority 1
-            "compute_capability": self._get_supported_compute_capability(), # Priority 2
-            "humor": self._get_supported_humor(),                           # Priority 3
-            "compute_accuracy": self._get_supported_compute_accuracy(),     # Priority 4
-        }
-        # fmt: on
+    def get_all_features(self) -> list[VariantFeatureName]:
+        return ["architecture", "compute_accuracy", "compute_capability"]
 
-        def _is_compatible(vprop: VariantProperty) -> bool:
-            """Check if the property is compatible with the system."""
-            return vprop.value in ordering.get(vprop.feature, [])
 
-        vprops_data_filtered = filter(_is_compatible, vprops)
+if __name__ == "__main__":
+    plugin = FictionalHWPlugin()
+    print(f"{plugin.get_all_features()=}")
 
-        def property_rank(prop: VariantProperty) -> tuple[FeatureIndex, PropertyIndex]:
-            """Sort key for the properties."""
-            feature_index = list(ordering.keys()).index(prop.feature)
-            value_index = ordering[prop.feature].index(prop.value)
-            return (feature_index, value_index)
+    @dataclass(frozen=True)
+    class VProp:
+        namespace: str
+        feature: str
+        value: str
 
-        return sorted(vprops_data_filtered, key=property_rank)
-
-    def get_all_configs(self) -> list[VariantFeatureConfig]:
-        return [
-            VariantFeatureConfig(
-                name="architecture", values=["deepthought", "hal9000", "mother", "tars"]
-            ),
-            VariantFeatureConfig(
-                name="compute_capability",
-                values=[str(x) for x in range(0, 11, 2)],
-            ),
-            VariantFeatureConfig(
-                name="humor", values=[str(x) for x in range(0, 11, 2)]
-            ),
-            VariantFeatureConfig(
-                name="compute_accuracy", values=[str(x) for x in range(0, 11, 2)]
-            ),
-        ]
+    vprops: list[VProp] = [
+        # ------------------------------ Should Work ------------------------------ #
+        # 1. `architecture`: only ["deepthought", "hal9000"] in this order
+        VProp(namespace=plugin.namespace, feature="architecture", value="hal9000"),
+        VProp(namespace=plugin.namespace, feature="architecture", value="deepthought"),
+        # 2. `compute_capability`: selection `Version("8.3.2") in SpecifierSet`
+        #    sorted from least specific to most - forward compat first.
+        VProp(namespace=plugin.namespace, feature="compute_capability", value=">=8"),
+        VProp(namespace=plugin.namespace, feature="compute_capability", value="<9"),
+        VProp(
+            namespace=plugin.namespace,
+            feature="compute_capability",
+            value=">=5.0,<10.0",
+        ),
+        # 3. `compute_accuracy`: selection `<= 0.995` sorted from high to low
+        VProp(namespace=plugin.namespace, feature="compute_accuracy", value="0.7"),
+        VProp(namespace=plugin.namespace, feature="compute_accuracy", value="0.99"),
+        VProp(namespace=plugin.namespace, feature="compute_accuracy", value="0.8"),
+        # ---------------------------- Should NOT Work ---------------------------- #
+        # 1. `architecture`: only ["deepthought", "hal9000"] in this order
+        VProp(namespace=plugin.namespace, feature="architecture", value="jarvis"),
+        VProp(namespace=plugin.namespace, feature="architecture", value="tar"),
+        # 2. `compute_capability`: selection `Version("8.3.2") in SpecifierSet`
+        #    sorted from least specific to most - forward compat first.
+        VProp(namespace=plugin.namespace, feature="compute_capability", value=">=9"),
+        VProp(namespace=plugin.namespace, feature="compute_capability", value="<8"),
+        VProp(
+            namespace=plugin.namespace,
+            feature="compute_capability",
+            value=">=8,<9,!=8.3.2",
+        ),
+        # 3. `compute_accuracy`: selection `<= 0.995` sorted from high to low
+        VProp(
+            namespace=plugin.namespace, feature="compute_accuracy", value=str(9.99e-1)
+        ),
+        VProp(namespace=plugin.namespace, feature="compute_accuracy", value="0.9999"),
+    ]
+    print(f"{plugin.filter_and_sort_properties(vprops)=}")  # type: ignore  # noqa: PGH003
