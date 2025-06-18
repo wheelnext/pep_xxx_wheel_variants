@@ -10,9 +10,7 @@ authors = [
 dynamic = ["version", "description"]
 
 [variant.default-priorities]
-namespace = ["fictional_hw", "fictional_tech"] 
-feature = {'fictional_hw' = ['humor', 'compute_accuracy'], 'fictional_tech' = ['quantum']}
-property = {'fictional_tech' = {'technology' = ['auto_chef']}}
+namespace = ["fictional_hw", "fictional_tech"]
 
 [variant.providers.fictional_tech]
 requires = ["provider-fictional-tech == 1.0.0"]

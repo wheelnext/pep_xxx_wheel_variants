@@ -34,47 +34,98 @@ build: clean ## builds source and wheel package
 
 	flit build --format wheel --null-variant
 
+# Valid `fictional_hw :: architecture`
 	flit build --format wheel \
-		-p "fictional_hw :: architecture :: mother" \
-		-p "fictional_hw :: compute_capability :: 4"
+		-p "fictional_hw :: architecture :: hal9000"
 
 	flit build --format wheel \
-		-p "fictional_tech :: quantum :: superposition" \
-		-p "fictional_tech :: risk_exposure :: 25" \
-		-p "fictional_tech :: technology :: auto_chef"
-
-	flit build --format wheel \
-		-p "fictional_hw :: architecture :: deepthought" \
-		-p "fictional_hw :: compute_accuracy :: 10" \
-		-p "fictional_hw :: compute_capability :: 10" \
-		-p "fictional_hw :: humor :: 0" \
-		-p "fictional_tech :: quantum :: foam"
-
-	flit build --format wheel \
-		-p "fictional_hw :: architecture :: tars" \
-		-p "fictional_hw :: compute_accuracy :: 8" \
-		-p "fictional_hw :: compute_capability :: 8" \
-		-p "fictional_hw :: humor :: 10"
+		-p "fictional_hw :: architecture :: deepthought"
 
 	flit build --format wheel \
 		-p "fictional_hw :: architecture :: hal9000" \
-		-p "fictional_hw :: compute_accuracy :: 0" \
-		-p "fictional_hw :: compute_capability :: 6" \
-		-p "fictional_hw :: humor :: 2"
+		-p "fictional_hw :: architecture :: deepthought"
+
+# Invalid `fictional_hw :: architecture`
+	flit build --format wheel \
+		-p "fictional_hw :: architecture :: jarvis"
 
 	flit build --format wheel \
-		-p "fictional_tech :: quantum :: foam" \
-		-p "fictional_tech :: risk_exposure :: 1000000000" \
-		-p "fictional_tech :: technology :: improb_drive"
-		
-	flit build --format wheel \
-		-p "fictional_hw :: compute_capability :: >=4,<8"
-		
-	flit build --format wheel \
-		-p "fictional_hw :: compute_capability :: >=4,<6"
-		
-	flit build --format wheel \
-		-p "fictional_hw :: compute_capability :: >=7"
+		-p "fictional_hw :: architecture :: tar"
 
-	variantlib generate-index-json -d dist/
+	flit build --format wheel \
+		-p "fictional_hw :: architecture :: jarvis" \
+		-p "fictional_hw :: architecture :: tar"
+
+# Valid `fictional_hw :: compute_capability`
+	flit build --format wheel \
+		-p "fictional_hw :: compute_capability :: >=8"
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_capability :: <9"
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_capability :: >=5.0,<10.0"
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_capability :: >=8" \
+		-p "fictional_hw :: compute_capability :: <9" \
+		-p "fictional_hw :: compute_capability :: >=5.0,<10.0"
+
+# Invalid `fictional_hw :: compute_capability
+	flit build --format wheel \
+		-p "fictional_hw :: compute_capability :: >=9"
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_capability :: <8"
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_capability :: >=8,<9,!=8.3.2"
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_capability :: <8" \
+		-p "fictional_hw :: compute_capability :: >=9" \
+		-p "fictional_hw :: compute_capability :: >=8,<9,!=8.3.2"
+
+# Valid `fictional_hw :: compute_accuracy`
+	flit build --format wheel \
+		-p "fictional_hw :: compute_accuracy :: 0.7"
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_accuracy :: 0.99"
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_accuracy :: 0.8"
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_accuracy :: 0.7" \
+		-p "fictional_hw :: compute_accuracy :: 0.8" \
+		-p "fictional_hw :: compute_accuracy :: 0.99"
+
+# Invalid `fictional_hw :: compute_capability
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_accuracy :: 0.996"
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_accuracy :: 0.9999"
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_accuracy :: 0.996" \
+		-p "fictional_hw :: compute_accuracy :: 0.9999"
+
+# Mix n Match - VALID
+
+	flit build --format wheel \
+		-p "fictional_hw :: architecture :: deepthought" \
+		-p "fictional_hw :: compute_accuracy :: 0.99"
+
+	flit build --format wheel \
+		-p "fictional_hw :: architecture :: hal9000" \
+		-p "fictional_hw :: compute_accuracy :: 0.995"
+
+# Mix n Match - INVALID
+
+	flit build --format wheel \
+		-p "fictional_hw :: architecture :: hal9000" \
+		-p "fictional_hw :: compute_accuracy :: 0.996"
 

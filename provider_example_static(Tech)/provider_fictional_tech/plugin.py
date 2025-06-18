@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from dataclasses import dataclass
+from typing import Any
 
 
 @dataclass(frozen=True)
@@ -55,3 +56,7 @@ class FictionalTechPlugin:
             VariantFeatureConfig(name="quantum", values=["foam", "superposition"]),
             VariantFeatureConfig(name="risk_exposure", values=["25", "1000000000"]),
         ]
+
+    def get_build_setup(self, properties: list[Any]) -> dict[str, list[str]]:
+        """Get build variables for a variant made of specified properties"""
+        return {}

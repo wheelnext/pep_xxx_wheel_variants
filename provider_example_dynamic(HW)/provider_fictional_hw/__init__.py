@@ -6,7 +6,7 @@ import importlib.util
 import sys
 from pathlib import Path
 
-__version__ = "0.0.1"
+__version__ = "1.0.0"
 
 
 def _load_vendored_packaging() -> None:
@@ -16,7 +16,7 @@ def _load_vendored_packaging() -> None:
     Returns:
         module (ModuleType): The loaded module.
     """
-    name = "archspec"
+    name = "packaging"
 
     spec = importlib.util.spec_from_file_location(
         name=name,

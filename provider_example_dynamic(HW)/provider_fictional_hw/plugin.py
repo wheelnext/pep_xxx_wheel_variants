@@ -1,7 +1,7 @@
 from __future__ import annotations
 
-import re
 import warnings
+from abc import abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass
 from typing import Protocol
@@ -16,15 +16,32 @@ from provider_fictional_hw.version_sort import sort_specifier_sets
 FeatureIndex = int
 PropertyIndex = int
 
+VariantNamespace = str
 VariantFeatureName = str
 VariantFeatureValue = str
 
 
 @runtime_checkable
-class VariantProperty(Protocol):
-    namespace: str
-    feature: str
-    value: str
+class VariantPropertyType(Protocol):
+    """A protocol for variant properties"""
+
+    @property
+    @abstractmethod
+    def namespace(self) -> VariantNamespace:
+        """Namespace (from plugin)"""
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def feature(self) -> VariantFeatureName:
+        """Feature name (within the namespace)"""
+        raise NotImplementedError
+
+    @property
+    @abstractmethod
+    def value(self) -> VariantFeatureValue:
+        """Feature value"""
+        raise NotImplementedError
 
 
 @dataclass(frozen=True)
@@ -33,6 +50,18 @@ class VariantFeatureConfig:
 
     # Acceptable values in priority order
     values: list[str]
+
+
+class InputPreservingSpecifierSet(SpecifierSet):
+    original_value: str
+
+    def __init__(
+        self,
+        specifiers: str = "",
+        prereleases: bool | None = None,
+    ) -> None:
+        self.original_value = specifiers
+        super().__init__(specifiers=specifiers, prereleases=prereleases)
 
 
 class FictionalHWPlugin:
@@ -57,14 +86,14 @@ class FictionalHWPlugin:
 
     def filter_and_sort_properties(
         self,
-        vprops: list[VariantProperty],
+        vprops: list[VariantPropertyType],
         property_priorities: list[VariantFeatureValue] | None = None,
     ) -> dict[VariantFeatureName, list[VariantFeatureValue]]:
         """Filter and sort the properties based on the plugin's logic."""
 
         # 1.A - Validation: Validate input types.
         assert isinstance(vprops, list)
-        assert all(isinstance(vprop, VariantProperty) for vprop in vprops)
+        assert all(isinstance(vprop, VariantPropertyType) for vprop in vprops)
 
         if not vprops:
             # nothing in => nothing out.
@@ -117,14 +146,14 @@ class FictionalHWPlugin:
         # Second Priority
         if (version := self._get_compute_capability()) is not None:
             key = "compute_capability"
-            vprops_specset: list[SpecifierSet] = []
+            vprops_specset: list[InputPreservingSpecifierSet] = []
             for vprop in prop_values[key]:
                 try:
-                    vprops_specset.append(SpecifierSet(vprop))
+                    vprops_specset.append(InputPreservingSpecifierSet(vprop))
                 except InvalidSpecifier:  # noqa: PERF203
                     warnings.warn(
                         f"The variant property `{self.namespace} :: {key} :: {vprop}` "
-                        f"is not a valid SpecifierSet. Will be ignored.",
+                        f"is not a valid `SpecifierSet`. Will be ignored.",
                         UserWarning,
                         stacklevel=1,
                     )
@@ -133,7 +162,9 @@ class FictionalHWPlugin:
             vprops_specset.reverse()  # most generic to most specific, forward first
 
             keyconfigs[key] = [
-                str(specset) for specset in vprops_specset if version in specset
+                specset.original_value
+                for specset in vprops_specset
+                if version in specset
             ]
 
         # Third Priority
@@ -155,10 +186,16 @@ class FictionalHWPlugin:
     def get_all_features(self) -> list[VariantFeatureName]:
         return ["architecture", "compute_accuracy", "compute_capability"]
 
+    def get_build_setup(
+        self, properties: list[VariantPropertyType]
+    ) -> dict[str, list[str]]:
+        """Get build variables for a variant made of specified properties"""
+        return {}
+
 
 if __name__ == "__main__":
     plugin = FictionalHWPlugin()
-    print(f"{plugin.get_all_features()=}")
+    print(f"{plugin.get_all_features()=}")  # noqa: T201
 
     @dataclass(frozen=True)
     class VProp:
@@ -203,4 +240,4 @@ if __name__ == "__main__":
         ),
         VProp(namespace=plugin.namespace, feature="compute_accuracy", value="0.9999"),
     ]
-    print(f"{plugin.filter_and_sort_properties(vprops)=}")  # type: ignore  # noqa: PGH003
+    print(f"{plugin.filter_and_sort_properties(vprops)=}")  # type: ignore  # noqa: PGH003,T201

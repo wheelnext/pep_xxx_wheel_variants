@@ -9,10 +9,12 @@ from packaging._structures import NegativeInfinityType
 from packaging.version import Version
 
 if TYPE_CHECKING:
-    from packaging.specifiers import SpecifierSet
+    from provider_fictional_hw.plugin import InputPreservingSpecifierSet
 
 
-def sort_specifier_sets(specifier_sets: list[SpecifierSet]) -> list[SpecifierSet]:
+def sort_specifier_sets(
+    specifier_sets: list[InputPreservingSpecifierSet],
+) -> list[InputPreservingSpecifierSet]:
     """Sort a list of SpecifierSets.
 
     Sort first by the maximum lower bound, then by the maximum upper bound.
