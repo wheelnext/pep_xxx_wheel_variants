@@ -1,19 +1,22 @@
 from __future__ import annotations
 
+from collections import defaultdict
 from dataclasses import dataclass
+from typing import Protocol
+from typing import runtime_checkable
+
+from packaging.specifiers import SpecifierSet
+from packaging.version import Version
 
 FeatureIndex = int
 PropertyIndex = int
 
 
-class VariantProperty:
+@runtime_checkable
+class VariantProperty(Protocol):
     namespace: str
     feature: str
     value: str
-
-    def to_str(self) -> str:
-        """Convert the VariantProperty to a string representation."""
-        return f"{self.namespace} :: {self.feature} :: {self.value}"
 
 
 @dataclass(frozen=True)
@@ -27,27 +30,22 @@ class VariantFeatureConfig:
 class FictionalHWPlugin:
     namespace = "fictional_hw"
 
-    def _get_supported_architectures(self) -> list[str]:
+    def _get_supported_architectures(self) -> list[str] | None:
         """Lookup the system to decide what `architecture` are supported on this system.
         Returns a list of strings in order of priority."""
         return ["deepthought", "hal9000"]
 
-    def _get_supported_compute_capability(self) -> list[str]:
-        """Lookup the system to decide what `compute_capability` are supported on this
-        system.
+    def _get_compute_capability(self) -> Version | None:
+        """Lookup the system to decide what `compute_capability` is supported on
+        this system.
         Returns a list of strings in order of priority."""
-        return ["10", "6", "2"]
+        return Version("8.3.2")
 
-    def _get_supported_compute_accuracy(self) -> list[str]:
+    def _get_supported_compute_accuracy(self) -> float | None:
         """Lookup the system to decide what `compute_accuracy` are supported on this
         system.
         Returns a list of strings in order of priority."""
-        return ["1000", "0", "10"]
-
-    def _get_supported_humor(self):
-        """Lookup the system to decide what `humor` are supported on this system.
-        Returns a list of strings in order of priority."""
-        return ["0", "2"]
+        return 0.995
 
     def filter_and_sort_properties(
         self, vprops: list[VariantProperty]
@@ -71,11 +69,54 @@ class FictionalHWPlugin:
                 f"{'\n- '.join(issues_found)}"
             )
 
-        # 2. Filter Non Compatible VariantProperties and Sort the properties by feature
-        #    and value.
+        # 2. Aggregate Variant Property values per feature.
+        prop_values = defaultdict(list)
+        for vprop in vprops:
+            prop_values[vprop.feature].append(vprop.value)
 
-        # Note: Since Python3.7, Python guarantees that `dict.keys()` conserve the
-        #       insertion order. Here we are using this feature.
+        # 3. Filter and sort supported variant property values.
+        keyconfigs = []
+
+        # Top Priority
+        if (supported_values := self._get_supported_architectures()) is not None:
+            key = "architecture"
+            keyconfigs.append(
+                VariantFeatureConfig(
+                    name=key,
+                    values=[val for val in prop_values[key] if val in supported_values],
+                )
+            )
+
+        # Second Priority
+        if (version := self._get_compute_capability()) is not None:
+            key = "compute_capability"
+            keyconfigs.append(
+                VariantFeatureConfig(
+                    name=key,
+                    values=[
+                        val for val in prop_values[key] if version in SpecifierSet(val)
+                    ],
+                )
+            )
+
+        # Third Priority
+        if (accuracy := self._get_supported_compute_accuracy()) is not None:
+            # Sorting order: from lowest required accuracy to the highest
+            key = "compute_accuracy"
+            keyconfigs.append(
+                VariantFeatureConfig(
+                    name=key,
+                    values=sorted(
+                        [
+                            needed_accuracy
+                            for needed_accuracy in prop_values[key]
+                            if needed_accuracy <= accuracy
+                        ]
+                    ),
+                )
+            )
+
+        # =========================================== #
 
         # fmt: off
         ordering: dict[str, list[str]] = {
