@@ -31,3 +31,6 @@
 	path = numpy
 	url = ../numpy
 	branch = wheel-variants
+[submodule "provider_example_dynamic(HW)/provider_fictional_hw/vendor/packaging"]
+	path = provider_example_dynamic(HW)/provider_fictional_hw/vendor/packaging
+	url = https://github.com/pypa/packaging.git
