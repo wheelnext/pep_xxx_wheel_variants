@@ -35,19 +35,31 @@ build: clean ## builds source and wheel package
 	flit build --format wheel --null-variant
 	
 	flit build --format wheel \
-		-p "fictional_hw :: architecture :: mother" \
-		-p "fictional_hw :: compute_capability :: 4"
+		-p "fictional_hw :: architecture :: hal9000" \
+		-p "fictional_hw :: compute_capability :: >=8"
+
+	flit build --format wheel \
+		-p "fictional_tech :: quantum :: foam" \
+		-p "fictional_tech :: risk_exposure :: 25" \
+		-p "fictional_tech :: technology :: auto_chef"
 
 	flit build --format wheel \
 		-p "fictional_hw :: architecture :: hal9000" \
 		-p "fictional_tech :: quantum :: foam" \
-		-p "fictional_tech :: risk_exposure :: 1000000000" \
-		-p "fictional_tech :: technology :: improb_drive"
+		-p "fictional_tech :: risk_exposure :: 25" \
+		-p "fictional_tech :: technology :: auto_chef"
+
+	flit build --format wheel \
+		-p "fictional_hw :: compute_capability :: >=8" \
+		-p "fictional_tech :: quantum :: foam" \
+		-p "fictional_tech :: risk_exposure :: 25" \
+		-p "fictional_tech :: technology :: auto_chef"
 
 	flit build --format wheel \
 		-p "fictional_hw :: architecture :: hal9000" \
-		-p "fictional_hw :: compute_accuracy :: 0" \
-		-p "fictional_hw :: compute_capability :: 6" \
-		-p "fictional_hw :: humor :: 2"
+		-p "fictional_hw :: compute_capability :: >=8" \
+		-p "fictional_tech :: quantum :: foam" \
+		-p "fictional_tech :: risk_exposure :: 25" \
+		-p "fictional_tech :: technology :: auto_chef"
 
 	variantlib generate-index-json -d dist/

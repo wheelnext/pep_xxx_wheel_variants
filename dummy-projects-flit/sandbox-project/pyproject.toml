@@ -10,7 +10,7 @@ authors = [
 dynamic = ["version", "description"]
 
 [variant.default-priorities]
-namespace = ["fictional_hw", "fictional_tech"] 
+namespace = ["fictional_tech", "fictional_hw"] 
 feature = {'fictional_hw' = ['humor', 'compute_accuracy'], 'fictional_tech' = ['quantum']}
 property = {'fictional_tech' = {'technology' = ['auto_chef']}}
 
