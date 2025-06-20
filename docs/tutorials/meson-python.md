@@ -2,28 +2,24 @@
 
 ## Purpose
 
-This document provides a quick guide how to utilize [the variant-capable
-fork of `meson-python`](
-https://github.com/wheelnext/meson-python/tree/wheel-variants) in order
-to build variant wheels. We also provide [a forked version of NumPy
-with sample variant configuration](
-https://github.com/wheelnext/numpy/tree/wheel-variants).
-
+This document provides a quick guide how to utilize
+[the variant-capable fork of `meson-python`](https://github.com/wheelnext/meson-python/tree/wheel-variants)
+in order to build variant wheels. We also provide
+[a forked version of NumPy with sample variant configuration](https://github.com/wheelnext/numpy/tree/wheel-variants).
 
 ## Determining the plugins to use
 
-Provider plugins determine the available variants. Currently,
-the wheelnext project provides the following plugins:
+Provider plugins determine the available variants. Currently, the wheelnext
+project provides the following plugins:
 
 | Package                                                                           | Use case                                | Example property             | `plugin-api`                                         |
-|-----------------------------------------------------------------------------------|-----------------------------------------|------------------------------|------------------------------------------------------|
+| --------------------------------------------------------------------------------- | --------------------------------------- | ---------------------------- | ---------------------------------------------------- |
 | [nvidia-variant-provider](https://github.com/wheelnext/nvidia-variant-provider)   | CUDA driver version                     | `nvidia :: cuda :: 12.8`     | `nvidia_variant_provider.plugin:NvidiaVariantPlugin` |
 | [provider-variant-aarch64](https://github.com/wheelnext/provider-variant-aarch64) | ARM architecture version, extensions    | `aarch64 :: version :: 8.3a` | `provider_variant_aarch64.plugin:AArch64Plugin`      |
 | [provider-variant-x86-64](https://github.com/wheelnext/provider-variant-x86-64)   | x86_64 architecture version, extensions | `x86_64 :: level :: 3`       | `provider_variant_x86_64.plugin:X8664Plugin`         |
 
 To determine the exact list of properties available, install the plugin,
 `variantlib` and use the `variantlib plugins` commands, e.g.:
-
 
 ### 1. Create a virtualenv to isolate your environment
 
@@ -42,7 +38,7 @@ Then let's install some plugins and query variantlib to probe the system
 ```bash
 $ python3 -m pip install "variantlib[cli]" provider-variant-aarch64 provider-variant-x86_64
 $ variantlib plugins get-all-configs
-variantlib plugins get-all-configs                                                       
+variantlib plugins get-all-configs
 variantlib.plugins.py_envs - INFO - Using externally managed python environment
 variantlib.plugins.loader - INFO - Plugin discovered via entry point: provider_variant_x86_64 = provider_variant_x86_64.plugin:X8664Plugin; provided by package provider-variant-x86-64 0.0.1.post1
 variantlib.plugins.loader - INFO - Loading plugin via provider_variant_x86_64.plugin:X8664Plugin
@@ -71,11 +67,11 @@ Installed plugins on the user machine are auto-detected using entry-points.
 
 ## Updating `pyproject.toml`
 
-To enable variant support within a project using `meson-python`,
-the following changes need to be made to its `pyproject.toml` file:
+To enable variant support within a project using `meson-python`, the following
+changes need to be made to its `pyproject.toml` file:
 
-1. The `build-system.requires` list must use the wheelnext fork
-   of `meson-python`. For example:
+1. The `build-system.requires` list must use the wheelnext fork of
+   `meson-python`. For example:
 
    ```toml
    [build-system]
@@ -85,9 +81,9 @@ the following changes need to be made to its `pyproject.toml` file:
    ]
    ```
 
-2. `[variant.providers.<variant_namespace>]` section need to be added, indicating how to
-   install the provider plugins, and how to import their provider
-   classes. For example:
+2. `[variant.providers.<variant_namespace>]` section need to be added,
+   indicating how to install the provider plugins, and how to import their
+   provider classes. For example:
 
    ```toml
    [variant.providers.aarch64]
@@ -99,30 +95,27 @@ the following changes need to be made to its `pyproject.toml` file:
    plugin-api = "provider_variant_x86_64.plugin:X8664Plugin"
    ```
 
-   The last component of the table name must correspond to the plugin's
-   variant namespace. The `requires` key indicates how to install
-   the plugin, whereas the `plugin-api` key needs to be the value
-   taken from the plugin table.
+   The last component of the table name must correspond to the plugin's variant
+   namespace. The `requires` key indicates how to install the plugin, whereas
+   the `plugin-api` key needs to be the value taken from the plugin table.
 
-3. Finally, a list of namespace priorities needs to be defined for
-   the plugins that will be installed by default. The list will
-   determine which variants will take precedence when installing.
-   For example:
+3. Finally, a list of namespace priorities needs to be defined for the plugins
+   that will be installed by default. The list will determine which variants
+   will take precedence when installing. For example:
 
    ```toml
    [variant.default-priorities]
    namespace = ["aarch64", "x86_64"]
    ```
 
-   Note that in this particular case the variants are mutually
-   exclusive, so the actual order does not matter.
-
+   Note that in this particular case the variants are mutually exclusive, so the
+   actual order does not matter.
 
 ## Building without explicit `meson.build` support
 
-At this point, it is already possible to start building variant wheels.
-For example, to build a wheel for `x86_64 :: level :: v3` baseline,
-the following command can be used:
+At this point, it is already possible to start building variant wheels. For
+example, to build a wheel for `x86_64 :: level :: v3` baseline, the following
+command can be used:
 
 ```console
 $ python3 -m pip install -q build
@@ -153,8 +146,8 @@ Host machine cpu: x86_64
 Program python found: YES (/tmp/build-env-l7iyan__/bin/python)
 Found pkg-config: YES (/usr/bin/pkg-config) 2.4.3
 Run-time dependency python found: YES 3.13
-Has header "Python.h" with dependency python-3.13: YES 
-Compiler for C supports arguments -fno-strict-aliasing: YES 
+Has header "Python.h" with dependency python-3.13: YES
+Compiler for C supports arguments -fno-strict-aliasing: YES
 Message: Appending option "detect" to "cpu-baseline" due to detecting global architecture c_arg "-march=x86-64-v3"
 [...]
 Message:
@@ -169,32 +162,29 @@ CPU Optimization Options
 Successfully built numpy-2.2.5-cp313-cp313-linux_x86_64-fa7c1393.whl
 ```
 
-The `-Cvariant-name=...` option specifies the variant property to build
-for. It can be used multiple times to combine multiple properties.
-In the case of `aarch64 :: version` and `x86_64 :: level` properties,
-this option also automatically adjusts compiler flags to build
-for the specified baseline. In case of other plugins and properties,
-a manual setup may be necessary to ensure that the specified variant
-is actually built — rather than just marked.
-
+The `-Cvariant-name=...` option specifies the variant property to build for. It
+can be used multiple times to combine multiple properties. In the case of
+`aarch64 :: version` and `x86_64 :: level` properties, this option also
+automatically adjusts compiler flags to build for the specified baseline. In
+case of other plugins and properties, a manual setup may be necessary to ensure
+that the specified variant is actually built — rather than just marked.
 
 ## Updating `meson.build` (optional)
 
-In addition to using the standard provider plugin functionality, it is
-also possible to explicitly pass built variant properties to the Meson
-build system. In order to facilitate this, the `variant` option needs
-to be added to `meson.options` (or `meson_options.txt`) file:
+In addition to using the standard provider plugin functionality, it is also
+possible to explicitly pass built variant properties to the Meson build system.
+In order to facilitate this, the `variant` option needs to be added to
+`meson.options` (or `meson_options.txt`) file:
 
 ```meson
 option('variant', type: 'array', value: [],
         description: 'Wheel variant keys')
 ```
 
-The option takes an array of variant properties
-in the `namespace :: feature :: value` form. For example, the following
-code can be used in `meson.build` to get the value
-of `x86_64 :: level` feature and put it into `x86_64_variant` varible,
-if used:
+The option takes an array of variant properties in the
+`namespace :: feature :: value` form. For example, the following code can be
+used in `meson.build` to get the value of `x86_64 :: level` feature and put it
+into `x86_64_variant` varible, if used:
 
 ```meson
 x86_64_variant = ''
@@ -216,8 +206,8 @@ endforeach
 ```
 
 To use this option, `-Cvariant=` option needs to be used instead of
-`-Cvariant-name=`. Variant properties specified via this option are
-additionally passed to `meson setup`:
+`-Cvariant-name=`. Variant properties specified via this option are additionally
+passed to `meson setup`:
 
 ```console
 $ python3 -m build -w -Cvariant=x86_64::level::v3
@@ -243,6 +233,5 @@ CPU Optimization Options
 Successfully built numpy-2.2.5-cp313-cp313-linux_x86_64-fa7c1393.whl
 ```
 
-Note that the `-Cvariant` property resulted in `-Dvariant` option
-being passed to `meson setup`, which in turn changed the CPU
-optimization options.
+Note that the `-Cvariant` property resulted in `-Dvariant` option being passed
+to `meson setup`, which in turn changed the CPU optimization options.

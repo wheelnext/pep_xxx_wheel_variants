@@ -1,18 +1,20 @@
 # Wheel Variants - Numpy Tutorial
 
-This tutorial contains a simple demo of the `Wheel-Variant` implementation for `Numpy`.
+This tutorial contains a simple demo of the `Wheel-Variant` implementation for
+`Numpy`.
 
 > [!CAUTION]  
 > This Wheel Variant Demo currently contains **very experimental code**.<br>
-> This should be considered as a feature-preview and in no-way used in production.
+> This should be considered as a feature-preview and in no-way used in
+> production.
 
 | Linux x86_64 | Linux AARCH64 | Windows AMD64 | MacOS x86_64 | MacOS ARM64 |
 | :----------: | :-----------: | :-----------: | :----------: | :---------: |
-|  ✅          |  ✅            | ✅            |  ✅          |  ✅          |
+|      ✅      |      ✅       |      ✅       |      ✅      |     ✅      |
 
 ## Where to report issues / ask questions ?
 
-Please go to: https://github.com/wheelnext/pep_xxx_wheel_variants/issues/new 
+Please go to: https://github.com/wheelnext/pep_xxx_wheel_variants/issues/new
 
 ## A. Let's validate that an "old installer" is non-affected by any of these changes
 
@@ -32,7 +34,8 @@ Writing to /path/to/venv/pip.conf
 
 ### 2. Test Install a Variant-Enabled package with "normal `pip`"
 
-By doing this - It **should** install the normal package (aka. non variant), proving the backward compatibility of the design.
+By doing this - It **should** install the normal package (aka. non variant),
+proving the backward compatibility of the design.
 
 ```bash
 $ python3 -m pip install --dry-run numpy
@@ -46,15 +49,15 @@ Would install numpy-2.2.5
 
 ### What happened ?
 
-As you can expect - PIP picked up the default `numpy` build - same as published on PyPI.
-Built as a normal Python Wheel (aka. `non variant`)
+As you can expect - PIP picked up the default `numpy` build - same as published
+on PyPI. Built as a normal Python Wheel (aka. `non variant`)
 
 ## B. Let's install a variant-enabled Python package manager
 
 ### 1. Let's install variant-enabled PIP
 
-> [!CAUTION]
-> This command will overwrite your environment's `pip`. Make sure you are in the virtualenv.
+> [!CAUTION] This command will overwrite your environment's `pip`. Make sure you
+> are in the virtualenv.
 
 ```bash
 # Install the PEP XXX - Wheel Variants Meta Package, that will give you the modified libraries:
@@ -112,9 +115,11 @@ Would install numpy-2.2.5-cfdbe307
 
 #### What happened ?
 
-PIP is aware `numpy` is variant-enabled thanks to the presence of [`numpy-2.2.5-variants.json`](https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-variants.json)
+PIP is aware `numpy` is variant-enabled thanks to the presence of
+[`numpy-2.2.5-variants.json`](https://variants-index.wheelnext.dev/numpy/numpy-2.2.5-variants.json)
 
-The file contains the instructions on how to install the variant plugins and parse the variants properties
+The file contains the instructions on how to install the variant plugins and
+parse the variants properties
 
 ```json
 {
@@ -144,15 +149,17 @@ The file contains the instructions on how to install the variant plugins and par
 }
 ```
 
-In this case both the `x86_64` and `aarch64` plugins shall be installed by default (see `default-priorities` key).
-With their relative "priority" not changing anything given that they are mutually exclusive.
+In this case both the `x86_64` and `aarch64` plugins shall be installed by
+default (see `default-priorities` key). With their relative "priority" not
+changing anything given that they are mutually exclusive.
 
-This platform contains an `x86_64` CPU - `pip` installs the right plugin and is able to detect which `x86_64` version this system supports.
-The following variants were available: https://variants-index.wheelnext.dev/numpy/
+This platform contains an `x86_64` CPU - `pip` installs the right plugin and is
+able to detect which `x86_64` version this system supports. The following
+variants were available: https://variants-index.wheelnext.dev/numpy/
 
-> [!IMPORTANT] 
-> In our case - this machine has the most advanced/recent `x86_64` version available so all `x86_64` variants are compatibles.
-> If you have a CPU with a `x86_64` version < 4 you will see some of the variant(s) rejected.
+> [!IMPORTANT] In our case - this machine has the most advanced/recent `x86_64`
+> version available so all `x86_64` variants are compatibles. If you have a CPU
+> with a `x86_64` version < 4 you will see some of the variant(s) rejected.
 
 Consequently, the installed variant corresponds to:
 
