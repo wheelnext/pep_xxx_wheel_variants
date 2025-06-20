@@ -238,6 +238,10 @@ object. In addition to the shared metadata copied from `pyproject.toml`,
 it contains a `variants` object that must list exactly one variant --
 the variant provided by the wheel.
 
+The `default-priorities` and `providers` for all wheels of the same package
+version on the same index must be the same and be equal to value in
+`*-variants.json`.
+
 The `variant.json` file corresponding to the wheel built from
 the example `pyproject.toml` file for x86-64-v3 would look like:
 
