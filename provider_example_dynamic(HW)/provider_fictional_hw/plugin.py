@@ -66,6 +66,7 @@ class InputPreservingSpecifierSet(SpecifierSet):
 
 class FictionalHWPlugin:
     namespace = "fictional_hw"
+    dynamic = True
 
     def _get_supported_architectures(self) -> list[str] | None:
         """Lookup the system to decide what `architecture` are supported on this system.
@@ -84,64 +85,20 @@ class FictionalHWPlugin:
         Returns a list of strings in order of priority."""
         return 0.995
 
-    def filter_and_sort_properties(
-        self,
-        vprops: list[VariantPropertyType],
-        property_priorities: list[VariantFeatureValue] | None = None,
-    ) -> dict[VariantFeatureName, list[VariantFeatureValue]]:
-        """Filter and sort the properties based on the plugin's logic."""
+    def get_supported_configs(
+        self, known_properties: list[Any] | None
+    ) -> list[VariantFeatureConfig]:
+        keyconfigs = []
 
-        # 1.A - Validation: Validate input types.
-        assert isinstance(vprops, list)
-        assert all(isinstance(vprop, VariantPropertyType) for vprop in vprops)
-
-        if not vprops:
-            # nothing in => nothing out.
-            return {}
-
-        # 1.B - Property Priority validation
-        property_priorities = (
-            property_priorities if property_priorities is not None else []
-        )
-
-        if property_priorities:
-            raise NotImplementedError
-
-        assert isinstance(property_priorities, list)
-        assert all(isinstance(val, VariantFeatureValue) for val in property_priorities)
-
-        # 1.C - Validation: Ensure all properties belong to the proper namespace.
-        issues_found: list[str] = [
-            f"Property `{vprop}` does not belong to namespace {self.namespace}"
-            for vprop in vprops
-            if vprop.namespace != self.namespace
-        ]
-        if issues_found:
-            raise ValueError(
-                f"Non compatible properties found in variant plugin "
-                f"`{self.namespace}`:\n"
-                f"{'\n- '.join(issues_found)}"
-            )
-
-        # 2. Group Variant Property values per feature.
         prop_values: dict[VariantFeatureName, list[VariantFeatureValue]] = defaultdict(
             list
         )
-        for vprop in vprops:
+        for vprop in known_properties:
             prop_values[vprop.feature].append(vprop.value)
 
-        # 3. Filter and sort supported variant property values.
-        keyconfigs: dict[VariantFeatureName, list[VariantFeatureValue]] = defaultdict(
-            list
-        )
-
         # Top Priority
-        if (supported_values := self._get_supported_architectures()) is not None:
-            key = "architecture"
-            keyconfigs[key] = sorted(
-                [val for val in prop_values[key] if val in supported_values],
-                key=lambda x: supported_values.index(x),
-            )
+        if (values := self._get_supported_architectures()) is not None:
+            keyconfigs.append(VariantFeatureConfig(name="architecture", values=values))
 
         # Second Priority
         if (version := self._get_compute_capability()) is not None:
@@ -161,30 +118,53 @@ class FictionalHWPlugin:
             vprops_specset = sort_specifier_sets(vprops_specset)
             vprops_specset.reverse()  # most generic to most specific, forward first
 
-            keyconfigs[key] = [
-                specset.original_value
-                for specset in vprops_specset
-                if version in specset
-            ]
+            keyconfigs.append(
+                VariantFeatureConfig(
+                    name=key,
+                    values=[
+                        specset.original_value
+                        for specset in vprops_specset
+                        if version in specset
+                    ],
+                )
+            )
 
         # Third Priority
         if (accuracy := self._get_supported_compute_accuracy()) is not None:
             # Sorting order: from lowest required accuracy to the highest
             key = "compute_accuracy"
-            keyconfigs[key] = sorted(
-                [
-                    needed_accuracy
-                    for needed_accuracy in prop_values[key]
-                    if float(needed_accuracy) <= accuracy
-                ],
-                key=lambda x: float(x),
-                reverse=True,
+            keyconfigs.append(
+                VariantFeatureConfig(
+                    name=key,
+                    values=sorted(
+                        [
+                            needed_accuracy
+                            for needed_accuracy in prop_values[key]
+                            if float(needed_accuracy) <= accuracy
+                        ],
+                        key=lambda x: float(x),
+                        reverse=True,
+                    ),
+                )
             )
 
-        return dict(keyconfigs)
+        return keyconfigs
 
-    def get_all_features(self) -> list[VariantFeatureName]:
-        return ["architecture", "compute_accuracy", "compute_capability"]
+    def get_all_configs(
+        self, known_properties: list[Any] | None
+    ) -> list[VariantFeatureConfig]:
+        return [
+            VariantFeatureConfig(
+                name="architecture", values=["deepthought", "hal9000", "mother", "tars"]
+            ),
+            VariantFeatureConfig(
+                name="compute_capability",
+                values=[str(x) for x in range(0, 11, 2)],
+            ),
+            VariantFeatureConfig(
+                name="compute_accuracy", values=[str(x) for x in range(0, 11, 2)]
+            ),
+        ]
 
     def get_build_setup(
         self, properties: list[VariantPropertyType]
