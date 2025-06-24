@@ -1,18 +1,20 @@
 # Wheel Variants - PyTorch Tutorial
 
-This tutorial contains a simple demo of the `Wheel-Variant` implementation for `pytorch`.
+This tutorial contains a simple demo of the `Wheel-Variant` implementation for
+`pytorch`.
 
 > [!CAUTION]  
 > This Wheel Variant Demo currently contains **very experimental code**.<br>
-> This should be considered as a feature-preview and in no-way used in production.
+> This should be considered as a feature-preview and in no-way used in
+> production.
 
 | Linux x86_64 | Linux AARCH64 | Windows AMD64 | MacOS x86_64 | MacOS ARM64 |
 | :----------: | :-----------: | :-----------: | :----------: | :---------: |
-|  ✅          |  ❌            | ✅            |  ❌          |  ❌          |
+|      ✅      |      ❌       |      ✅       |      ❌      |     ❌      |
 
 ## Where to report issues / ask questions ?
 
-Please go to: https://github.com/wheelnext/pep_xxx_wheel_variants/issues/new 
+Please go to: https://github.com/wheelnext/pep_xxx_wheel_variants/issues/new
 
 ## A. Let's validate that an "old installer" is non-affected by any of these changes
 
@@ -32,7 +34,8 @@ Writing to /path/to/venv/pip.conf
 
 ### 2. Test Install a Variant-Enabled package with "normal `pip`"
 
-By doing this - It **should** install the normal package (aka. non variant), proving the backward compatibility of the design.
+By doing this - It **should** install the normal package (aka. non variant),
+proving the backward compatibility of the design.
 
 ```bash
 $ python3 -m pip install --dry-run torch
@@ -46,15 +49,15 @@ Would install torch-2.7.0
 
 ### What happened ?
 
-As you can expect - PIP picked up the default `torch` build - same as published on PyPI.
-Built as a normal Python Wheel (aka. `non variant`)
+As you can expect - PIP picked up the default `torch` build - same as published
+on PyPI. Built as a normal Python Wheel (aka. `non variant`)
 
 ## B. Let's install a variant-enabled Python package manager
 
 ### 1. Let's install variant-enabled PIP
 
-> [!CAUTION]
-> This command will overwrite your environment's `pip`. Make sure you are in the virtualenv.
+> [!CAUTION] This command will overwrite your environment's `pip`. Make sure you
+> are in the virtualenv.
 
 ```bash
 # Install the PEP XXX - Wheel Variants Meta Package, that will give you the modified libraries:
@@ -113,9 +116,11 @@ Would install torch-2.7.0-d5784ad6
 
 #### What happened ?
 
-PIP is aware `torch` is variant-enabled thanks to the presence of [`torch-2.7.0-variants.json`](https://variants-index.wheelnext.dev/torch/torch-2.7.0-variants.json)
+PIP is aware `torch` is variant-enabled thanks to the presence of
+[`torch-2.7.0-variants.json`](https://variants-index.wheelnext.dev/torch/torch-2.7.0-variants.json)
 
-The file contains the instructions on how to install the NVIDIA variant plugin and parse the variants properties
+The file contains the instructions on how to install the NVIDIA variant plugin
+and parse the variants properties
 
 ```json
 {
@@ -138,13 +143,16 @@ The file contains the instructions on how to install the NVIDIA variant plugin a
 }
 ```
 
-In this case both the `nvidia` plugin shall be installed by default (see `default-priorities` key).
+In this case both the `nvidia` plugin shall be installed by default (see
+`default-priorities` key).
 
-This platform contains an NVIDIA GPU and CUDA 12.8 - `pip` installs the right plugin and is able to detect which `NVIDIA CUDA` variants this system supports.
-The following variants were available: https://variants-index.wheelnext.dev/torch/
+This platform contains an NVIDIA GPU and CUDA 12.8 - `pip` installs the right
+plugin and is able to detect which `NVIDIA CUDA` variants this system supports.
+The following variants were available:
+https://variants-index.wheelnext.dev/torch/
 
-> [!IMPORTANT] 
-> In our case - this machine has the most recent `NVIDIA CUDA` version available so all variants under the CUDA 12 major are compatible.<br>
+> [!IMPORTANT] In our case - this machine has the most recent `NVIDIA CUDA`
+> version available so all variants under the CUDA 12 major are compatible.<br>
 > If you have an older CUDA version, you will see some variants rejected.
 
 Consequently, the installed variant corresponds to:
@@ -157,12 +165,15 @@ Variant-property: nvidia :: cuda :: 12.8
 
 ### What's next ?
 
-We invite you to try playing with `NV_PROVIDER_FORCE_DRIVER_VERSION` environment variable and see how it changes the output.
+We invite you to try playing with `NV_PROVIDER_FORCE_DRIVER_VERSION` environment
+variable and see how it changes the output.
+
 - Valid Values: `[CUDA 11] >=11.8` and `[CUDA 12] >=12.6`
-- Any other values (different major than 11/12 or major.minor not supported): installation of the `null-variant` (CPU only)
+- Any other values (different major than 11/12 or major.minor not supported):
+  installation of the `null-variant` (CPU only)
 
 ```bash
 export NV_PROVIDER_FORCE_DRIVER_VERSION="11.8"
-pip install --dry-run torch 
+pip install --dry-run torch
 ...
 ```
