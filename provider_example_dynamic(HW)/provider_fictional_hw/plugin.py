@@ -4,6 +4,7 @@ import warnings
 from abc import abstractmethod
 from collections import defaultdict
 from dataclasses import dataclass
+from typing import Any
 from typing import Protocol
 from typing import runtime_checkable
 
@@ -86,9 +87,17 @@ class FictionalHWPlugin:
         return 0.995
 
     def get_supported_configs(
-        self, known_properties: list[Any] | None
+        self, known_properties: frozenset[VariantPropertyType] | None
     ) -> list[VariantFeatureConfig]:
-        keyconfigs = []
+        """Filter and sort the properties based on the plugin's logic."""
+
+        # 1.A - Validation: Validate input types.
+        assert isinstance(known_properties, frozenset)
+        assert all(isinstance(vprop, VariantPropertyType) for vprop in known_properties)
+
+        if not known_properties:
+            # Nothing In => Nothing Out
+            return []
 
         prop_values: dict[VariantFeatureName, list[VariantFeatureValue]] = defaultdict(
             list
@@ -96,11 +105,42 @@ class FictionalHWPlugin:
         for vprop in known_properties:
             prop_values[vprop.feature].append(vprop.value)
 
-        # Top Priority
-        if (values := self._get_supported_architectures()) is not None:
-            keyconfigs.append(VariantFeatureConfig(name="architecture", values=values))
+        # 1.B - Validation: Ensure all properties belong to the proper namespace.
+        issues_found: list[str] = [
+            f"Property `{vprop}` does not belong to namespace {self.namespace}"
+            for vprop in known_properties
+            if vprop.namespace != self.namespace
+        ]
+        if issues_found:
+            raise ValueError(
+                f"Non compatible properties found in variant plugin "
+                f"`{self.namespace}`:"
+                + ("\n- " + ("\n- ".join(issues_found)) if issues_found else "")
+            )
 
-        # Second Priority
+        # 2. Group Variant Property values per feature.
+        prop_values: dict[VariantFeatureName, list[VariantFeatureValue]] = defaultdict(
+            list
+        )
+        for vprop in known_properties:
+            prop_values[vprop.feature].append(vprop.value)
+
+        # 3. Filter and sort supported variant property values.
+        keyconfigs: list[VariantFeatureConfig] = []
+
+        # Top Priority: `architecture`
+        # - using a fixed list[str] as ordering
+        # - `known_properties` not used
+        if (values := self._get_supported_architectures()) is not None:
+            keyconfigs.append(
+                VariantFeatureConfig(
+                    name="architecture",
+                    values=values,
+                )
+            )
+
+        # Second Priority: `compute_capability`
+        # - using dynamically computer version comparison using `SpecifierSet`
         if (version := self._get_compute_capability()) is not None:
             key = "compute_capability"
             vprops_specset: list[InputPreservingSpecifierSet] = []
@@ -129,7 +169,8 @@ class FictionalHWPlugin:
                 )
             )
 
-        # Third Priority
+        # Third Priority: `compute_accuracy`
+        # - using `float` comparison
         if (accuracy := self._get_supported_compute_accuracy()) is not None:
             # Sorting order: from lowest required accuracy to the highest
             key = "compute_accuracy"
@@ -172,7 +213,7 @@ class FictionalHWPlugin:
 
 if __name__ == "__main__":
     plugin = FictionalHWPlugin()
-    print(f"{plugin.get_all_features()=}")  # noqa: T201
+    print(f"{plugin.get_all_configs(None)=}")  # noqa: T201
 
     @dataclass(frozen=True)
     class VProp:
@@ -217,4 +258,4 @@ if __name__ == "__main__":
         ),
         VProp(namespace=plugin.namespace, feature="compute_accuracy", value="0.9999"),
     ]
-    print(f"{plugin.filter_and_sort_properties(vprops)=}")  # type: ignore  # noqa: PGH003,T201
+    print(f"{plugin.get_supported_configs(vprops)=}")  # type: ignore  # noqa: PGH003,T201
