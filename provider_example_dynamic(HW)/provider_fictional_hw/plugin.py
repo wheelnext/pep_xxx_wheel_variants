@@ -133,20 +133,17 @@ class FictionalHWPlugin:
         if (accuracy := self._get_supported_compute_accuracy()) is not None:
             # Sorting order: from lowest required accuracy to the highest
             key = "compute_accuracy"
-            keyconfigs.append(
-                VariantFeatureConfig(
-                    name=key,
-                    values=sorted(
-                        [
-                            needed_accuracy
-                            for needed_accuracy in prop_values[key]
-                            if float(needed_accuracy) <= accuracy
-                        ],
-                        key=lambda x: float(x),
-                        reverse=True,
-                    ),
-                )
+            values = sorted(
+                [
+                    needed_accuracy
+                    for needed_accuracy in prop_values[key]
+                    if float(needed_accuracy) <= accuracy
+                ],
+                key=lambda x: float(x),
+                reverse=True,
             )
+            if values:
+                keyconfigs.append(VariantFeatureConfig(name=key, values=values))
 
         return keyconfigs
 
