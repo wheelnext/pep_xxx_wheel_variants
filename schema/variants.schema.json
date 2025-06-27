@@ -101,7 +101,7 @@
                     "additionalProperties": false,
                     "uniqueItems": true,
                     "required": [
-                        "plugin-api"
+                        "requires"
                     ]
                 }
             },
