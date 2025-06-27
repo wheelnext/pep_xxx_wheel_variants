@@ -56,7 +56,7 @@ structure can be visualized using the following tree:
 |         +- <feature>  : list[str]
 |
 +-- variants
-    +- <variant-hash>
+    +- <variant-label>
        +- <namespace>
           +- <feature>  : list[str]
 ```
@@ -171,7 +171,7 @@ with up to three keys:
 
 ```
 +-- variants
-    +- <variant-hash>
+    +- <variant-label>
        +- <namespace>
           +- <feature>  : str
 ```
@@ -183,7 +183,7 @@ for. In the latter, it lists all variants available for the package
 version.
 
 It resides under the `variants` key. It is a dictionary using variant
-hashes as keys, with values listing the properties for a given variant
+labels as keys, with values listing the properties for a given variant
 in a form of a nested dictionary. The keys of the top dictionary
 specify namespaces names, the keys of the subsequent dictionary feature
 names and their values are the corresponding property values.
@@ -317,8 +317,8 @@ command:
 
 ```console
 $ variantlib generate-index-json -d dist/
-variantlib.commands.generate_index_json - INFO - Processing wheel: `numpy-2.2.5-cp313-cp313-linux_x86_64-40aba78e.whl` with variant hash: `40aba78e`
-variantlib.commands.generate_index_json - INFO - Processing wheel: `numpy-2.2.5-cp313-cp313-linux_x86_64-fa7c1393.whl` with variant hash: `fa7c1393`
+variantlib.commands.generate_index_json - INFO - Processing wheel: `numpy-2.2.5-cp313-cp313-linux_x86_64-40aba78e.whl` with variant label: `40aba78e`
+variantlib.commands.generate_index_json - INFO - Processing wheel: `numpy-2.2.5-cp313-cp313-linux_x86_64-fa7c1393.whl` with variant label: `fa7c1393`
 ```
 
 The `foo-1.2.3-variants.json` corresponding to the package with two
