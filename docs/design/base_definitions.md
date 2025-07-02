@@ -65,7 +65,7 @@ Null variants can only be installed by package managers supporting
 variant wheels. An example use case is a package that provides:
 
 - one or more GPU-accelerated variants that are used when
-  the appropriate GPU acceleratio is available,
+  the appropriate GPU acceleration is available,
 
 - a null CPU-only variant that is used when no GPU acceleration
   is available,
