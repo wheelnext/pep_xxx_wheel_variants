@@ -290,7 +290,7 @@ the example `pyproject.toml` file for x86-64-v3 would look like:
     "variants": {
         "fa7c1393": {
             "x86_64": {
-                "level": "v3"
+                "level": ["v3"]
             }
         }
     }
@@ -370,12 +370,12 @@ like:
     "variants": {
         "40aba78e": {
             "x86_64": {
-                "level": "v2"
+                "level": ["v2"]
             }
         },
         "fa7c1393": {
             "x86_64": {
-                "level": "v3"
+                "level": ["v3"]
             }
         }
     }
