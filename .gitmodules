@@ -39,3 +39,6 @@
 	path = numpy
 	url = ../numpy
 	branch = wheel-variants
+[submodule "hatch"]
+	path = hatch
+	url = https://github.com/wheelnext/hatch.git
