@@ -1,0 +1,27 @@
+[build-system]
+requires = ['hatchling >=1,<2']
+build-backend = 'hatchling.build'
+
+[project]
+name = "dummy-project"
+authors = [
+    { name = "Hyunsu Cho", email = "chohyu01@gmail.com" },
+]
+dynamic = ["version", "description"]
+
+[tool.hatch.version]
+path = "dummy_project/__init__.py"
+
+[variant.default-priorities]
+ # the plugins corresponding to these namespaces will be auto-installed at installation
+namespace = ["fictional_hw", "fictional_tech"]  # optional - if empty nothing is auto-installed
+feature = []                                    # optional - Can be skipped if empty - 95%+ packages won't ever need
+property = []                                   # optional - Can be skipped if empty - 95%+ packages won't ever need
+
+[variant.providers.fictional_tech]
+requires = ["provider-fictional-tech == 1.0.0"]
+plugin-api = "provider_fictional_tech.plugin:FictionalTechPlugin"
+
+[variant.providers.fictional_hw]
+requires = ["provider-fictional-hw == 1.0.0"]
+plugin-api = "provider_fictional_hw.plugin:FictionalHWPlugin"
