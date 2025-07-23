@@ -1,41 +1,41 @@
-[submodule "mockhouse"]
-	path = mockhouse
-	url = ../mockhouse.git
-	branch = main
-[submodule "nvidia_variant_provider"]
-	path = nvidia_variant_provider
-	url = ../nvidia-variant-provider.git
-	branch = master
-[submodule "pip"]
-	path = pip
-	url = ../pip.git
-	branch = pep-xxx-wheel-variants
-[submodule "provider_fictional_hw"]
-	path = provider_fictional_hw
-	url = ../provider_fictional_hw.git
-	branch = main
-[submodule "provider_fictional_tech"]
-	path = provider_fictional_tech
-	url = ../provider_fictional_tech.git
-	branch = main
-[submodule "variantlib"]
-	path = variantlib
-	url = ../variantlib.git
-	branch = main
-[submodule "provider_variant_aarch64"]
-	path = provider_variant_aarch64
-	url = ../provider-variant-aarch64
-[submodule "provider_variant_x86_64"]
-	path = provider_variant_x86_64
-	url = ../provider-variant-x86-64.git
 [submodule "flit"]
 	path = flit
 	url = ../flit.git
+
 [submodule "meson-python"]
 	path = meson-python
 	url = ../meson-python
 	branch = wheel-variants
+
+[submodule "mockhouse"]
+	path = mockhouse
+	url = ../mockhouse.git
+	branch = main
+
 [submodule "numpy"]
 	path = numpy
 	url = ../numpy
 	branch = wheel-variants
+
+[submodule "nvidia_variant_provider"]
+	path = nvidia_variant_provider
+	url = ../nvidia-variant-provider.git
+	branch = master
+
+[submodule "pip"]
+	path = pip
+	url = ../pip.git
+	branch = pep-xxx-wheel-variants
+
+[submodule "provider_variant_aarch64"]
+	path = provider_variant_aarch64
+	url = ../provider-variant-aarch64
+
+[submodule "provider_variant_x86_64"]
+	path = provider_variant_x86_64
+	url = ../provider-variant-x86-64.git
+
+[submodule "variantlib"]
+	path = variantlib
+	url = ../variantlib.git
+	branch = main
