@@ -1,11 +1,12 @@
 [build-system]
-requires = ["setuptools >= 61.0"]
-build-backend = "setuptools.build_meta"
+requires = ['flit_core >=3,<4']
+build-backend = 'flit_core.buildapi'
 
 [project]
 name = "pep-xxx-wheel-variants"
 version = "1.0.0"
 authors = [{ name = "Jonathan Dekhtiar", email = "jonathan@dekhtiar.com" }]
+description = "Helper Install Package"
 dependencies = [
     "variantlib[cli] @ git+https://github.com/wheelnext/variantlib.git@main",
     "pip @ git+https://github.com/wheelnext/pip.git@pep-xxx-wheel-variants",

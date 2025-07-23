@@ -30,6 +30,6 @@ clean-test: ## remove test and coverage artifacts
 # ============================================================================ #
 
 build: clean ## builds source and wheel package
-	pip install --upgrade wheel build
-	python3 -m build --wheel
+	pip install --upgrade flit
+	python3 -m flit build --format wheel
 	ls -l dist
