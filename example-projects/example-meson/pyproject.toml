@@ -5,9 +5,9 @@ requires = [
 ]
 
 [project]
-name = "dummy-project"
+name = "dummy-project-meson"
 version = "0.0.1"
-requires-python = ">=3.8"
+requires-python = ">=3.9"
 
 [variant.default-priorities]
 namespace = ["fictional_hw", "fictional_tech"]

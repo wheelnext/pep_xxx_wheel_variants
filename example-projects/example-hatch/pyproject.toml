@@ -1,17 +1,19 @@
 [build-system]
-requires = ['flit_core >=3,<4']
-build-backend = 'flit_core.buildapi'
+requires = ['hatchling >=1,<2']
+build-backend = "hatchling.build"
 
 [project]
-name = "sandbox-project"
-authors = [
-    { name = "Jonathan Dekhtiar", email = "jonathan@dekhtiar.com" },
+name = "dummy-project-hatch"
+version = "0.0.1"
+description = "A dummy project for testing purposes"
+authors = [    
+    { name = "Hyunsu Cho", email = "chohyu01@gmail.com" },
 ]
-dynamic = ["version", "description"]
+requires-python = ">=3.9"
 
 [variant.default-priorities]
  # the plugins corresponding to these namespaces will be auto-installed at installation
-namespace = ["fictional_tech", "fictional_hw"]  # optional - if empty nothing is auto-installed
+namespace = ["fictional_hw", "fictional_tech"]  # optional - if empty nothing is auto-installed
 feature = []                                    # optional - Can be skipped if empty - 95%+ packages won't ever need
 property = []                                   # optional - Can be skipped if empty - 95%+ packages won't ever need
 

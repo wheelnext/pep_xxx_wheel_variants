@@ -11,3 +11,4 @@ dependencies = [
     "variantlib[cli] @ git+https://github.com/wheelnext/variantlib.git@main",
     "pip @ git+https://github.com/wheelnext/pip.git@pep-xxx-wheel-variants",
 ]
+requires-python = ">=3.9"

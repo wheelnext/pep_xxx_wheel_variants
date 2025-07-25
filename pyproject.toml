@@ -9,17 +9,29 @@ requires-python = ">=3.9"
 [tool.uv.sources]
 flit = { workspace = true }
 flit_core = { workspace = true }
+hatch = { workspace = true }
+hatchling = { workspace = true }
 mockhouse = { workspace = true }
 pip = { workspace = true }
 variantlib = { workspace = true }
 
 [tool.uv.workspace]
-members = ["flit", "flit/flit_core", "mockhouse/mockhouse_lib", "pip", "variantlib"]
+members = [
+    "flit", 
+    "flit/flit_core", 
+    "hatch",
+    "hatch/backend",  # hatchling
+    "mockhouse/mockhouse_lib", 
+    "pip", 
+    "variantlib",
+]
 
 [tool.uv]
 dev-dependencies = [
     "flit",
     "flit_core",
+    "hatch",
+    "hatchling",
     "mockhouse",
     "pip",
     "pre-commit>=4,<5",
