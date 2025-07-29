@@ -4,13 +4,14 @@ version = "1.0.0"
 authors = [{ name = "Jonathan Dekhtiar", email = "jonathan@dekhtiar.com" }]
 readme = "README.md"
 dependencies = []
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 [tool.uv.sources]
 flit = { workspace = true }
 flit_core = { workspace = true }
 hatch = { workspace = true }
 hatchling = { workspace = true }
+meson-python = { workspace = true }
 mockhouse = { workspace = true }
 pip = { workspace = true }
 variantlib = { workspace = true }
@@ -21,6 +22,7 @@ members = [
     "flit/flit_core", 
     "hatch",
     "hatch/backend",  # hatchling
+    "meson-python",
     "mockhouse/mockhouse_lib", 
     "pip", 
     "variantlib",
@@ -32,6 +34,7 @@ dev-dependencies = [
     "flit_core",
     "hatch",
     "hatchling",
+    "meson-python",
     "mockhouse",
     "pip",
     "pre-commit>=4,<5",

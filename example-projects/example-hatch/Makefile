@@ -34,7 +34,8 @@ build: clean ## builds source and wheel package
 
 	hatch build --target wheel --null-variant
 
-	hatch build --target wheel --variant-label 'foobar'
+	hatch build --target wheel --variant-label 'foobar' \
+		-p "fictional_hw :: architecture :: mother"
 
 	hatch build --target wheel \
 		-p "fictional_hw :: architecture :: mother" \
