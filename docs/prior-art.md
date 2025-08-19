@@ -32,12 +32,60 @@ a monotonically increasing `build-id` (e.g. `-1`, `-2`...). The metadata
 from all binary packages is cached in a single file that is used
 by the package manager to find the right binary package.
 
-The choice of features is mostly manual in Gentoo. The distribution
-provides some defaults, and users often adjust the remaining flags
-to their needs. Packages can express dependencies on specific USE
-configurations of other packages, in which case the package manager
-suggests adjustments.
+USE flags are effectively boolean, with each flag being either enabled
+or disabled. The default state for flags can be provided at global,
+profile (a system configuration such as "amd64 multilib desktop with
+systemd") and package level, and can be overriden by the user (for all
+packages or for specific packages).
 
+There is almost no automation to select flags. When 
 For `CPU_FLAGS*` variables Gentoo provides a separate tool to query
 the CPU, and output the suggested value. However, this is entirely
 manual and needs to be repeated whenever new flags are added to Gentoo.
+
+
+There are three bits of syntax related to USE flags:
+
+1. Dependencies can be expressed conditionally to flags, using
+   USE-conditional groups:
+
+   - `flag? ( ... )` - dependencies apply only if `flag` is *enabled*
+   - `!flag? ( ... )` - dependencies apply only if `flag` is *disabled*
+
+2. Dependencies can be used to require state of USE flags on other
+   packages, using USE dependencies `dep[flag1,flag2...]`, where `flag`
+   can use one of the following forms:
+
+   - `flag` - must be *enabled* on the dependency
+   - `-flag` - must be *disabled* on the dependency
+   - `flag?` - must be *enabled* on the dependency if it is *enabled*
+     on this package (shorthand for `flag? ( dep[flag] )`
+   - `flag=` - must have the *same state* on the dependency as on this
+     package (shorthand for `flag? ( dep[flag] ) !flag? ( dep[-flag] )`)
+   - `!flag=` - must have the *opposite state* on the dependency,
+     compared to this package (`flag? ( dep[-flag] ) !flag? ( dep[flag] )`)
+   - `!flag?` - must be *disabled* on the dependency if it is *disabled*
+     on this package (`!flag? ( dep[-flag] )`)
+
+   The two last variants are almost never used.
+
+3. Constraints can be placed to restrict how different flags can be
+   combined in the package (so called `REQUIRED_USE`). Individual
+   constraints may use the following features:
+
+   - `flag` - must be *enabled*
+   - `!flag` - must be *disabled*
+   - `flag? ( ... )` and `!flag? ( ... )` - constraints conditional
+     to other flags, just like in dependencies
+   - `|| ( flag1 flag2 ... )` - *at least one* flag from the group must
+     be enabled
+   - `^^ ( flag1 flag2 ... )` - *exactly one* flag from the group must
+     be enabled
+   - `?? ( flag1 flag2 ... )` - *at most one* flag from the group must
+     be enabled
+
+The boolean nature of USE flags makes providing a reasonable complete
+syntax simple. However, it implies that enumerations (such as versions)
+need to be redefined as long lists of flags, along with long lists
+of dependencies and constraints. Ebuilds are bash scripts, so this
+is often done using loops.
