@@ -6,7 +6,7 @@ Gentoo is a source-first distribution with binary package support.
 Binary packages can be used either as a primary installation method
 from a remote source, or as a cache for packages previously built
 from source. Source and binary packages can be freely mixed, with
-the package manager automatically buildig from source when a matching
+the package manager automatically building from source when a matching
 binary package is not available.
 
 There are three main build parametrization methods in Gentoo:
@@ -89,3 +89,59 @@ syntax simple. However, it implies that enumerations (such as versions)
 need to be redefined as long lists of flags, along with long lists
 of dependencies and constraints. Ebuilds are bash scripts, so this
 is often done using loops.
+
+## Conda
+
+Conda is a binary-only package ecosystem. It was created by [package
+maintainers who were frustrated with python's rough support for binary
+packages](https://jakevdp.github.io/blog/2016/08/25/conda-myths-and-misconceptions/#Myth-#4:-Creating-conda-in-the-first-place-was-irresponsible-&-divisive).
+The package collection includes both high-level integrations (PyTorch, 
+GDAL, etc.) and low-level dependencies such as compilers and C++ runtimes.
+As such, Conda has approximately the same control over the runtime environment
+as base operating systems. It has proven especially useful for providing an
+up-to-date package collection on older operating systems, where the system
+package manager may not have a current package selection.
+
+Conda is based around dependency solvers, and these solvers enable
+sharing core libraries. Conda benefits greatly from build tooling
+being concentrated (though not standardized). A given package builder group
+(e.g. Anaconda, Conda-forge) mostly produces binary-compatible packages,
+because they are self-consistent. As time passed and the package 
+ecosystem grew, it became harder to simultaneously satisfy everyone's 
+needs. Furthermore, users mixing packages from different sources often
+had a poor user experience with lots of problem. The conda filename format 
+included specifiers for a few things in the package (python version, numpy version mainly), but most package
+dependencies were not represented in any way in the filename. This
+prevented builds of a given package with two different options,
+such as version of a dependency. This is analogous to [Python's platform compatibility tags
+](https://packaging.python.org/en/latest/specifications/platform-compatibility-tags/), 
+except that conda captures the platform itself as a folder. This is basically the same 
+state that motivated the current wheel variant rework effort. Importantly, conda
+does not rely on the filename to resolve packages. Instead, a centralized index 
+aggregates package metadata and presents it all together, all at once.
+
+In [2016](https://github.com/conda/conda-build/issues/1142)-[2017](https://www.anaconda.com/blog/package-better-conda-build-3), the conda community 
+developed a "variant" scheme that [differentiated packages based on arbitrary metadata]. The
+scheme allowed substitution of values in a package recipe, and then calculated a hash for packages
+based on the keys and values that were used by the substitution. Some users thought that the
+hashes were opaque, and indeed, they were, but they were not meant to be human readable. The assumption
+was that users were not interactively choosing files to download based on filename. The solver would take care 
+of figuring out the appropriate package based on package metadata. Contemporaneously,
+PyPI provided plain file listings, and many tools that use PyPI still only use the filename 
+for resolving which package to install. Instead of resolving using filename, conda matches
+input specs to package metadata. In practice, this means that if you can express some attribute
+of what you want as a package constraint, you can choose that attribute. Metapackages, which
+are packages with only metadata, are often used to make these preferences simpler for end users. For example,
+in conda-forge, there are [metapackages named after various MPI implementations that select a particular variant of one package, with variants being differentiated by build string](https://conda-forge.org/docs/maintainer/knowledge_base/#preferring-a-provider-usually-nompi).
+
+In [2019, the conda community developed the notion of a "virtual package" for CUDA](https://github.com/conda/conda/pull/8267).
+A virtual package detects the system state and injects that state into the solver as package constraints. 
+Other packages that have been built with a need for particular hardware would have a constraint to match 
+the expected detected hardware value. Virtual packages have also served to help users understand base 
+operating system compatiblity (required glibc version). 
+This is similar to [the newest Manylinux standard](https://peps.python.org/pep-0600/), except that 
+conda's resolver is treating this as a package constraint rather than a filename component.
+
+Conda added [plugin support for variants in 2020](https://github.com/conda/conda/pull/11854),
+but the plugins have not proliferated much beyond [the core collection in the conda repository](https://github.com/conda/conda/tree/main/conda/plugins/virtual_packages).
+This makes hardware detection functionality a standard, built-in part of conda.
