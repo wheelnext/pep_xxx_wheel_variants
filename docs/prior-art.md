@@ -142,6 +142,6 @@ operating system compatiblity (required glibc version).
 This is similar to [the newest Manylinux standard](https://peps.python.org/pep-0600/), except that 
 conda's resolver is treating this as a package constraint rather than a filename component.
 
-Conda added [plugin support for variants in 2020](https://github.com/conda/conda/pull/11854),
+Conda added [plugin support for virtual packages in 2022](https://github.com/conda/conda/pull/11854),
 but the plugins have not proliferated much beyond [the core collection in the conda repository](https://github.com/conda/conda/tree/main/conda/plugins/virtual_packages).
 This makes hardware detection functionality a standard, built-in part of conda.
