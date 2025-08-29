@@ -218,7 +218,7 @@ feature names and values are present in these dictionaries.
 +-- variants
     +- <variant-label>
        +- <namespace>
-          +- <feature>  : str
+          +- <feature>  : list[str]
 ```
 
 The variants block is present only in wheel metadata, and in wheel
@@ -231,7 +231,7 @@ It resides under the `variants` key. It is a dictionary using variant
 labels as keys, with values listing the properties for a given variant
 in a form of a nested dictionary. The keys of the top dictionary
 specify namespaces names, the keys of the subsequent dictionary feature
-names and their values are the corresponding property values.
+names and their values are lists of the corresponding property values.
 
 
 ## Specific file formats
