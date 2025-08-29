@@ -85,7 +85,8 @@ for a given namespace. This sub-dictionary has up to three keys:
 
 1. `requires: list[str]` -- that specifies one or more [dependency specifiers](
    https://packaging.python.org/en/latest/specifications/dependency-specifiers/)
-   specifying how the provider should be installed. This key is required.
+   specifying how the provider should be installed. This key is required,
+   unless `plugin-use` is `"none"`.
 
 2. `enable-if: str | None` -- that optionally specifies an [environment marker](
    https://packaging.python.org/en/latest/specifications/dependency-specifiers/#environment-markers)
