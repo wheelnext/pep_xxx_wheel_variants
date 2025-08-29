@@ -103,6 +103,19 @@ specifier can constitute a valid property (and therefore they can be
 infinitely many valid values), and the plugin determines whether
 the installed version matches the ranges specified for each variant.
 
+## Behavior stability and versioning
+
+It is recommended that the plugin's output remains stable within
+the plugin's lifetime, and that packages do not pin to specific plugin
+versions. This ensures that the installer can vendor or reimplement
+the newest version of the plugin while ensuring that variant wheels
+created earlier would still be installable.
+
+If a need arises to introduce a breaking change in the plugin's output,
+it is recommended to add a new API endpoint to the plugin. The old
+endpoints should continue being provided, preserving the previous
+output.
+
 
 ## Helper classes
 
