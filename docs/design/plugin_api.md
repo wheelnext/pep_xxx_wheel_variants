@@ -370,56 +370,6 @@ Example implementation:
 ```
 
 
-### `get_build_setup`
-
-Purpose: get build variables for the built variant
-
-Required: no
-
-Prototype:
-
-```python
-    def get_build_setup(
-        self, properties: list[VariantPropertyType]
-    ) -> dict[str, list[str]]:
-        ...
-```
-
-This method is used to obtain "build variables" that are used
-by the build backend to configure the build of a specific variant.
-It is passed a list of variant properties, filtered to include only
-these matching the namespace used by the plugin. It must return
-a dictionary that maps build variable names into a list of string
-values. If multiple plugins include the same variable, their values
-are concatenated, in an undefined order.
-
-The exact list of build variables and the meaning of their values
-is out of the scope for this document. Build backends should ignore
-the values they do not recognize or support.
-
-The build setup implementation is likely to change, see [discussion
-on build setup](https://github.com/wheelnext/pep_xxx_wheel_variants/issues/23).
-
-Example implementation:
-
-```python
-    def get_build_setup(
-        self, properties: list[VariantPropertyType]
-    ) -> dict[str, list[str]]:
-        cflags = []
-
-        for prop in properties:
-            assert prop.namespace == self.namespace
-            if prop.feature == "version":
-                cflags.append(f"-march=example-{prop.value}")
-            elif prop.feature == "accelerated":
-                assert prop.value == "yes"
-                cflags.append("-maccelerate")
-
-        return {"cflags": cflags}
-```
-
-
 ### Future extensions
 
 The future versions of this specification, as well as third-party
