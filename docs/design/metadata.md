@@ -47,6 +47,7 @@ structure can be visualized using the following tree:
 |      +- enable-if     : str | None
 |      +- plugin-api    : str | None
 |      +- optional      : bool = False
+|      +- plugin-use    : Literal["install", "build", "none"] = "install"
 |
 +-- default-priorities
 |   +- namespace        : list[str]
@@ -71,6 +72,7 @@ structure can be visualized using the following tree:
 |      +- enable-if     : str | None
 |      +- plugin-api    : str | None
 |      +- optional      : bool = False
+|      +- plugin-use    : Literal["install", "build", "none"] = "install"
 ```
 
 The wheel metadata includes the provider metadata dictionary that
@@ -131,6 +133,33 @@ for a given namespace. This sub-dictionary has up to three keys:
    is considered optional and the tools should not load it unless
    explicitly requested by the user.
 
+5. `plugin-use: Literal["install", "build", "none"]` -- indicates under
+   what circumstances the plugin is used for this namespace. Has three
+   possible values:
+
+   a. `install` (the default) indicates that the plugin is used
+      both when building and when installing the package. At build time,
+      it is used to validate properties. At install time, it is used
+      to query the system configuration to determine supported property
+      order. The `default-priorities` section is used only to override
+      the default ordering.
+
+   b. `build` indicates that the plugin is used at build time only,
+      while during installation the namespace is handled entirely
+      from metadata. At build time, the plugin is used to validate
+      properties and to query supported property order. This order
+      is then appended to `default-priorities` table. At install time,
+      the installer considers only that table, considering properties
+      listed within it as supported, and using it to order them.
+      This value is only valid for plugins whose
+      `get_supported_configs()` method return a fixed value.
+
+   c. `none` indicates that no plugin is used at all. At build time,
+      only features and properties listed in the `default-priorities`
+      table are considered to be supported. At install time, said table
+      is used to determine supported properties. The `plugin-api`
+      and `requires` keys are ignored, though they are permitted
+      to make it easier to switch between `build` and `none` setups.
 
 ### Default priorities
 
@@ -173,6 +202,14 @@ with up to three keys:
    by the plugin need be listed. The remaining properties will be given
    lower priority than these listed, while preserving their relative
    order provided by the plugin.
+
+When `plugin-use` for a particular provider is set to `none`, these
+values are additionally used to validate properties: a property
+is considered valid only if the respective feature names and values
+are present in these dictionaries. When `plugin-use` is set to `none`
+or `build`, they are also used to determine whether properties are
+supported: a property is considered supported only if the respective
+feature names and values are present in these dictionaries.
 
 
 ### Variants
