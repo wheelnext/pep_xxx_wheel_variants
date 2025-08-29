@@ -25,7 +25,7 @@ do not support variants.
 
 *Variant description* is the whole set of metadata describing
 a particular variant.  It consists of zero or more variant properties,
-and it has a corresponding *variant hash*.
+and is assigned a specific label.
 
 *Variant property* is a 3-tuple describing a single specific feature
 that the variant was built for.  It has a form of:
@@ -79,9 +79,11 @@ variant wheels. An example use case is a package that provides:
 ## Variant label, wheel filename
 
 *Variant label* is a string that is added to the wheel filename
-to uniquely identify it as a specific variant. It defaults
-to the variant hash, but a custom string up to 8 characters can be used
-instead to provide a human-readable label for the variant.
+to uniquely identify it as a specific variant. It is a string of up
+to 16 alphanumeric (plus underscore) characters, and it can be used
+to provide a human-readable description. As an implementation detail,
+`variantlib` defaults to generating a 8-character hash from variant
+properties if no custom label is provided.
 
 Therefore the complete wheel filename follows the following template:
 
@@ -92,9 +94,8 @@ Therefore the complete wheel filename follows the following template:
 Variant wheel filename examples follow:
 
 - a regular wheel: `example-1.0.0-py3-none-any.whl
-- variant wheel with hash: `example-1.0.0-py3-none-any-abcd1234.whl`
 - variant wheel with custom label: `example-1.0.0-py3-none-any-accel.whl`
-
+- variant wheel with hash: `example-1.0.0-py3-none-any-abcd1234.whl`
 
 
 ## Plugins
