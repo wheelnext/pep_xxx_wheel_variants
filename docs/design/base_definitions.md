@@ -57,7 +57,7 @@ feature has a value of `12.8`.
 ## Null variant
 
 The *null variant* is a special variant with zero properties. For this
-variant, the special variant hash value of `00000000` is used. The null
+variant, the special variant label of `null` is used. The null
 variant is always considered supported. All non-null variants are
 preferred over it, but it is preferred over the non-variant wheel.
 

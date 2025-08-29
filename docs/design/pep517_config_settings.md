@@ -80,6 +80,6 @@ python -m build -w -Cvariant=x86_64::level::v3 -Cvariant=x86_64::aes::on
 python -m build -w -Cvariant=x86_64::level::v3 -Cvariant-label=x8664v3
 
 # Build a null variant
-# produces: ...-00000000.whl
+# produces: ...-null.whl
 python -m build -w -Cnull-variant
 ```
