@@ -103,6 +103,19 @@ specifier can constitute a valid property (and therefore they can be
 infinitely many valid values), and the plugin determines whether
 the installed version matches the ranges specified for each variant.
 
+## Behavior stability and versioning
+
+It is recommended that the plugin's output remains stable within
+the plugin's lifetime, and that packages do not pin to specific plugin
+versions. This ensures that the installer can vendor or reimplement
+the newest version of the plugin while ensuring that variant wheels
+created earlier would still be installable.
+
+If a need arises to introduce a breaking change in the plugin's output,
+it is recommended to add a new API endpoint to the plugin. The old
+endpoints should continue being provided, preserving the previous
+output.
+
 
 ## Helper classes
 
@@ -367,56 +380,6 @@ Example implementation:
         if variant_property.feature == "version":
             return variant_property.value in ["v1", "v2", "v3", "v4"]
         return False
-```
-
-
-### `get_build_setup`
-
-Purpose: get build variables for the built variant
-
-Required: no
-
-Prototype:
-
-```python
-    def get_build_setup(
-        self, properties: list[VariantPropertyType]
-    ) -> dict[str, list[str]]:
-        ...
-```
-
-This method is used to obtain "build variables" that are used
-by the build backend to configure the build of a specific variant.
-It is passed a list of variant properties, filtered to include only
-these matching the namespace used by the plugin. It must return
-a dictionary that maps build variable names into a list of string
-values. If multiple plugins include the same variable, their values
-are concatenated, in an undefined order.
-
-The exact list of build variables and the meaning of their values
-is out of the scope for this document. Build backends should ignore
-the values they do not recognize or support.
-
-The build setup implementation is likely to change, see [discussion
-on build setup](https://github.com/wheelnext/pep_xxx_wheel_variants/issues/23).
-
-Example implementation:
-
-```python
-    def get_build_setup(
-        self, properties: list[VariantPropertyType]
-    ) -> dict[str, list[str]]:
-        cflags = []
-
-        for prop in properties:
-            assert prop.namespace == self.namespace
-            if prop.feature == "version":
-                cflags.append(f"-march=example-{prop.value}")
-            elif prop.feature == "accelerated":
-                assert prop.value == "yes"
-                cflags.append("-maccelerate")
-
-        return {"cflags": cflags}
 ```
 
 
