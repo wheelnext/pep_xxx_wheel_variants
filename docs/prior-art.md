@@ -2,90 +2,79 @@
 
 ## Gentoo
 
-Gentoo is a source-first distribution with binary package support.
-Binary packages can be used either as a primary installation method
-from a remote source, or as a cache for packages previously built
-from source. Source and binary packages can be freely mixed, with
-the package manager automatically buildig from source when a matching
-binary package is not available.
+[Gentoo Linux](https://www.gentoo.org) is a source-first distribution
+with support for extensive package customization. The primary means of
+this customization are so-called [USE
+flags](https://wiki.gentoo.org/wiki/Handbook:AMD64/Working/USE): boolean
+flags exposed by individual packages and permitting fine-tuning the
+enabled features, optional dependencies and some build parameters. For
+example, a flag called `jpegxl` controls the support for JPEG XL image
+format, `cpu_flags_x86_avx2` controls building SIMD code utilizing AVX2
+extension set, while `llvm_slot_21` indicates that the package will be
+built against LLVM 21.
 
-There are three main build parametrization methods in Gentoo:
+Gentoo permits using [binary
+packages](https://wiki.gentoo.org/wiki/Handbook:AMD64/Working/Features#Binary_package_support)
+both as a primary installation method and a local cache for packages
+previously built from source. Among the metadata, binary packages store
+the configured USE flags and some other build parameters. Multiple
+binary packages can be created from a single source package version, in
+which case the successive packages are distinguished by monotonically
+increasing build numbers. The dependency resolver uses a combined
+package cache file to determine whether any of the available binary
+packages can fulfill the request, and falls back to building from source
+if none can.
 
-1. So-called USE flags that are defined at package level, and primarily
-   are used as switches for optional features and dependencies. They
-   are also sometimes used to control use of CPU instruction sets
-   (e.g. `CPU_FLAGS_X86`) or dependency versions (e.g. `LLVM_SLOT`).
+The interesting technical details about USE flags are:
 
-2. Dependency binding (the `:=` operator) that is used to indicate
-   that the package is bound to the current ABI (usually `SOVERSION`)
-   of the particular dependency, and needs to be rebuilt to use a newer
-   ABI version.
+1. Flags are defined for each package separately (with the exception of
+   a few special flags). Their meanings can be either described globally
+   or per package. The default values can be specified at package or
+   profile (a system configuration such as “amd64 multilib desktop”)
+   level.
 
-3. Regular environment variables that are used for more fine-tuning,
-   primarily including generic variables such as `CC` or `CFLAGS`.
+2. Global flags can be grouped for improved UX. Examples of groups are
+   `CPU_FLAGS_X86` that control SIMD code for x86 processors, and
+   `LLVM_SLOT` that select the LLVM version to build against.
 
-Gentoo binary packages store the USE flags, dependency bounds and some
-standard environment variables within the metadata, and use them to
-determine whether a particular binary package can satisfy the request.
-To support different binary package variants, the filename contains
-a monotonically increasing `build-id` (e.g. `-1`, `-2`...). The metadata
-from all binary packages is cached in a single file that is used
-by the package manager to find the right binary package.
+3. With the exception of a few special flags, there is no automation to
+   select the right flags. For `CPU_FLAGS_X86`, Gentoo provides an
+   external tool to query the CPU and provide a suggested value, but it
+   needs to be run manually, and rerun when new flags are added to
+   Gentoo. The package managers also generally suggest flag changes
+   needed to satisfy the dependency resolution.
 
-USE flags are effectively boolean, with each flag being either enabled
-or disabled. The default state for flags can be provided at global,
-profile (a system configuration such as "amd64 multilib desktop with
-systemd") and package level, and can be overriden by the user (for all
-packages or for specific packages).
+4. Dependencies, package sources and build rules can be conditional to
+   use flags:
+   * `flag? ( … )` is used only when the flag is enabled
+   * `!flag? ( … )` is used only when the flag is disabled
 
-There is almost no automation to select flags. When 
-For `CPU_FLAGS*` variables Gentoo provides a separate tool to query
-the CPU, and output the suggested value. However, this is entirely
-manual and needs to be repeated whenever new flags are added to Gentoo.
+5. Particular states of USE flags can be expressed on dependencies,
+   using a syntax similar to Python extras: `dep[flag1,flag2...]`.
+   * `flag` indicates that the flag must be enabled on the dependency
+   * `!flag` indicates that the flag must be disabled on the dependency
+   * `flag?` indicates that it must be enabled if it is enabled on this
+     package
+   * `flag=` indicates that it must have the same state as on this
+     package
+   * `!flag=` indicates that it must have the opposite state than on
+     this package
+   * `!flag?` indicates that it must be disabled if it is disabled on
+     this package
 
+6. Constraints can be placed upon state of USE flags within a package:
+   * `flag` specifies that the flag must be enabled
+   * `!flag` specifies that the flag must be disabled
+   * `flag? ( … )` and `!flag? ( … )` conditions can be used like in
+     dependencies  
+   * `|| ( flag1 flag2 … )` indicates that at least one of the specified
+     flags must be enabled
+   * `^^ ( flag1 flag2 … )` indicates that exactly one of the specified
+     flags must be enabled
+   * `?? ( flag1 flag2 … )` indicates that at most one of the specified
+     flags must be enabled
 
-There are three bits of syntax related to USE flags:
-
-1. Dependencies can be expressed conditionally to flags, using
-   USE-conditional groups:
-
-   - `flag? ( ... )` - dependencies apply only if `flag` is *enabled*
-   - `!flag? ( ... )` - dependencies apply only if `flag` is *disabled*
-
-2. Dependencies can be used to require state of USE flags on other
-   packages, using USE dependencies `dep[flag1,flag2...]`, where `flag`
-   can use one of the following forms:
-
-   - `flag` - must be *enabled* on the dependency
-   - `-flag` - must be *disabled* on the dependency
-   - `flag?` - must be *enabled* on the dependency if it is *enabled*
-     on this package (shorthand for `flag? ( dep[flag] )`
-   - `flag=` - must have the *same state* on the dependency as on this
-     package (shorthand for `flag? ( dep[flag] ) !flag? ( dep[-flag] )`)
-   - `!flag=` - must have the *opposite state* on the dependency,
-     compared to this package (`flag? ( dep[-flag] ) !flag? ( dep[flag] )`)
-   - `!flag?` - must be *disabled* on the dependency if it is *disabled*
-     on this package (`!flag? ( dep[-flag] )`)
-
-   The two last variants are almost never used.
-
-3. Constraints can be placed to restrict how different flags can be
-   combined in the package (so called `REQUIRED_USE`). Individual
-   constraints may use the following features:
-
-   - `flag` - must be *enabled*
-   - `!flag` - must be *disabled*
-   - `flag? ( ... )` and `!flag? ( ... )` - constraints conditional
-     to other flags, just like in dependencies
-   - `|| ( flag1 flag2 ... )` - *at least one* flag from the group must
-     be enabled
-   - `^^ ( flag1 flag2 ... )` - *exactly one* flag from the group must
-     be enabled
-   - `?? ( flag1 flag2 ... )` - *at most one* flag from the group must
-     be enabled
-
-The boolean nature of USE flags makes providing a reasonable complete
-syntax simple. However, it implies that enumerations (such as versions)
-need to be redefined as long lists of flags, along with long lists
-of dependencies and constraints. Ebuilds are bash scripts, so this
-is often done using loops.
+This syntax has been generally seen as sufficient for Gentoo. However,
+its simplicity largely stems from the fact that USE flags have boolean
+values. This also has the downside that multiple flags need to be used
+to express enumerations.
