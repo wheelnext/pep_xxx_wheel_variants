@@ -34,14 +34,16 @@ build: clean ## builds source and wheel package
 
 	hatch build --target wheel --null-variant
 
-	hatch build --target wheel --variant-label 'foobar' \
+	hatch build --target wheel \
 		-p "fictional_hw :: architecture :: mother"
 
 	hatch build --target wheel \
+		--variant-label 'a' \
 		-p "fictional_hw :: architecture :: mother" \
 		-p "fictional_hw :: compute_capability :: 4"
 
 	hatch build --target wheel \
+		--variant-label 'super_variant_yy' \
 		-p "fictional_tech :: quantum :: superposition" \
 		-p "fictional_tech :: risk_exposure :: 25" \
 		-p "fictional_tech :: technology :: auto_chef"
@@ -54,18 +56,21 @@ build: clean ## builds source and wheel package
 		-p "fictional_tech :: quantum :: foam"
 
 	hatch build --target wheel \
+		--variant-label 'super_variant_xx' \
 		-p "fictional_hw :: architecture :: tars" \
 		-p "fictional_hw :: compute_accuracy :: 8" \
 		-p "fictional_hw :: compute_capability :: 8" \
 		-p "fictional_hw :: humor :: 10"
 
 	hatch build --target wheel \
+		--variant-label 'variant.foobar' \
 		-p "fictional_hw :: architecture :: hal9000" \
 		-p "fictional_hw :: compute_accuracy :: 0" \
 		-p "fictional_hw :: compute_capability :: 6" \
 		-p "fictional_hw :: humor :: 2"
 
 	hatch build --target wheel \
+		--variant-label 'variant_foobar' \
 		-p "fictional_tech :: quantum :: foam" \
 		-p "fictional_tech :: risk_exposure :: 1000000000" \
 		-p "fictional_tech :: technology :: improb_drive"

@@ -34,16 +34,19 @@ build: clean ## builds source and wheel package
 
 	flit build --format wheel --null-variant
 
-	flit build --format wheel \
+		flit build --format wheel \
+			--variant-label="hw_mother_4" \
 		-p "fictional_hw :: architecture :: mother" \
 		-p "fictional_hw :: compute_capability :: 4"
 
 	flit build --format wheel \
+		--variant-label="auto_25_super" \
 		-p "fictional_tech :: quantum :: superposition" \
 		-p "fictional_tech :: risk_exposure :: 25" \
 		-p "fictional_tech :: technology :: auto_chef"
 
 	flit build --format wheel \
+		--variant-label="deepthought_foam" \
 		-p "fictional_hw :: architecture :: deepthought" \
 		-p "fictional_hw :: compute_accuracy :: 10" \
 		-p "fictional_hw :: compute_capability :: 10" \
@@ -51,6 +54,7 @@ build: clean ## builds source and wheel package
 		-p "fictional_tech :: quantum :: foam"
 
 	flit build --format wheel \
+		--variant-label="a" \
 		-p "fictional_hw :: architecture :: tars" \
 		-p "fictional_hw :: compute_accuracy :: 8" \
 		-p "fictional_hw :: compute_capability :: 8" \
@@ -63,6 +67,7 @@ build: clean ## builds source and wheel package
 		-p "fictional_hw :: humor :: 2"
 
 	flit build --format wheel \
+		--variant-label="0123456789abcdef" \
 		-p "fictional_tech :: quantum :: foam" \
 		-p "fictional_tech :: risk_exposure :: 1000000000" \
 		-p "fictional_tech :: technology :: improb_drive"

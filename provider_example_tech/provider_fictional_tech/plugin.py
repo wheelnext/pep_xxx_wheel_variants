@@ -14,7 +14,6 @@ class VariantFeatureConfig:
 
 class FictionalTechPlugin:
     namespace = "fictional_tech"
-    dynamic = False
 
     def _get_supported_technologies(self) -> list[str]:
         """Lookup the system to decide what `technology` are supported on this system.
@@ -32,7 +31,7 @@ class FictionalTechPlugin:
         Returns a list of strings in order of priority."""
         return ["25"]
 
-    def get_supported_configs(self, known_properties: list[Any] | None) -> list[VariantFeatureConfig]:
+    def get_supported_configs(self) -> list[VariantFeatureConfig]:
         keyconfigs = []
 
         # Top Priority
@@ -49,7 +48,7 @@ class FictionalTechPlugin:
 
         return keyconfigs
 
-    def get_all_configs(self, known_properties: list[Any] | None) -> list[VariantFeatureConfig]:
+    def get_all_configs(self) -> list[VariantFeatureConfig]:
         return [
             VariantFeatureConfig(
                 name="technology", values=["auto_chef", "improb_drive"]

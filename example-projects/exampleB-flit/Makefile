@@ -35,10 +35,12 @@ build: clean ## builds source and wheel package
 	flit build --format wheel --null-variant
 	
 	flit build --format wheel \
+		--variant-label="abcdef0123456789" \
 		-p "fictional_hw :: architecture :: mother" \
 		-p "fictional_hw :: compute_capability :: 4"
 
 	flit build --format wheel \
+		--variant-label="a" \
 		-p "fictional_hw :: architecture :: hal9000" \
 		-p "fictional_tech :: quantum :: foam" \
 		-p "fictional_tech :: risk_exposure :: 1000000000" \
