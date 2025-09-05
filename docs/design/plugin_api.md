@@ -69,39 +69,6 @@ are installed to user's main system. It can be used e.g. to detect
 and print all supported variant properties, to help user configure
 variant preferences or provide defaults to `pyproject.toml`.
 
-## Static and dynamic plugins
-
-There are two plugin classes: static and dynamic.
-
-In a static plugin, the list of all valid variant properties is fixed for
-a specific plugin version, and the ordered list of supported variant
-properties is determined independently of provided wheel variants.
-This makes it possible to invoke the plugin once in order to obtain
-the list of supported properties, and cache that result for multiple
-packages to use. The cache needs to be invalidated only if the plugin
-version changes or the relevant aspects of the system configuration
-change.
-
-An example of a static plugin could be a plugin controlling processor
-architecture versions. One can assume that a specific version
-of the plugin will only support a limited set of architecture
-variations, and therefore the complete list of all valid properties
-can be enumerated.
-
-In dynamic plugins, the list of all valid variants does not need
-to be fixed. Valid properties usually follow specific rules,
-and the list can change within the same plugin version, dependent
-on the build environment. The plugin receives a list of properties
-used by the specific package, and selects and orders supported
-properties based on it. As a result, the plugin needs to be invoked
-separately for every installed package, and the results cannot be cached
-across packages.
-
-An example of a dynamic plugin is one that pins the package to
-a specific range of runtime versions. In that case, any version
-specifier can constitute a valid property (and therefore they can be
-infinitely many valid values), and the plugin determines whether
-the installed version matches the ranges specified for each variant.
 
 ## Behavior stability and versioning
 
@@ -172,61 +139,6 @@ class VariantFeatureConfig:
 ```
 
 
-### Variant property
-
-The variant property type is used to represent a single variant property
-with a specific value. It is defined using the following protocol:
-
-```python
-from abc import abstractmethod
-from typing import Protocol
-from typing import runtime_checkable
-
-
-@runtime_checkable
-class VariantPropertyType(Protocol):
-    """A protocol for variant properties"""
-
-    @property
-    @abstractmethod
-    def namespace(self) -> str:
-        """Namespace (from plugin)"""
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def feature(self) -> str:
-        """Feature name (within the namespace)"""
-        raise NotImplementedError
-
-    @property
-    @abstractmethod
-    def value(self) -> str:
-        """Feature value"""
-        raise NotImplementedError
-```
-
-A "variant property" must define three properties or attributes:
-
-- `namespace` specifying the namespace, as a string
-
-- `feature` specifying the feature name, as a string
-
-- `value` specifying the feature value, as a string
-
-Example implementation:
-
-```python
-from dataclasses import dataclass
-
-
-@dataclass
-class VariantProperty:
-    namespace: str
-    feature: str
-    value: str
-```
-
 ## Plugin class
 
 ### Protocol
@@ -249,27 +161,15 @@ class PluginType(Protocol):
         """Get provider namespace"""
         raise NotImplementedError
 
-    @property
     @abstractmethod
-    def dynamic(self) -> bool:
-        """Is this a dynamic plugin?"""
+    def get_all_configs(self) -> list[VariantFeatureConfigType]:
+        """Get all valid configs for the plugin"""
         raise NotImplementedError
 
     @abstractmethod
     def get_supported_configs(self) -> list[VariantFeatureConfigType]:
         """Get supported configs for the current system"""
         raise NotImplementedError
-
-    @abstractmethod
-    def validate_property(self, variant_property: VariantPropertyType) -> bool:
-        """Validate variant property, returns True if it's valid"""
-        raise NotImplementedError
-
-    def get_build_setup(
-        self, properties: list[VariantPropertyType]
-    ) -> dict[str, list[str]]:
-        """Get build variables for a variant made of specified properties"""
-        return {}
 ```
 
 
@@ -279,16 +179,50 @@ The plugin class must define the following properties or attributes:
 
 - `namespace` specifying the plugin's namespace.
 
-- `dynamic` specifying whether the plugin is of dynamic or static class.
-  The value should be `True` for dynamic plugins, and `False` for static
-  plugins.
-
 Example implementation:
 
 ```python
 class MyPlugin:
     namespace = "example"
-    dynamic = False
+```
+
+
+### `get_all_configs`
+
+Purpose: get all valid features and their values
+
+Required: yes
+
+Prototype:
+
+```python
+    @abstractmethod
+    def get_all_configs(self) -> list[VariantFeatureConfigType]:
+        ...
+```
+
+This method is used to validate available features and their values
+for the given plugin version. It must return a list of "variant feature
+configs", where every config defines a single feature along with all
+its valid values. The list must be fixed for a given plugin version,
+it is primarily used to verify properties prior to building a variant
+wheel.
+
+Example implementation:
+
+```python
+    # all valid properties as:
+    # example :: accelerated :: yes
+    # example :: version :: v4
+    # example :: version :: v3
+    # example :: version :: v2
+    # example :: version :: v1
+
+    def get_all_configs(self) -> list[VariantFeatureConfig]:
+        return [
+            VariantFeatureConfig("accelerated", ["yes"]),
+            VariantFeatureConfig("version", ["v1", "v2", "v3", "v4"]),
+        ]
 ```
 
 
@@ -314,14 +248,6 @@ config defines a single feature along with all the supported values.
 The values should be ordered from the most preferred value to the least
 preferred.
 
-If the plugin in question is a static plugin (`dynamic = False`),
-the `known_properties` parameter is always `None`, and the method must
-return a fixed list of supported features. If it is a dynamic plugin
-(`dynamic = True`), a merged list of all properties used in available
-variant wheels is provided, and the return value must include a subset
-of these properties that are supported. However, the plugin is permitted
-to return additional supported values not on the list.
-
 Example implementation:
 
 ```python
@@ -338,48 +264,6 @@ Example implementation:
         return [
             VariantFeatureConfig("version", ["v2", "v1"]),
         ]
-```
-
-
-### `validate_property`
-
-Purpose: verify whether the specified property is valid for this plugin
-
-Required: yes
-
-Prototype:
-
-```python
-    @abstractmethod
-    def validate_property(self, variant_property: VariantPropertyType) -> bool:
-        ...
-```
-
-This method is called while building a variant wheel, in order to
-determine whether the variant properties are valid. It is called once
-for every property defined within the plugin's namespace, and must
-return `True` if it is valid, `False` otherwise.
-
-Note that all properties matching the values returned
-by `get_supported_configs()` must evaluate as valid.
-
-Example implementation:
-
-```python
-    # all valid properties as:
-    # example :: accelerated :: yes
-    # example :: version :: v4
-    # example :: version :: v3
-    # example :: version :: v2
-    # example :: version :: v1
-
-    def validate_property(self, variant_property: VariantPropertyType) -> bool:
-        assert variant_property.namespace == self.namespace
-        if variant_property.feature == "accelerated":
-            return variant_property.value == "yes"
-        if variant_property.feature == "version":
-            return variant_property.value in ["v1", "v2", "v3", "v4"]
-        return False
 ```
 
 
