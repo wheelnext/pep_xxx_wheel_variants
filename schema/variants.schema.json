@@ -91,6 +91,11 @@
                             "description": "Whether the provider is optional",
                             "type": "boolean"
                         },
+                        "plugin-use": {
+                            "description": "Whether a plugin is used: not at all, at build time or both at build and install time",
+                            "type": "string",
+                            "enum": ["none", "build", "all"]
+                        },
                         "requires": {
                             "description": "Dependency specifiers for how to install the plugin",
                             "type": "array",
