@@ -43,3 +43,18 @@ branch = wheel-variants
 	path = variantlib
 	url = ../variantlib.git
 	branch = main
+[submodule "example-projects/scipy"]
+	path = example-projects/scipy
+	url = ../scipy
+[submodule "packaging"]
+	path = packaging
+	url = ../packaging
+[submodule "blas-lapack-variant-provider"]
+	path = blas-lapack-variant-provider
+	url = ../blas-lapack-variant-provider
+[submodule "example-projects/scikit-learn"]
+	path = example-projects/scikit-learn
+	url = ../scikit-learn
+[submodule "openmp-variant-provider"]
+	path = openmp-variant-provider
+	url = ../openmp-variant-provider
