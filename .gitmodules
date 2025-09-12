@@ -52,3 +52,6 @@ branch = wheel-variants
 [submodule "blas-lapack-variant-provider"]
 	path = blas-lapack-variant-provider
 	url = ../blas-lapack-variant-provider
+[submodule "example-projects/scikit-learn"]
+	path = example-projects/scikit-learn
+	url = ../scikit-learn
