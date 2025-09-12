@@ -55,3 +55,6 @@ branch = wheel-variants
 [submodule "example-projects/scikit-learn"]
 	path = example-projects/scikit-learn
 	url = ../scikit-learn
+[submodule "openmp-variant-provider"]
+	path = openmp-variant-provider
+	url = ../openmp-variant-provider
