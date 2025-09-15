@@ -34,7 +34,9 @@ build: clean ## builds source and wheel package
 
 	hatch build -t wheel --null-variant
 
-	hatch build -t wheel --variant-label 'foobar'
+	hatch build -t wheel --variant-label 'foobar' \
+	    -p "fictional_hw :: architecture :: deepthought" \
+		-p "fictional_hw :: compute_accuracy :: 10"
 
 	hatch build -t wheel \
 		-p "fictional_hw :: architecture :: mother" \
@@ -68,3 +70,12 @@ build: clean ## builds source and wheel package
 		-p "fictional_tech :: quantum :: foam" \
 		-p "fictional_tech :: risk_exposure :: 1000000000" \
 		-p "fictional_tech :: technology :: improb_drive"
+
+	python -m build --no-isolation --wheel \
+		--config-setting 'variant-property=fictional_hw :: architecture :: mother' \
+		--config-setting 'variant-property=fictional_hw :: compute_accuracy :: 10'
+
+	python -m build --no-isolation --wheel \
+		--config-setting 'variant-label=foobar2' \
+		--config-setting 'variant-property=fictional_hw :: architecture :: mother' \
+		--config-setting 'variant-property=fictional_hw :: compute_accuracy :: 10'
