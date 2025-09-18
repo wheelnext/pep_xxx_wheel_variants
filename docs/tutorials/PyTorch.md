@@ -99,7 +99,7 @@ The file contains the instructions on how to install the NVIDIA variant plugin a
 
 ```json
 {
-    "$schema": "https://variants-schema.wheelnext.dev/",
+    "$schema": "https://variants-schema.wheelnext.dev/v0.0.2.json",
     "default-priorities": {
         "namespace": [
             "nvidia"
