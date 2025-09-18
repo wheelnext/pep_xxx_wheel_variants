@@ -18,10 +18,10 @@ variantlib = { workspace = true }
 
 [tool.uv.workspace]
 members = [
-    "flit", 
-    "flit/flit_core", 
+    "flit",
+    "flit/flit_core",
     "hatch",
-    "hatch/backend",  # hatchling
+    "hatch/backend", # hatchling
     "meson-python",
     "mockhouse/mockhouse_lib", 
     "pip", 
@@ -30,12 +30,14 @@ members = [
 
 [tool.uv]
 dev-dependencies = [
+    "archspec",
     "flit",
     "flit_core",
     "hatch",
     "hatchling",
     "meson-python",
     "mockhouse",
+    "packaging",
     "pip",
     "pre-commit>=4,<5",
     "ruff>=0.10,<1.0",
