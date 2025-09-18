@@ -67,3 +67,6 @@
 	path = variantlib
 	url = ../variantlib.git
 	branch = main
+[submodule "schema"]
+	path = schema
+	url = ../variants-schema
