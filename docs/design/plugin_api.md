@@ -110,6 +110,11 @@ class VariantFeatureConfigType(Protocol):
         raise NotImplementedError
 
     @property
+    def multi_value(self) -> bool:
+        """Does this property allow multiple values per variant?"""
+        raise NotImplementedError
+
+    @property
     @abstractmethod
     def values(self) -> list[str]:
         """Ordered list of values, most preferred first"""
@@ -118,7 +123,12 @@ class VariantFeatureConfigType(Protocol):
 
 A "variant feature config" must provide two properties or attributes:
 
-- ``name`` specifying the feature name, as a string
+- ``name`` specifying the feature name, as a string.
+
+- ``multi_value`` specifying whether the feature is allowed to have
+  multiple corresponding values within a single variant wheel. If it is
+  `False`, then it is an error to specify multiple values for
+  the feature.
 
 - ``values`` specifying feature values, as a list of strings.
   In contexts where the order is significant, the values must be
@@ -135,6 +145,7 @@ from dataclasses import dataclass
 @dataclass
 class VariantFeatureConfig:
     name: str
+    multi_value: bool
     values: list[str]
 ```
 
