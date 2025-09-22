@@ -249,8 +249,8 @@ Example `pyproject.toml` tables, with explanatory comments:
 
 ```toml
 [variant.default-priorities]
-# prefer x86_64 plugin over aarch64
-namespace = ["x86_64", "aarch64"]
+# prefer CPU features over BLAS/LAPACK variants
+namespace = ["x86_64", "aarch64", "blas_lapack"]
 # prefer aarch64 version and x86_64 level features over other features
 # (specific CPU extensions like "sse4.1")
 feature.aarch64 = ["version"]
@@ -273,6 +273,13 @@ requires = ["provider-variant-x86-64 >=0.0.1,<1"]
 # use only on x86_64 machines
 enable-if = "platform_machine == 'x86_64' or platform_machine == 'AMD64'"
 plugin-api = "provider_variant_x86_64.plugin:X8664Plugin"
+
+[variant.providers.blas_lapack]
+# plugin-use inferred from requires
+requires = ["blas-lapack-variant-provider"]
+# plugin used only when building package, properties will be inlined
+# into variant.json
+plugin-use = "build"
 ```
 
 ### `*.dist-info/variant.json`
@@ -289,7 +296,8 @@ version on the same index must be the same and be equal to value in
 `*-variants.json`.
 
 The `variant.json` file corresponding to the wheel built from
-the example `pyproject.toml` file for x86-64-v3 would look like:
+the example `pyproject.toml` file for x86-64-v3 OpenBLAS variant would
+look like:
 
 ```json
 {
@@ -298,15 +306,26 @@ the example `pyproject.toml` file for x86-64-v3 would look like:
             "aarch64": [
                 "version"
             ],
+            "blas_lapack": [
+                "provider"
+            ],
             "x86_64": [
                 "level"
             ]
         },
         "namespace": [
             "x86_64",
-            "aarch64"
+            "aarch64",
+            "blas_lapack"
         ],
         "property": {
+            "blas_lapack": {
+                "provider": [
+                    "accelerate",
+                    "openblas",
+                    "mkl"
+                ]
+            },
             "x86_64": {
                 "level": [
                     "v3",
@@ -325,6 +344,12 @@ the example `pyproject.toml` file for x86-64-v3 would look like:
                 "legacy-provider-variant-aarch64 >=0.0.1,<1; python_version < '3.9'"
             ]
         },
+        "blas_lapack": {
+            "plugin-use": "build",
+            "requires": [
+                "blas-lapack-variant-provider"
+            ]
+        },
         "x86_64": {
             "enable-if": "platform_machine == 'x86_64' or platform_machine == 'AMD64'",
             "plugin-api": "provider_variant_x86_64.plugin:X8664Plugin",
@@ -334,7 +359,12 @@ the example `pyproject.toml` file for x86-64-v3 would look like:
         }
     },
     "variants": {
-        "fa7c1393": {
+        "x8664v3_openblas": {
+            "blas_lapack": {
+                "provider": [
+                    "openblas"
+                ]
+            },
             "x86_64": {
                 "level": ["v3"]
             }
@@ -374,54 +404,30 @@ like:
 ```json
 {
     "default-priorities": {
-        "feature": {
-            "aarch64": [
-                "version"
-            ],
-            "x86_64": [
-                "level"
-            ]
-        },
-        "namespace": [
-            "x86_64",
-            "aarch64"
-        ],
-        "property": {
-            "x86_64": {
-                "level": [
-                    "v3",
-                    "v2",
-                    "v1"
-                ]
-            }
-        }
+       ...
     },
     "providers": {
-        "aarch64": {
-            "enable-if": "platform_machine == 'aarch64' or 'arm' in platform_machine",
-            "plugin-api": "provider_variant_aarch64.plugin:AArch64Plugin",
-            "requires": [
-                "provider-variant-aarch64 >=0.0.1,<1; python_version >= '3.9'",
-                "legacy-provider-variant-aarch64 >=0.0.1,<1; python_version < '3.9'"
-            ]
-        },
-        "x86_64": {
-            "enable-if": "platform_machine == 'x86_64' or platform_machine == 'AMD64'",
-            "plugin-api": "provider_variant_x86_64.plugin:X8664Plugin",
-            "requires": [
-                "provider-variant-x86-64 >=0.0.1,<1"
-            ]
-        }
+       ...
     },
     "variants": {
-        "40aba78e": {
-            "x86_64": {
-                "level": ["v2"]
-            }
-        },
-        "fa7c1393": {
+        "x8664v3_openblas": {
+            "blas_lapack": {
+                "provider": [
+                    "openblas"
+                ]
+            },
             "x86_64": {
                 "level": ["v3"]
+            }
+        },
+        "x8664v4_mkl": {
+            "blas_lapack": {
+                "provider": [
+                    "mkl"
+                ]
+            },
+            "x86_64": {
+                "level": ["v4"]
             }
         }
     }
