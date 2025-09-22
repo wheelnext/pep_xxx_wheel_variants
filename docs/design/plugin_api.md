@@ -172,6 +172,11 @@ class PluginType(Protocol):
         """Get provider namespace"""
         raise NotImplementedError
 
+    @property
+    def is_build_plugin(self) -> bool:
+        """Is this plugin valid for `plugin-use = "build"`?"""
+        return False
+
     @abstractmethod
     def get_all_configs(self) -> list[VariantFeatureConfigType]:
         """Get all valid configs for the plugin"""
@@ -189,6 +194,13 @@ class PluginType(Protocol):
 The plugin class must define the following properties or attributes:
 
 - `namespace` specifying the plugin's namespace.
+
+- `is_build_plugin` indicating whether the plugin is valid
+  for `plugin-use = "build"`. If that is the case,
+  `get_supported_configs()` must always return the same value
+  as `get_all_configs()` (modulo ordering), which must be a fixed list
+  independent of platform on which the plugin is running. Defaults to
+  `False` if unspecified. (See `plugin-use` in variant metadata.)
 
 Example implementation:
 
