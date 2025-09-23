@@ -111,7 +111,7 @@ Conda divides packages by platform (aka "subdir"), like `linux-64`. Within
 each platform, a conda package filename is made up of three parts: 
 [the package name, version, and build string](https://docs.conda.io/projects/conda-build/en/stable/concepts/package-naming-conv.html).
 
-![Conda package filename structure](static/conda_names.png)
+![Conda package filename structure](/docs/static/conda_names.png)
 
 Conda does not rely on the filename for the resolution process. Instead, each
 conda package contains metadata, and the metadata is aggregated into a single,
