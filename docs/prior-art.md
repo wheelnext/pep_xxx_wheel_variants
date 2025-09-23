@@ -120,7 +120,7 @@ subdir](https://docs.conda.io/projects/conda-build/en/stable/concepts/generating
 This usage of an index for resolution instead of a filename means that the
 filename need not contain any meaningful information about a package. Any
 information in the filename aside from name uniqueness is purely for human
-convenience.  This is a very useful property for any attetmpt to encode
+convenience.  This is a very useful property for any attempt to encode
 arbitrary metadata, because it allows metadata to expand beyond the limits
 imposed by filename length. In comparison, tools that use PEP
 [503](https://peps.python.org/pep-0503/)/[691](https://peps.python.org/pep-0691/)
@@ -156,7 +156,7 @@ central host for anyone to upload their conda packages. Several
 users/organizations published large collections of packages to anaconda.org,
 with each organization choosing their own toolchain and dependency versions.
 Some chose newer toolchains to support newer C++ projects, such as OpenCV or the
-nascent TensorFlow This was a great expansion of packages beyond the collection
+nascent TensorFlow. This was a great expansion of packages beyond the collection
 that Anaconda offered on their official channel.  Unfortunately, there were no
 guarantees about compatibility between channels, nor any metadata to express
 such compatibility or lack thereof. Mixing packages from different channels
