@@ -47,7 +47,7 @@ structure can be visualized using the following tree:
 |      +- enable-if     : str | None
 |      +- plugin-api    : str | None
 |      +- optional      : bool = False
-|      +- plugin-use    : Literal["install", "build", "none"] = "install"
+|      +- plugin-use    : Literal["all", "build", "none"] = "all"
 |
 +-- default-priorities
 |   +- namespace        : list[str]
@@ -72,7 +72,7 @@ structure can be visualized using the following tree:
 |      +- enable-if     : str | None
 |      +- plugin-api    : str | None
 |      +- optional      : bool = False
-|      +- plugin-use    : Literal["install", "build", "none"] = "install"
+|      +- plugin-use    : Literal["all", "build", "none"] = "all"
 ```
 
 The wheel metadata includes the provider metadata dictionary that
@@ -134,11 +134,11 @@ for a given namespace. This sub-dictionary has up to three keys:
    is considered optional and the tools should not load it unless
    explicitly requested by the user.
 
-5. `plugin-use: Literal["install", "build", "none"]` -- indicates under
+5. `plugin-use: Literal["all", "build", "none"]` -- indicates under
    what circumstances the plugin is used for this namespace. Has three
    possible values:
 
-   a. `install` (the default) indicates that the plugin is used
+   a. `all` (the default) indicates that the plugin is used
       both when building and when installing the package. At build time,
       it is used to validate properties. At install time, it is used
       to query the system configuration to determine supported property
