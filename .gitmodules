@@ -55,10 +55,6 @@
 	path = plugins/openmp-variant-provider
 	url = ../openmp-variant-provider
 
-[submodule "provider/fictional_hw/vendor/packaging"]
-	path = plugins/provider_fictional_hw/provider_fictional_hw/vendor/packaging
-	url = https://github.com/pypa/packaging.git
-
 [submodule "provider/x86_64"]
 	path = plugins/provider_variant_x86_64
 	url = ../provider-variant-x86-64.git
