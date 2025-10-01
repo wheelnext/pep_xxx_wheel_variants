@@ -1,0 +1,13 @@
+[build-system]
+requires = ['flit_core >=3,<4']
+build-backend = 'flit_core.buildapi'
+
+[project]
+name = "abi_dependent"
+version = "0.0.1"
+description = "A dummy project for testing purposes"
+dependencies = [
+    "base_project==1.0.0; variant_label == 'abi_1.0.0'",
+    "base_project==2.0.0; variant_label == 'abi_2.0.0'",
+    "base_project==3.0.0; variant_label == 'null' or variant_label == 'abi_3.0.0'",
+]

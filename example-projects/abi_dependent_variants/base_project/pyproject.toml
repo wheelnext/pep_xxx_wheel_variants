@@ -1,0 +1,8 @@
+[build-system]
+requires = ['flit_core >=3,<4']
+build-backend = 'flit_core.buildapi'
+
+[project]
+name = "base_project"
+description = "A dummy project for testing purposes"
+version = "2.0.0"
