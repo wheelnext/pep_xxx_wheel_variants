@@ -1,7 +1,3 @@
-[submodule "blas-lapack-variant-provider"]
-	path = blas-lapack-variant-provider
-	url = ../blas-lapack-variant-provider
-
 [submodule "example-projects/numpy"]
 	path = example-projects/numpy
 	url = ../numpy
@@ -33,15 +29,6 @@
 	url = ../mockhouse.git
 	branch = main
 
-[submodule "nvidia_variant_provider"]
-	path = nvidia_variant_provider
-	url = ../nvidia-variant-provider.git
-	branch = master
-
-[submodule "openmp-variant-provider"]
-	path = openmp-variant-provider
-	url = ../openmp-variant-provider
-
 [submodule "packaging"]
 	path = packaging
 	url = ../packaging
@@ -50,23 +37,37 @@
 	path = pip
 	url = ../pip.git
 	branch = pep-xxx-wheel-variants
+	
+[submodule "provider/blas-lapack"]
+	path = plugins/blas-lapack-variant-provider
+	url = ../blas-lapack-variant-provider
 
-[submodule "provider_example_dynamic(HW)/provider_fictional_hw/vendor/packaging"]
-	path = provider_example_dynamic(HW)/provider_fictional_hw/vendor/packaging
-	url = https://github.com/pypa/packaging.git
-
-[submodule "provider_variant_aarch64"]
-	path = provider_variant_aarch64
+[submodule "provider/aarch64"]
+	path = plugins/provider_variant_aarch64
 	url = ../provider-variant-aarch64
 
-[submodule "provider_variant_x86_64"]
-	path = provider_variant_x86_64
+[submodule "provider/nvidia"]
+	path = plugins/nvidia_variant_provider
+	url = ../nvidia-variant-provider.git
+	branch = master
+
+[submodule "provider/openmp"]
+	path = plugins/openmp-variant-provider
+	url = ../openmp-variant-provider
+
+[submodule "provider/fictional_hw/vendor/packaging"]
+	path = plugins/provider_fictional_hw/provider_fictional_hw/vendor/packaging
+	url = https://github.com/pypa/packaging.git
+
+[submodule "provider/x86_64"]
+	path = plugins/provider_variant_x86_64
 	url = ../provider-variant-x86-64.git
 
 [submodule "variantlib"]
 	path = variantlib
 	url = ../variantlib.git
 	branch = main
+
 [submodule "schema"]
 	path = schema
 	url = ../variants-schema
