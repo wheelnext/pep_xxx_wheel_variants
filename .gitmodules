@@ -1,3 +1,8 @@
+
+[submodule "example-projects/abi_dependent_variants"]
+	path = example-projects/abi_dependent_variants
+	url = ../variant-abi-dependency-example
+
 [submodule "example-projects/numpy"]
 	path = example-projects/numpy
 	url = ../numpy
@@ -13,11 +18,11 @@
 
 [submodule "flit"]
 	path = flit
-	url = ../flit.git
+	url = ../flit
 
 [submodule "hatch"]
 	path = hatch
-	url = ../hatch.git
+	url = ../hatch
 
 [submodule "meson-python"]
 	path = meson-python
@@ -26,7 +31,7 @@
 
 [submodule "mockhouse"]
 	path = mockhouse
-	url = ../mockhouse.git
+	url = ../mockhouse
 	branch = main
 
 [submodule "packaging"]
@@ -35,7 +40,7 @@
 
 [submodule "pip"]
 	path = pip
-	url = ../pip.git
+	url = ../pip
 	branch = pep-xxx-wheel-variants
 	
 [submodule "provider/blas-lapack"]
