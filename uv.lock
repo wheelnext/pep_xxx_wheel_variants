@@ -65,6 +65,15 @@ wheels = [
 ]
 
 [[package]]
+name = "asttokens"
+version = "3.0.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/4a/e7/82da0a03e7ba5141f05cce0d302e6eed121ae055e0456ca228bf693984bc/asttokens-3.0.0.tar.gz", hash = "sha256:0dcd8baa8d62b0c1d118b399b2ddba3c4aff271d0d7a9e0d4c1681c79035bbc7", size = 61978, upload-time = "2024-11-30T04:30:14.439Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/25/8a/c46dcc25341b5bce5472c718902eb3d38600a903b14fa6aeecef3f21a46f/asttokens-3.0.0-py3-none-any.whl", hash = "sha256:e3078351a059199dd5138cb1c706e6430c05eff2ff136af5eb4790f9d28932e2", size = 26918, upload-time = "2024-11-30T04:30:10.946Z" },
+]
+
+[[package]]
 name = "attrs"
 version = "25.4.0"
 source = { registry = "https://pypi.org/simple" }
@@ -572,6 +581,15 @@ wheels = [
 ]
 
 [[package]]
+name = "executing"
+version = "2.2.1"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/cc/28/c14e053b6762b1044f34a13aab6859bbf40456d37d23aa286ac24cfd9a5d/executing-2.2.1.tar.gz", hash = "sha256:3632cc370565f6648cc328b32435bd120a1e4ebb20c77e3fdde9a13cd1e533c4", size = 1129488, upload-time = "2025-09-01T09:48:10.866Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/c1/ea/53f2148663b321f21b5a606bd5f191517cf40b7072c0497d3c92c4a13b1e/executing-2.2.1-py2.py3-none-any.whl", hash = "sha256:760643d3452b4d777d295bb167ccc74c64a81df23fb5e08eff250c425a4b2017", size = 28317, upload-time = "2025-09-01T09:48:08.5Z" },
+]
+
+[[package]]
 name = "filelock"
 version = "3.20.0"
 source = { registry = "https://pypi.org/simple" }
@@ -828,6 +846,22 @@ source = { registry = "https://pypi.org/simple" }
 sdist = { url = "https://files.pythonhosted.org/packages/f2/97/ebf4da567aa6827c909642694d71c9fcf53e5b504f2d96afea02718862f3/iniconfig-2.1.0.tar.gz", hash = "sha256:3abbd2e30b36733fee78f9c7f7308f2d0050e88f0087fd25c2645f63c773e1c7", size = 4793, upload-time = "2025-03-19T20:09:59.721Z" }
 wheels = [
     { url = "https://files.pythonhosted.org/packages/2c/e1/e6716421ea10d38022b952c159d5161ca1193197fb744506875fbb87ea7b/iniconfig-2.1.0-py3-none-any.whl", hash = "sha256:9deba5723312380e77435581c6bf4935c94cbfab9b1ed33ef8d238ea168eb760", size = 6050, upload-time = "2025-03-19T20:10:01.071Z" },
+]
+
+[[package]]
+name = "inline-snapshot"
+version = "0.29.4"
+source = { registry = "https://pypi.org/simple" }
+dependencies = [
+    { name = "asttokens" },
+    { name = "executing" },
+    { name = "pytest" },
+    { name = "rich" },
+    { name = "tomli", marker = "python_full_version < '3.11'" },
+]
+sdist = { url = "https://files.pythonhosted.org/packages/c9/20/72be6fa80b3228693e70f058736bf8ea0ea812b555b90def3e5400d408a3/inline_snapshot-0.29.4.tar.gz", hash = "sha256:b76d08ddd794a0286e7c0d5124cba64dd75d94c0a1b9a50ad13e96e0953597d1", size = 2598478, upload-time = "2025-10-13T07:40:50.055Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/ac/9f/12c9ba11496fc3111d159d3cf2902bf21fc42c6b71380e06bcbc12edf9ff/inline_snapshot-0.29.4-py3-none-any.whl", hash = "sha256:310bc09d0ec226c00e003ec3a91592e44aa12d3c187af1a29e5a76843c59191e", size = 71096, upload-time = "2025-10-13T07:40:48.659Z" },
 ]
 
 [[package]]
@@ -2032,6 +2066,7 @@ test = [
     { name = "build" },
     { name = "deepdiff" },
     { name = "hypothesis" },
+    { name = "inline-snapshot" },
     { name = "parameterized" },
     { name = "pip" },
     { name = "pytest" },
@@ -2050,6 +2085,7 @@ requires-dist = [
     { name = "deepdiff", marker = "extra == 'test'", specifier = ">=8.0,<9.0" },
     { name = "hypothesis", marker = "extra == 'test'", specifier = ">=6.0.0,<7" },
     { name = "importlib-metadata", marker = "python_full_version < '3.10'" },
+    { name = "inline-snapshot", marker = "extra == 'test'", specifier = ">=0.29.4,<1" },
     { name = "mypy", marker = "extra == 'dev'", specifier = "==1.15.0" },
     { name = "packaging", specifier = ">=25.0,<26.0" },
     { name = "parameterized", marker = "extra == 'test'", specifier = ">=0.9.0,<0.10" },
