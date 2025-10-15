@@ -1,9 +1,31 @@
+[tool.uv]
+package = false
+
+[dependency-groups]
+dev = [
+    "pre-commit>=4,<5",
+    "ruff>=0.10,<1.0",
+    "twine",
+    "tox",
+    "wheel>=0.45",
+]
+
 [project]
 name = "WheelNext_Monorepo"
 version = "1.0.0"
 authors = [{ name = "Jonathan Dekhtiar", email = "jonathan@dekhtiar.com" }]
 readme = "README.md"
-dependencies = []
+dependencies = [
+    "flit",
+    "flit_core",
+    "hatch",
+    "hatchling",
+    "meson-python",
+    "mockhouse",
+    "packaging",
+    "pip",
+    "variantlib[cli,dev,test]",
+]
 requires-python = ">=3.10"
 
 [tool.uv.sources]
@@ -27,26 +49,6 @@ members = [
     "pip", 
     "variantlib",
 ]
-
-[tool.uv]
-dev-dependencies = [
-    "archspec",
-    "flit",
-    "flit_core",
-    "hatch",
-    "hatchling",
-    "meson-python",
-    "mockhouse",
-    "packaging",
-    "pip",
-    "pre-commit>=4,<5",
-    "ruff>=0.10,<1.0",
-    "twine",
-    "tox",
-    "variantlib[cli,dev,test]",
-    "wheel>=0.45",
-]
-package = false
 
 [tool.isort]
 profile = "black"

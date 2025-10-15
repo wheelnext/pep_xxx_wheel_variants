@@ -76,7 +76,7 @@
             ]
         }
     },
-    "postCreateCommand": "uv sync",
+    "postCreateCommand": "uv sync --dev --all-extras",
     "postStartCommand": "bash -c 'cd mockhouse/ && python3 -m http.server 5000'",
     "forwardPorts": [
         5000
