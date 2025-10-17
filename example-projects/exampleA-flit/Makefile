@@ -46,7 +46,7 @@ build: clean ## builds source and wheel package
 		-p "fictional_tech :: technology :: auto_chef"
 
 	flit build --format wheel \
-		--variant-label "dthought_c10_foam" \
+		--variant-label "dthought_c10_fm" \
 		-p "fictional_hw :: architecture :: deepthought" \
 		-p "fictional_hw :: compute_accuracy :: 10" \
 		-p "fictional_hw :: compute_capability :: 10" \
