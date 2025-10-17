@@ -35,17 +35,22 @@ build: clean ## builds source and wheel package
 	flit build --format wheel --null-variant
 	
 	flit build --format wheel \
+		--variant-label "mother_c4" \
 		-p "fictional_hw :: architecture :: mother" \
 		-p "fictional_hw :: compute_capability :: 4"
 
 	flit build --format wheel \
+		--variant-label "hal9k_foam_r_e10" \
 		-p "fictional_hw :: architecture :: hal9000" \
 		-p "fictional_tech :: quantum :: foam" \
 		-p "fictional_tech :: risk_exposure :: 1000000000" \
 		-p "fictional_tech :: technology :: improb_drive"
 
 	flit build --format wheel \
+		--variant-label "hal9k_c0_6_nfun" \
 		-p "fictional_hw :: architecture :: hal9000" \
 		-p "fictional_hw :: compute_accuracy :: 0" \
 		-p "fictional_hw :: compute_capability :: 6" \
 		-p "fictional_hw :: humor :: 2"
+		
+	variantlib generate-index-json -d dist/
