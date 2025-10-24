@@ -9,7 +9,7 @@ The format is used in three locations, with slight variations:
 
 2. in the built wheel, as a `*.dist-info/variant.json` file,
 
-3. on the wheel index, as a `*-variants.json` file.
+3. on the wheel index, as a `{name}-{version}-variants.json` file.
 
 All three variants share a common structure, with some of its element
 shared across all of them, and some being specific to a single variant,
@@ -41,199 +41,178 @@ structure can be visualized using the following tree:
 ```
 (root)
 |
-+-- providers
-|   +- <namespace>
-|      +- requires      : list[str]
-|      +- enable-if     : str | None
-|      +- plugin-api    : str | None
-|      +- optional      : bool = False
-|      +- plugin-use    : Literal["all", "build", "none"] = "all"
++- providers
+|  +- <namespace>
+|     +- enable-if     : str | None
+|     +- install-time  : bool = True
+|     +- optional      : bool = False
+|     +- plugin-api    : str | None
+|     +- requires      : list[str]
 |
-+-- default-priorities
-|   +- namespace        : list[str]
-|   +- feature
-|      +- <namespace>   : list[str]
-|   +- property
-|      +- <namespace>
-|         +- <feature>  : list[str]
++- default-priorities
+|  +- namespace        : list[str]
+|  +- feature
+|     +- <namespace>   : list[str]
+|  +- property
+|     +- <namespace>
+|        +- <feature>  : list[str]
 |
-+-- variants
-    +- <variant-label>
-       +- <namespace>
-          +- <feature>  : list[str]
++- static-properties
+|  +- <namespace>
+|     +- <feature>     : list[str]
+|
++- variants
+   +- <variant-label>
+      +- <namespace>
+         +- <feature>  : list[str]
 ```
 
 ### Provider information
 
 ```
-+-- providers
-|   +- <namespace>
-|      +- requires      : list[str]
-|      +- enable-if     : str | None
-|      +- plugin-api    : str | None
-|      +- optional      : bool = False
-|      +- plugin-use    : Literal["all", "build", "none"] = "all"
++- providers
+|  +- <namespace>
+|     +- enable-if     : str | None
+|     +- install-time  : bool = True
+|     +- optional      : bool = False
+|     +- plugin-api    : str | None
+|     +- requires      : list[str]
 ```
 
-The wheel metadata includes the provider metadata dictionary that
-specifies which variant providers (plugins) are available, under what
-conditions they are used, how to install them and how to use them.
+`providers` is a dictionary, the keys are namespaces, the values are
+dictionaries with provider information. It specifies how to install and
+use variant providers. A provider information dictionary must be
+declared in `pyproject.toml` for every supported variant namespace. It
+must be copied to `variant.json` as-is, including data for providers
+that are not used in the particular wheel.
 
-It resides under the `providers` key. It is a dictionary using namespace
-names as keys, with values being dictionaries describing the provider
-for a given namespace. This sub-dictionary has up to three keys:
+A provider information dictionary can contain the following keys:
 
-1. `requires: list[str]` -- that specifies one or more [dependency specifiers](
-   https://packaging.python.org/en/latest/specifications/dependency-specifiers/)
-   specifying how the provider should be installed. This key is required,
-   unless `plugin-use` is `"none"`.
+- `enable-if: str`: An environment marker defining when the plugin
+  should be used. If the environment marker does not match the running
+  environment, the provider will be disabled and the variants using its
+  properties will be deemed incompatible. If not provided, the plugin
+  will be used in all environments.
 
-2. `enable-if: str | None` -- that optionally specifies an [environment marker](
-   https://packaging.python.org/en/latest/specifications/dependency-specifiers/#environment-markers)
-   specifying when the plugin should be used. If it specified, the plugin
-   will not be installed and loaded if the environment does not match
-   the specified markers. If it not specified, the plugin is enabled
-   unconditionally.
+- `install-time: bool`: Whether this is an install-time provider.
+  Defaults to `true`. `false` means that it is an AoT provider instead.
 
-3. `plugin-api: str` -- that specifies how to load plugins. If specified,
-   it follows the same format as object references
-   in the [entry points specification](
-   https://packaging.python.org/en/latest/specifications/entry-points/).
-   It can be one of:
+- `optional: bool`: Whether the provider is optional, as a boolean
+  value. Defaults to `false`. If it is true, the provider is considered
+  optional and should not be used unless the user opts in to it,
+  effectively rendering the variants using its properties incompatible.
+  If it is false or missing, the provider is considered obligatory.
 
-   - `importable.module:ClassName`
-   - `importable.module:attribute`
-   - `importable.module`
+- `plugin-api: str`: The API endpoint for the plugin. If it is
+  specified, it must be an object reference as explained in the "API
+  endpoint" section. If it is missing, the package name from the first
+  dependency specifier in `requires` is used, after replacing all `-`
+  characters with `_` in the normalized package name.
 
-   If not specified, it will be inferred from the first package name
-   found in `requires`, with any dashes replaced with underscores.
-   For example, if the dependency is `foo-bar[extra] >= 1.2.3`,
-   its corresponding `plugin-api` will be inferred as `foo_bar`.
+- `requires: list[str]`: A list of one or more package dependency
+  specifiers. When installing the provider, all the items are processed
+  (provided their environment markers match), but they must always
+  resolve to a single distribution to be installed. Multiple
+  dependencies can be used when different plugins providing the same
+  namespace need to be used conditionally to environment markers, e.g.
+  for different Python versions or platforms.
 
-   If a callable is specified, the provider will be instantiated
-   by the equivalent of:
-
-   ```python
-   import importable.module
-
-   plugin_instance = importable.module.ClassName()
-   ```
-
-   If a non-callable object (e.g. a module or a global object)
-   is specified, it will be used directly, similarly to:
-
-   ```python
-   import importable.module
-
-   plugin_instance = importable.module.attribute
-   ```
-
-4. `optional: bool = False` -- that can be used to make a particular
-   provider optional. If it is False or not specified, the plugin
-   is required and is used unconditionally. If it is True, the plugin
-   is considered optional and the tools should not load it unless
-   explicitly requested by the user.
-
-5. `plugin-use: Literal["all", "build", "none"]` -- indicates under
-   what circumstances the plugin is used for this namespace. Has three
-   possible values:
-
-   a. `all` (the default) indicates that the plugin is used
-      both when building and when installing the package. At build time,
-      it is used to validate properties. At install time, it is used
-      to query the system configuration to determine supported property
-      order. The `default-priorities` section is used only to override
-      the default ordering.
-
-   b. `build` indicates that the plugin is used at build time only,
-      while during installation the namespace is handled entirely
-      from metadata. At build time, the plugin is used to validate
-      properties and to query supported property order. This order
-      is then appended to `default-priorities` table. At install time,
-      the installer considers only that table, considering properties
-      listed within it as supported, and using it to order them.
-      This value is only valid for plugins whose
-      `get_supported_configs()` method return a fixed value.
-
-   c. `none` indicates that no plugin is used at all. At build time,
-      only features and properties listed in the `default-priorities`
-      table are considered to be supported. At install time, said table
-      is used to determine supported properties. The `plugin-api`
-      and `requires` keys are ignored, though they are permitted
-      to make it easier to switch between `build` and `none` setups.
+For install-time providers (i.e. when `install-time` is true), the
+`requires` key is obligatory. For AoT providers (i.e. otherwise), the
+`requires` key is optional. If it specified, it needs to specify an AoT
+provider plugin that is queried at build time to fill
+`static-properties`. If it is not specified, `static-properties` need to
+be specified in `pyproject.toml`.
 
 ### Default priorities
 
 ```
-+-- default-priorities
-|   +- namespace        : list[str]
-|   +- feature
-|      +- <namespace>   : list[str]
-|   +- property
-|      +- <namespace>
-|         +- <feature>  : list[str]
++- default-priorities
+|  +- namespace        : list[str]
+|  +- feature
+|     +- <namespace>   : list[str]
+|  +- property
+|     +- <namespace>
+|        +- <feature>  : list[str]
 ```
 
-The default priority block is used to establish the default preferences
-between variants. It must specify the order for all namespaces used
-by the package. It may also override the priorities of individual
-features and property values provided by the plugins. The priorities
-specified here can in turn be overridden by the user.
+The `default-priorities` dictionary controls the ordering of variants.
 
-The block resides under the `default-priorities` key. It is a dictionary
-with up to three keys:
+It has a single required key:
 
-1. `namespace: list[str]` -- that lists all namespaces used
-   by the package from the most preferred to the least preferred.
+- `namespace: list[str]`: All namespaces used by the wheel variants,
+  ordered in decreasing priority.  This list must have the same members
+  as the keys of the `providers` dictionary.
 
-2. `feature` -- that can be used to override preferred feature order
-   of individual providers. It is a dictionary whose keys are namespaces,
-   and values are lists of feature names. The features are listed from
-   the most preferred to the least preferred. Not all features provided
-   by the plugin need be listed. The remaining features will be given
-   lower priority than these listed, while preserving their relative
-   order provided by the plugin.
+It may have the following optional keys:
 
-3. `property` -- that can be used to override preferred property value
-   order of individual providers. It consists of two nested dictionaries,
-   with the key of the top dictionary specifying the namespace name,
-   and the key of the subsequent dictionary specifying the feature name.
-   The values are property values, ordered from the most preferred
-   to the least preferred. Conversely, not all property values provided
-   by the plugin need be listed. The remaining properties will be given
-   lower priority than these listed, while preserving their relative
-   order provided by the plugin.
+- `feature: dict[str, list[str]]`: A dictionary with namespaces as keys,
+  and ordered list of corresponding feature names as values. The values
+  in each list override the default ordering from the provider output.
+  They are listed from the highest priority to the lowest priority.
+  Features not present on the list are considered of lower priority than
+  those present, and their relative priority is defined by the plugin.
 
-When `plugin-use` for a particular provider is set to `none`, these
-values are additionally used to validate properties: a property
-is considered valid only if the respective feature names and values
-are present in these dictionaries. When `plugin-use` is set to `none`
-or `build`, they are also used to determine whether properties are
-supported: a property is considered supported only if the respective
-feature names and values are present in these dictionaries.
+- `property: dict[str, dict[str, list[str]]]`: A nested dictionary with
+  namespaces as first-level keys, feature names as second-level keys and
+  ordered lists of corresponding property values as second-level values.
+  The values present in the list override the default ordering from the
+  provider output. They are listed from the the highest priority to the
+  lowest priority.  Properties not present on the list are considered of
+  lower priority than these present, and their relative priority is
+  defined by the plugin output.
 
+### Static properties
+
+```
++- static-properties
+|  +- <namespace>
+|     +- <feature>     : list[str]
+```
+
+The `static-properties` dictionary specifies the supported properties
+for AoT providers. It is a nested dictionary with namespaces as first
+level keys, feature name as second level keys and ordered lists of
+feature values as second level values.
+
+In `pyproject.toml` file, the namespaces present in this dictionary in
+`pyproject.toml` file must correspond to all AoT providers without a
+plugin (i.e. with `install-time` of `false` and no `requires`). When
+building a wheel, the build backend must query the AoT provider plugins
+(i.e. these with `install-time` being false and non-empty `requires`) to
+obtain supported properties and embed them into the dictionary.
+Therefore, the dictionary in `variant.json` and `*-variants.json` must
+contain namespaces for all AoT providers (i.e. all providers with
+`install-time` being false).
+
+Since TOML and JSON dictionaries are unsorted, so are the features in
+the `static-properties` dictionary.  If more than one feature is
+specified for a namespace, then the order for all features must be
+specified in `default-priorities.feature.{namespace}`. If an AoT plugin
+is used to fill `static-properties`, then the features not already in
+the list in `pyproject.toml` must be appended to it.
+
+The list of values is ordered from the most preferred to the least
+preferred, same as the lists returned by `get_supported_configs()`
+plugin API call. The `default-priorities.property` dict can be used to
+override the property ordering.
 
 ### Variants
 
 ```
-+-- variants
-    +- <variant-label>
-       +- <namespace>
-          +- <feature>  : list[str]
++- variants
+   +- <variant-label>
+      +- <namespace>
+         +- <feature>  : list[str]
 ```
 
-The variants block is present only in wheel metadata, and in wheel
-index `*-variants.json` file. In both cases it is obligatory.
-In the former file, it specifies the variant that the wheel was built
-for. In the latter, it lists all variants available for the package
-version.
-
-It resides under the `variants` key. It is a dictionary using variant
-labels as keys, with values listing the properties for a given variant
-in a form of a nested dictionary. The keys of the top dictionary
-specify namespaces names, the keys of the subsequent dictionary feature
-names and their values are lists of the corresponding property values.
-
+The `variants` dictionary is used in `variant.json` to indicate the
+variant that the wheel was built for, and in `*-variants.json` to
+indicate all the wheel variants available. It's a 3-level dictionary
+listing all properties per variant label: The first level keys are
+variant labels, the second level keys are namespaces, the third level
+are feature names, and the third level values are lists of feature
+values.
 
 ## Specific file formats
 
@@ -251,35 +230,37 @@ Example `pyproject.toml` tables, with explanatory comments:
 [variant.default-priorities]
 # prefer CPU features over BLAS/LAPACK variants
 namespace = ["x86_64", "aarch64", "blas_lapack"]
+
 # prefer aarch64 version and x86_64 level features over other features
 # (specific CPU extensions like "sse4.1")
 feature.aarch64 = ["version"]
 feature.x86_64 = ["level"]
+
 # prefer x86-64-v3 and then older (even if CPU is newer)
 property.x86_64.level = ["v3", "v2", "v1"]
 
 [variant.providers.aarch64]
 # example using different package based on Python version
 requires = [
-    "provider-variant-aarch64 >=0.0.1,<1; python_version >= '3.9'",
-    "legacy-provider-variant-aarch64 >=0.0.1,<1; python_version < '3.9'",
+    "provider-variant-aarch64 >=0.0.1; python_version >= '3.12'",
+    "legacy-provider-variant-aarch64 >=0.0.1; python_version < '3.12'",
 ]
 # use only on aarch64/arm machines
 enable-if = "platform_machine == 'aarch64' or 'arm' in platform_machine"
 plugin-api = "provider_variant_aarch64.plugin:AArch64Plugin"
 
 [variant.providers.x86_64]
-requires = ["provider-variant-x86-64 >=0.0.1,<1"]
+requires = ["provider-variant-x86-64 >=0.0.1"]
 # use only on x86_64 machines
 enable-if = "platform_machine == 'x86_64' or platform_machine == 'AMD64'"
 plugin-api = "provider_variant_x86_64.plugin:X8664Plugin"
 
 [variant.providers.blas_lapack]
-# plugin-use inferred from requires
+# plugin-api inferred from requires
 requires = ["blas-lapack-variant-provider"]
 # plugin used only when building package, properties will be inlined
 # into variant.json
-plugin-use = "build"
+install-time = false
 ```
 
 ### `*.dist-info/variant.json`
@@ -299,77 +280,55 @@ The `variant.json` file corresponding to the wheel built from
 the example `pyproject.toml` file for x86-64-v3 OpenBLAS variant would
 look like:
 
-```json
+```jsonc
 {
-    "default-priorities": {
-        "feature": {
-            "aarch64": [
-                "version"
-            ],
-            "blas_lapack": [
-                "provider"
-            ],
-            "x86_64": [
-                "level"
-            ]
-        },
-        "namespace": [
-            "x86_64",
-            "aarch64",
-            "blas_lapack"
-        ],
-        "property": {
-            "blas_lapack": {
-                "provider": [
-                    "accelerate",
-                    "openblas",
-                    "mkl"
-                ]
-            },
-            "x86_64": {
-                "level": [
-                    "v3",
-                    "v2",
-                    "v1"
-                ]
-            }
-        }
-    },
-    "providers": {
-        "aarch64": {
-            "enable-if": "platform_machine == 'aarch64' or 'arm' in platform_machine",
-            "plugin-api": "provider_variant_aarch64.plugin:AArch64Plugin",
-            "requires": [
-                "provider-variant-aarch64 >=0.0.1,<1; python_version >= '3.9'",
-                "legacy-provider-variant-aarch64 >=0.0.1,<1; python_version < '3.9'"
-            ]
-        },
-        "blas_lapack": {
-            "plugin-use": "build",
-            "requires": [
-                "blas-lapack-variant-provider"
-            ]
-        },
-        "x86_64": {
-            "enable-if": "platform_machine == 'x86_64' or platform_machine == 'AMD64'",
-            "plugin-api": "provider_variant_x86_64.plugin:X8664Plugin",
-            "requires": [
-                "provider-variant-x86-64 >=0.0.1,<1"
-            ]
-        }
-    },
-    "variants": {
-        "x8664v3_openblas": {
-            "blas_lapack": {
-                "provider": [
-                    "openblas"
-                ]
-            },
-            "x86_64": {
-                "level": ["v3"]
-            }
-        }
-    }
+   "default-priorities": {
+      "feature": {
+         "aarch64": ["version"],
+         "x86_64": ["level"]
+      },
+      "namespace": ["x86_64", "aarch64", "blas_lapack"],
+      "property": {
+         "x86_64": {
+            "level": ["v3", "v2", "v1"]
+         }
+      }
+   },
+   "providers": {
+      "aarch64": {
+         "enable-if": "platform_machine == 'aarch64' or 'arm' in platform_machine",
+         "plugin-api": "provider_variant_aarch64.plugin:AArch64Plugin",
+         "requires": [
+            "provider-variant-aarch64 >=0.0.1; python_version >= '3.9'",
+            "legacy-provider-variant-aarch64 >=0.0.1; python_version < '3.9'"
+         ]
+      },
+      "blas_lapack": {
+         "install-time": false,
+         "requires": ["blas-lapack-variant-provider"]
+      },
+      "x86_64": {
+         "enable-if": "platform_machine == 'x86_64' or platform_machine == 'AMD64'",
+         "plugin-api": "provider_variant_x86_64.plugin:X8664Plugin",
+         "requires": ["provider-variant-x86-64 >=0.0.1"]
+      }
+   },
+   "static-properties": {
+      "blas_lapack": {
+         "provider": ["accelerate", "openblas", "mkl"]
+      },
+   },
+   "variants": {
+      // always a single entry, expressing the variant properties of the wheel
+      "x8664v3_openblas": {
+         "blas_lapack": {
+            "provider": ["openblas"]
+         },
+         "x86_64": {
+            "level": ["v3"]
+         }
+      }
+   }
 }
 ```
 
@@ -401,35 +360,35 @@ The `foo-1.2.3-variants.json` corresponding to the package with two
 wheel variants, one of them listed in the previous example, would look
 like:
 
-```json
+```jsonc
 {
-    "default-priorities": {
-       ...
-    },
-    "providers": {
-       ...
-    },
-    "variants": {
-        "x8664v3_openblas": {
-            "blas_lapack": {
-                "provider": [
-                    "openblas"
-                ]
-            },
-            "x86_64": {
-                "level": ["v3"]
-            }
-        },
-        "x8664v4_mkl": {
-            "blas_lapack": {
-                "provider": [
-                    "mkl"
-                ]
-            },
-            "x86_64": {
-                "level": ["v4"]
-            }
-        }
-    }
+   "default-priorities": {
+      // identical to above
+   },
+   "providers": {
+      // identical to above
+   },
+   "static-properties": {
+      // identical to above
+   },
+   "variants": {
+      // all available wheel variants
+      "x8664v3_openblas": {
+         "blas_lapack": {
+            "provider": ["openblas"]
+         },
+         "x86_64": {
+            "level": ["v3"]
+         }
+      },
+      "x8664v4_mkl": {
+         "blas_lapack": {
+            "provider": ["mkl"]
+         },
+         "x86_64": {
+            "level": ["v4"]
+         }
+      }
+  }
 }
 ```
